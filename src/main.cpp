@@ -78,20 +78,17 @@ int main(int argc, char **argv)
         std::cout << "Hello, World!" << std::endl;
         temp_draw_sphere();
         return 0;
-    } catch (const CrashException& e) {
-        std::cerr << "CrashException in main: " << e.what() << std::endl;
+    } catch (const WarningException& e) {
+        std::cerr << "WarningException in main: " << e.what() << std::endl;
         return 84;
     } catch (const ErrorException& e) {
         std::cerr << "ErrorException in main: " << e.what() << std::endl;
         return 84;
-    } catch (const WarningException& e) {
-        std::cerr << "WarningException in main: " << e.what() << std::endl;
+    } catch (const CrashException& e) {
+        std::cerr << "CrashException in main: " << e.what() << std::endl;
         return 84;
     } catch (const Exception& e) {
         std::cerr << "Exception in main: " << e.what() << std::endl;
-        return 84;
-    } catch (...) {
-        std::cerr << "Unknown exception occurred in main." << std::endl;
         return 84;
     }
 }

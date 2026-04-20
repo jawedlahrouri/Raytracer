@@ -24,14 +24,14 @@ namespace RayTracer {
             double c = oc.dot(oc) - radius * radius;
             double discriminant = b * b - 4 * a * c;
             return discriminant >= 0;
-        } catch (const CrashException& e) {
-            std::cerr << "CrashException in Sphere::hits: " << e.what() << std::endl;
+        } catch (const WarningException& e) {
+            std::cerr << "WarningException in Sphere::hits: " << e.what() << std::endl;
             return false;
         } catch (const ErrorException& e) {
             std::cerr << "ErrorException in Sphere::hits: " << e.what() << std::endl;
             return false;
-        } catch (const WarningException& e) {
-            std::cerr << "WarningException in Sphere::hits: " << e.what() << std::endl;
+        } catch (const CrashException& e) {
+            std::cerr << "CrashException in Sphere::hits: " << e.what() << std::endl;
             return false;
         } catch (const Exception& e) {
             std::cerr << "Exception in Sphere::hits: " << e.what() << std::endl;
