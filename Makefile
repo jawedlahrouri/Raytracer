@@ -7,7 +7,6 @@
 
 SRC  =   $(wildcard src/*.cpp)
 
-
 SRC_TESTS   =   $(wildcard tests/*.cpp)
 
 OBJ  =   $(SRC:.cpp=.o)

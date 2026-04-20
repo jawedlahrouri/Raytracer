@@ -10,6 +10,8 @@
 
 #include "Vector3D.hpp"
 
+// struct light with list of points and list of d
+
 class Ray {
     public:
         Ray();

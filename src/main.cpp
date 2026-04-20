@@ -6,6 +6,7 @@
 */
 
 #include <iostream>
+#include "../include/parsing.hpp"
 
 void print_help()
 {
@@ -37,7 +38,8 @@ int main(int argc, char **argv)
     }
 
     if (isJson(argv[1]) == true) {
-        // call la fonction
+        Raytracer::Parser parser(argv[1]);
+        parser.parser();
     }
     std::cout << "Hello, World!" << std::endl;
     return 0;

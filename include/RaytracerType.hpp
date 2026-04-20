@@ -30,7 +30,9 @@ namespace Raytracer {
     };
 
     enum planesType {
-        axis,
+        X,
+        Y,
+        Z,
         position,
     };
 

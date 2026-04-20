@@ -1,14 +1,27 @@
+/*
+** EPITECH PROJECT, 2026
+** parsing
+** File description:
+** Parsing class for parse the config file
+*/
+
+#ifndef PARCING_HPP_
+#define PARCING_HPP_
+
 #include <string>
 #include <iostream>
 #include <map>
 #include <vector>
+#include <fstream>
+#include "exception.hpp"
 #include "RaytracerType.hpp"
+#include "utils/JsonInterpreter.hpp"
 
 namespace Raytracer {
     struct Camera {
         std::pair<size_t, std::size_t> size;
-        std::map<enum Raytracer::valuesType, int> posCoords; // enum values (x, y, z)
-        std::map<enum Raytracer::valuesType, int> rotaCoords; //  enum values (x, y, z) (on peut changer zehma c chaud)
+        std::map<enum Raytracer::valuesType, float> posCoords; // enum values (x, y, z)
+        std::map<enum Raytracer::valuesType, float> rotaCoords; //  enum values (x, y, z) (on peut changer zehma c chaud)
         size_t fieldOfView; // in degree
     };
 
@@ -19,7 +32,7 @@ namespace Raytracer {
     };
 
     struct Plane {
-        std::map<enum Raytracer::planesType, std::size_t> localisation;
+        std::map<std::string, enum Raytracer::planesType> localisation; // axis X, Y or Z
         std::map<enum Raytracer::colorType, int> color; // RED, GREEN, BLUE
     };
 
@@ -30,7 +43,7 @@ namespace Raytracer {
 
     struct Lights {
         std::map<enum Raytracer::lightsType, std::size_t> lightParams; // ambient and diffuse
-        std::map<std::string, Raytracer::point> listPoints;
+        std::map<std::string, Raytracer::point> listPoints; // list of differents lights points
         std::map<std::string, Raytracer::vectorLight> listDirectional;
     };
 }
@@ -39,6 +52,7 @@ namespace Raytracer {
     class Parser {
         private:
             std::string _filename;
+            myjson::JsonValue _config;
             Raytracer::Camera _camera;
             Raytracer::Primitive _primitive;
             Raytracer::Lights _lights;
@@ -55,7 +69,11 @@ namespace Raytracer {
             void setInfoPrimitive(Raytracer::Primitive primitive);
             void setInfoLights(Raytracer::Lights lights);
 
-            void parser();
-            void openFile();
+            int parser();
+            void parseCamera();
+            void parsePrimitive();
+            void parseLight();
     };
 }
+
+#endif
