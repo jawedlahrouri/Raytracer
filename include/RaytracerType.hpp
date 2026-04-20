@@ -9,12 +9,19 @@
 #define RAYTRACERTYPE_HPP_
 
 namespace Raytracer {
-    enum valuesType {
+    enum coordType {
         NONE,
         x,
         y,
         z,
+    };
+
+    enum specsType {
+        NONE,
         r,
+        width,
+        height,
+        length,
     };
 
     enum colorType {
@@ -39,12 +46,6 @@ namespace Raytracer {
     enum lightsType {
         ambient,
         diffuse,
-    };
-
-    struct point {
-        int y;
-        int x;
-        int z;
     };
 
     struct vectorLight {

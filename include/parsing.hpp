@@ -20,14 +20,15 @@
 namespace Raytracer {
     struct Camera {
         std::pair<size_t, std::size_t> size;
-        std::map<enum Raytracer::valuesType, float> posCoords; // enum values (x, y, z)
-        std::map<enum Raytracer::valuesType, float> rotaCoords; //  enum values (x, y, z) (on peut changer zehma c chaud)
+        std::map<enum Raytracer::coordType, float> posCoords; // enum values (x, y, z)
+        std::map<enum Raytracer::coordType, float> rotaCoords; //  enum values (x, y, z) (on peut changer zehma c chaud)
         size_t fieldOfView; // in degree
     };
 
     struct Shape {
         std::string shapeName;
-        std::map<enum Raytracer::valuesType, std::size_t> coords; // enum values (x, y, z) or more (ex: r for radius for sphere)
+        std::map<enum Raytracer::coordType, float> coords; // enum values (x, y, z)
+        std::map<enum Raytracer::specsType, float> specs; // specifications for shape
         std::map<enum Raytracer::colorType, std::size_t> color; // RED, GREEN, BLUE
     };
 
