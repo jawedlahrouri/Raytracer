@@ -94,3 +94,4 @@ int main(int argc, char **argv)
         std::cerr << "Unknown exception occurred in main." << std::endl;
         return 84;
     }
+}
