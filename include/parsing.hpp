@@ -39,9 +39,9 @@ namespace Raytracer {
     class Parser {
         private:
             std::string _filename;
-            Raytracer::Camera camera;
-            Raytracer::Primitive primitive;
-            Raytracer::Lights Lights;
+            Raytracer::Camera _camera;
+            Raytracer::Primitive _primitive;
+            Raytracer::Lights _lights;
 
         public:
             Parser(std::string filename);
@@ -50,5 +50,12 @@ namespace Raytracer {
             Raytracer::Camera getInfoCamera();
             Raytracer::Primitive getInfoPrimitive();
             Raytracer::Lights getInfoLights();
+
+            void setInfoCamera(Raytracer::Camera camera);
+            void setInfoPrimitive(Raytracer::Primitive primitive);
+            void setInfoLights(Raytracer::Lights lights);
+
+            void parser();
+            void openFile();
     };
 }
