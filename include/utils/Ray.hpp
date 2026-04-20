@@ -8,18 +8,20 @@
 #ifndef RAY_HPP_
 #define RAY_HPP_
 
-#include "Vector3D.hpp"
+#include "./math/Vector3D.hpp"
 
-class Ray {
-    public:
-        Ray();
+namespace RayTracer {
+    class Ray {
+        public:
+        Ray(const Math::Vector3D& origin = Math::Vector3D(0, 0, 0), const Math::Vector3D& direction = Math::Vector3D(0, 0, 0));
         ~Ray();
+        
+        Math::Vector3D origin;
+        Math::Vector3D direction;
 
-        Vector3D origin;
-        Vector3D direction;
-
-    protected:
-    private:
-};
+        protected:
+        private:
+    };
+}
 
 #endif /* !RAY_HPP_ */

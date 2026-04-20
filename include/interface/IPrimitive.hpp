@@ -17,7 +17,7 @@ class IPrimitive  {
         ~IPrimitive();
 
         // Check if the ray intersects with the primitive and fill the hit record if it does
-        virtual bool intersect(const Ray& ray, float t_min, float t_max, HitRecord& record) const = 0;
+        virtual bool intersect(const RayTracer::Ray& ray, float t_min, float t_max, HitRecord& record) const = 0;
 
     protected:
     private:

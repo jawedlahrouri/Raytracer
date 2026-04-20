@@ -5,7 +5,10 @@
 ## Makefile
 ##
 
-SRC  =   $(wildcard src/*.cpp)
+SRC  =   $(wildcard src/*.cpp) \
+        $(wildcard src/objects/*.cpp) \
+        $(wildcard src/plugins/renderer/*.cpp) \
+        $(wildcard src/utils/*.cpp)
 
 
 PRIMITIVE_SRC   =   $(wildcard src/plugins/primitives/*.cpp)

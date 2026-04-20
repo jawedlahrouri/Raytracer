@@ -7,7 +7,7 @@
 
 #ifndef ILIGHT_HPP_
 #define ILIGHT_HPP_
-#include "./utils/Vector3D.hpp"
+#include "./math/Vector3D.hpp"
 #include "./RaytracerType.hpp"
 
 class ILight {
@@ -16,13 +16,13 @@ class ILight {
         ~ILight();
 
         // Get the direction from the hit point to the light source
-        virtual Vector3D getDirectionToLight(const Vector3D& hitPoint) const = 0;
+        virtual Math::Vector3D getDirectionToLight(const Math::Vector3D& hitPoint) const = 0;
 
         // Get the intensity of the light at the hit point
         virtual Raytracer::colorType getIntensity() const = 0;
 
         // Get the distance from the hit point to the light source (for shadow calculations)
-        virtual float getDistanceToLight(const Vector3D& hitPoint) const = 0;
+        virtual float getDistanceToLight(const Math::Vector3D& hitPoint) const = 0;
 
     protected:
     private:

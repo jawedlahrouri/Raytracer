@@ -15,7 +15,7 @@ public:
     RectPrimitive() = default;
     ~RectPrimitive()  = default;
 
-    bool intersect(const Ray& ray, float t_min, float t_max, HitRecord& record) const override;
+    bool intersect(const RayTracer::Ray& ray, float t_min, float t_max, HitRecord& record) const override;
 };
 
 #endif /* !RECT_PRIMITIVE_HPP_ */
