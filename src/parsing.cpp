@@ -152,6 +152,11 @@ void Raytracer::Parser::parsePrimitive()
     }
 }
 
+void Raytracer::Parser::parseLight()
+{
+    
+}
+
 int Raytracer::Parser::parser()
 {
     try {
