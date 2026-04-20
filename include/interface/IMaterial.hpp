@@ -17,7 +17,7 @@ class IMaterial {
         IMaterial();
         ~IMaterial();
 
-        virtual Color getDiffuseColor(const HitRecord& record) const = 0;
+        virtual Raytracer::colorType getDiffuseColor(const HitRecord& record) const = 0;
 
     protected:
     private:

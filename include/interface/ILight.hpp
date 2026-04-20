@@ -19,8 +19,8 @@ class ILight {
         virtual Vector3D getDirectionToLight(const Vector3D& hitPoint) const = 0;
 
         // Get the intensity of the light at the hit point
-        virtual Raytracer::colorType::Color getIntensity() const = 0;
-        
+        virtual Raytracer::colorType getIntensity() const = 0;
+
         // Get the distance from the hit point to the light source (for shadow calculations)
         virtual float getDistanceToLight(const Vector3D& hitPoint) const = 0;
 

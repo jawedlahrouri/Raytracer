@@ -7,8 +7,11 @@
 
 #ifndef IPRIMITIVE_HPP_
 #define IPRIMITIVE_HPP_
+#include "./utils/Ray.hpp"
+#include "./utils/HitRecord.hpp"
+#include "RaytracerType.hpp"
 
-class IPrimitive {
+class IPrimitive  {
     public:
         IPrimitive();
         ~IPrimitive();

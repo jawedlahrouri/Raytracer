@@ -5,12 +5,26 @@
 ** main
 */
 
+#include <filesystem>
 #include <iostream>
+#include "./DLLoader/load_so.hpp"
 
 void print_help()
 {
     std::cout << "USAGE: ./raytracer <SCENE_FILE>" << std::endl;
     std::cout << "SCENE_FILE: scene configuration" << std::endl;
+}
+
+//TODO: - implement the function to parse the JSON scene file and set up the raytracer accordingly
+void open_lib_so(std::filesystem::path libPath)
+{
+    try {
+        DLLoader<void> loader(libPath);
+        int type = loader.getType();
+        std::cout << "Loaded library type: " << type << std::endl;
+    } catch (const Exception& e) {
+        std::cerr << "Error loading library: " << e.what() << std::endl;
+    }
 }
 
 bool isJson(char *configFile)
@@ -39,6 +53,8 @@ int main(int argc, char **argv)
     if (isJson(argv[1]) == true) {
         // call la fonction
     }
+
+    open_lib_so(std::filesystem::path(argv[1]));
     std::cout << "Hello, World!" << std::endl;
     return 0;
 }
