@@ -15,7 +15,7 @@ class HitRecord {
     public:
         HitRecord();
         ~HitRecord();
-        float t;              // the parameter t along the ray where the hit occurred (used to find the exact point of impact)
+        double t;
         Math::Vector3D point;       //coordinates of the hit point in 3D space (x, y, z)
         Math::Vector3D normal;      // the normal vector at the hit point (vital for lighting calculations)
         const IMaterial* material; // the material of the hit object

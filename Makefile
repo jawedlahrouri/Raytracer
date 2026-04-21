@@ -8,6 +8,8 @@
 SRC  =   $(wildcard src/*.cpp) \
         $(wildcard src/objects/*.cpp) \
         $(wildcard src/plugins/renderer/*.cpp) \
+        $(wildcard src/plugins/lights/*.cpp) \
+        $(wildcard src/plugins/interface/*.cpp) \
         $(wildcard src/utils/*.cpp)
 
 

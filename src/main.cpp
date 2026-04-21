@@ -16,6 +16,7 @@
 #include "plugins/renderer/ppm_export.hpp"
 #include "math/Point3D.hpp"
 #include "utils/Ray.hpp"
+#include "plugins/lights/PointLight.hpp"
 
 void print_help()
 {
@@ -113,6 +114,8 @@ void temp_draw_scene() {
     RayTracer::Camera cam;
     RayTracer::Sphere s(Math::Point3D(0, 0, -1), 0.5);
     RayTracer::Plane p(Math::Point3D(0, 1, 0), Math::Vector3D(0, 1, 0));
+    // Ajout d'une lumière ponctuelle au-dessus de la sphère
+    PointLight light(Math::Point3D(0, 2, -1), Raytracer::RED);
     const int image_width = 800;
     const int image_height = 600;
     std::vector<std::vector<Math::Vector3D>> pixels(image_height, std::vector<Math::Vector3D>(image_width));
@@ -123,10 +126,22 @@ void temp_draw_scene() {
             RayTracer::Ray r = cam.ray(u, v);
             bool hit_sphere = s.hits(r);
             bool hit_plane = p.hits(r);
-            if (hit_sphere && hit_plane) {
-                pixels[j][i] = Math::Vector3D(255, 0, 255); // magenta
-            } else if (hit_sphere) {
-                pixels[j][i] = Math::Vector3D(255, 0, 0); // rouge
+            if (hit_sphere) {
+                // Calcul du vrai point d'impact sur la sphère
+                // Résolution analytique de l'intersection rayon-sphère
+                Math::Vector3D oc = r.origin - Math::Point3D(0, 0, -1);
+                double a = r.direction.dot(r.direction);
+                double b = 2.0 * oc.dot(r.direction);
+                double c_sph = oc.dot(oc) - 0.25; // rayon^2 = 0.5^2
+                double discriminant = b * b - 4 * a * c_sph;
+                double t = (-b - std::sqrt(discriminant)) / (2.0 * a);
+                Math::Point3D hitPoint = r.origin + r.direction * t;
+                Math::Vector3D hitVec(hitPoint.X, hitPoint.Y, hitPoint.Z);
+                Math::Vector3D normal = (hitPoint - Math::Point3D(0, 0, -1)) / 0.5; // normale sphère
+                Math::Vector3D toLight = light.getDirectionToLight(hitVec);
+                double intensity = std::max(0.0, normal.dot(toLight));
+                Math::Vector3D color(255 * intensity, 0, 0); // sphère rouge éclairée
+                pixels[j][i] = color;
             } else if (hit_plane) {
                 pixels[j][i] = Math::Vector3D(0, 255, 0); // vert
             } else {
@@ -152,8 +167,7 @@ int main(int argc, char **argv)
         }
 
         //open_lib_so(std::filesystem::path(argv[1]));
-        //temp_draw_scene();
-        temp_draw_rect();
+        temp_draw_scene();
         return 0;
     } catch (const WarningException& e) {
         std::cerr << "WarningException in main: " << e.what() << std::endl;
