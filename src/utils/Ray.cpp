@@ -7,11 +7,11 @@
 
 #include "utils/Ray.hpp"
 #include "exception.hpp"
+#include "math/Point3D.hpp"
 #include <iostream>
 
 namespace RayTracer {
-    Ray::Ray(const Math::Vector3D& origin, const Math::Vector3D& direction)
-        : origin(origin), direction(direction) {
+    Ray::Ray(const Math::Point3D& origin, const Math::Vector3D& direction) : origin(origin), direction(direction) {
         try {
             // Construction normale
         } catch (const WarningException& e) {

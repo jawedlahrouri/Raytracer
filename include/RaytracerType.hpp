@@ -63,4 +63,13 @@ namespace Raytracer {
     };
 }
 
+struct Color {
+    unsigned int r;
+    unsigned int g;
+    unsigned int b;
+
+    Color() : r(0), g(0), b(0) {}
+    Color(unsigned int red, unsigned int green, unsigned int blue) : r(red), g(green), b(blue) {}
+};
+
 #endif /* !RAYTRACERTYPE_HPP_ */

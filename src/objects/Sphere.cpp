@@ -18,7 +18,7 @@ namespace RayTracer {
     // (D·D)t^2 + 2D·(O-C)t + (O-C)·(O-C) - R^2 = 0
     bool Sphere::hits(const Ray& ray) const {
         try {
-            Math::Vector3D oc = ray.origin - Math::Vector3D(center.X, center.Y, center.Z);
+            Math::Vector3D oc = ray.origin - center; // Point3D - Point3D = Vector3D
             double a = ray.direction.dot(ray.direction);
             double b = 2.0 * oc.dot(ray.direction);
             double c = oc.dot(oc) - radius * radius;
