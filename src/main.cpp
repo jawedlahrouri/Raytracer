@@ -7,6 +7,7 @@
 
 #include <filesystem>
 #include <iostream>
+#include "../include/parsing.hpp"
 #include "./DLLoader/load_so.hpp"
 #include "plugins/renderer/Camera.hpp"
 #include "objects/Sphere.hpp"
@@ -122,7 +123,8 @@ int main(int argc, char **argv)
         }
 
         if (isJson(argv[1]) == true) {
-            // call la fonction
+            Raytracer::Parser parser(argv[1]);
+            parser.parser();
         }
 
         //open_lib_so(std::filesystem::path(argv[1]));
@@ -141,4 +143,5 @@ int main(int argc, char **argv)
         std::cerr << "Exception in main: " << e.what() << std::endl;
         return 84;
     }
+    return 0;
 }

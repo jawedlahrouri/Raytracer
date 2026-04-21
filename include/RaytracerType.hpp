@@ -9,12 +9,19 @@
 #define RAYTRACERTYPE_HPP_
 
 namespace Raytracer {
-    enum valuesType {
+    enum coordType {
         NONE,
         x,
         y,
         z,
+    };
+
+    enum specsType {
+        NONE,
         r,
+        width,
+        height,
+        length,
     };
 
     enum colorType {
@@ -31,7 +38,9 @@ namespace Raytracer {
     };
 
     enum planesType {
-        axis,
+        X,
+        Y,
+        Z,
         position,
     };
 
