@@ -25,13 +25,23 @@ namespace Raytracer {
 
     enum shapesType {
         sphere,
-        cube,
+        rect,
+        planes,
         // could add some more
     };
 
     enum planesType {
         axis,
         position,
+    };
+
+    enum rectType {
+        width,
+        height,
+    };
+
+    enum sphereType {
+        radius,
     };
 
     enum lightsType {
