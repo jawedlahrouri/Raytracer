@@ -1,4 +1,4 @@
-.so
 raytracer
 *.o
 *.json
+*.so
