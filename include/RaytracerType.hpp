@@ -52,12 +52,6 @@ namespace Raytracer {
         diffuse,
     };
 
-    struct point {
-        int y;
-        int x;
-        int z;
-    };
-
     struct vectorLight {
         int y;
         int x;

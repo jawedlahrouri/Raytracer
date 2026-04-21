@@ -70,7 +70,7 @@ void Raytracer::Parser::parseCamera()
     cam.rotaCoords = {
         {Raytracer::coordType::x, _config["Camera"]["rotation"][0].get<float>()},
         {Raytracer::coordType::y, _config["Camera"]["rotation"][1].get<float>()},
-        {Raytracer::coordType::z, _config["Camera"]["rotation"][3].get<float>()},
+        {Raytracer::coordType::z, _config["Camera"]["rotation"][2].get<float>()},
     };
 
     // field of view parsing
@@ -84,7 +84,7 @@ void Raytracer::Parser::parsePrimitive()
     int id_plane = 0;
     
     // Shape parsing and plane
-    for (int i = 0; i <= _config["Primitives"].size(); i++) {
+    for (std::size_t i = 0; i < _config["Primitives"].size(); i++) {
         std::string type = _config["Primitives"][i]["type"].get<std::string>();
         if (type != "Plane") {
             Raytracer::Shape shape;
@@ -125,11 +125,11 @@ void Raytracer::Parser::parsePrimitive()
             // get the axis
             std::string axe = _config["Primitives"][i]["axis"].get<std::string>();
             if (axe == "X")
-                floor.axis == Raytracer::planesType::X;
+                floor.axis = Raytracer::planesType::X;
             else if (axe == "Y")
-                floor.axis == Raytracer::planesType::Y;
+                floor.axis = Raytracer::planesType::Y;
             else
-                floor.axis == Raytracer::planesType::Z;
+                floor.axis = Raytracer::planesType::Z;
             
             // get the position
             float pos = _config["Primitives"][i]["position"].get<float>();
@@ -156,9 +156,19 @@ void Raytracer::Parser::parseLight()
         {Raytracer::lightsType::diffuse, _config["Lights"]["diffuse"].get<float>()},
     };
 
-    for (int i = 0; i <= _config["Lights"]["point"].size(); i++) {
-        // vector  
+    unsigned int id_point = 0;
+    for (std::size_t i = 0; i <= _config["Lights"]["point"].size(); i++) {
+        Math::Point3D point = {_config["Lights"]["point"][i][0].get<double>(), _config["Lights"]["point"][i][1].get<double>(), _config["Lights"]["point"][i][2].get<double>()};
+        light.listPoints[id_point] = point;
+        id_point++;
     }
+    unsigned int id_vector = 0;
+    for (std::size_t j = 0; j <= _config["Lights"]["directional"].size(); j++) {
+        Math::Vector3D vector = {_config["Lights"]["directional"][j][0].get<double>(), _config["Lights"]["directional"][j][1].get<double>(), _config["Lights"]["directional"][j][2].get<double>()};
+        light.listDirectional[id_vector] = vector;
+        id_vector++;
+    }
+    _lights = light;
 }
 
 int Raytracer::Parser::parser()
@@ -167,7 +177,7 @@ int Raytracer::Parser::parser()
         _config = myjson::parseFile(_filename);
         parseCamera();
         parsePrimitive();
-
+        parseLight();
     } catch (std::exception &e) {
         std::cerr << "Parsing Exception : " << e.what() << std::endl;
         return 84;
