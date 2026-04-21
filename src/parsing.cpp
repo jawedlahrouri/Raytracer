@@ -157,7 +157,7 @@ void Raytracer::Parser::parseLight()
     };
 
     for (int i = 0; i <= _config["Lights"]["point"].size(); i++) {
-        // vector  
+        
     }
 }
 

@@ -13,6 +13,7 @@
 #include <map>
 #include <vector>
 #include <fstream>
+#include "math/Point3D.hpp"
 #include "exception.hpp"
 #include "RaytracerType.hpp"
 #include "utils/JsonInterpreter.hpp"
@@ -45,8 +46,8 @@ namespace Raytracer {
 
     struct Lights {
         std::map<enum Raytracer::lightsType, std::size_t> lightParams; // ambient and diffuse
-        std::map<std::string, Raytracer::point> listPoints; // list of differents lights points
-        std::map<std::string, Raytracer::vectorLight> listDirectional;
+        std::map<std::string, Math::Point3D> listPoints; // list of differents lights points
+        std::map<std::string, Math::Vector3D> listDirectional;
     };
 }
 
