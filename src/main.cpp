@@ -12,6 +12,7 @@
 #include "plugins/renderer/Camera.hpp"
 #include "objects/Sphere.hpp"
 #include "objects/Plane.hpp"
+#include "objects/Rect.hpp"
 #include "plugins/renderer/ppm_export.hpp"
 #include "math/Point3D.hpp"
 #include "utils/Ray.hpp"
@@ -63,6 +64,29 @@ void temp_draw_sphere() {
         }
         std::cout << std::endl;
     }
+}
+
+void temp_draw_rect() {
+    RayTracer::Camera cam;
+    RayTracer::Rect r(Math::Point3D(0, 0, 3), Math::Vector3D(0, 0, -1));
+    const int image_width = 800;
+    const int image_height = 600;
+    std::vector<std::vector<Math::Vector3D>> pixels(image_height, std::vector<Math::Vector3D>(image_width));
+
+    for (int j = 0; j < image_height; ++j) {
+        for (int i = 0; i < image_width; ++i) {
+            double u = static_cast<double>(i) / (image_width - 1);
+            double v = static_cast<double>(j) / (image_height - 1);
+            RayTracer::Ray ray = cam.ray(u, v);
+            if (r.hits(ray)) {
+                pixels[j][i] = Math::Vector3D(255, 0, 0); // rouge
+            } else {
+                pixels[j][i] = Math::Vector3D(0, 0, 0); // noir
+            }
+        }
+    }
+    PPMExporter exporter;
+    exporter.write_image(image_width, image_height, pixels);
 }
 
 void temp_draw_plane() {
@@ -128,7 +152,8 @@ int main(int argc, char **argv)
         }
 
         //open_lib_so(std::filesystem::path(argv[1]));
-        temp_draw_scene();
+        //temp_draw_scene();
+        temp_draw_rect();
         return 0;
     } catch (const WarningException& e) {
         std::cerr << "WarningException in main: " << e.what() << std::endl;
