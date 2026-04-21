@@ -17,7 +17,6 @@ namespace Raytracer {
     };
 
     enum specsType {
-        NONE,
         r,
         width,
         height,
@@ -42,11 +41,6 @@ namespace Raytracer {
         Y,
         Z,
         position,
-    };
-
-    enum rectType {
-        width,
-        height,
     };
 
     enum sphereType {
