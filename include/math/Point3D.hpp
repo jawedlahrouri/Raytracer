@@ -31,6 +31,10 @@ namespace Math {
             Point3D operator+(const Vector3D& vec) const {
                 return Point3D(X + vec.X, Y + vec.Y, Z + vec.Z);
             }
+
+            int getX() {
+                return X;
+            }
         protected:
         private:
     };
