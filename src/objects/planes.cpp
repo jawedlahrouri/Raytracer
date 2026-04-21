@@ -12,16 +12,13 @@
 
 bool RayTracer::Plane::hits(const Ray& ray) const {
     try {
-            // t = [(P0 - O) . n] / [D . n]
-            Math::Vector3D P0(center.X, center.Y, center.Z);
-            Math::Vector3D n = normal;
-            Math::Vector3D O = ray.origin;
-            Math::Vector3D D = ray.direction;
-            double denom = D.dot(n);
-            if (std::abs(denom) < 1e-6) // protection for the division by zero
-                return false;
-            double t = (P0 - O).dot(n) / denom;
-            return t > 0;
+        // t = [(center - ray.origin) . normal] / [ray.direction . normal]
+        double denom = ray.direction.dot(normal);
+        if (std::abs(denom) < 1e-6)
+            return false;
+        Math::Vector3D diff = center - ray.origin; // Point3D - Point3D = Vector3D
+        double t = diff.dot(normal) / denom;
+        return t > 0;
     } catch (const WarningException& e) {
         std::cerr << "WarningException in Plane::hits: " << e.what() << std::endl;
         return false;

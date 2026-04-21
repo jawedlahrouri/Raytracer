@@ -1,4 +1,5 @@
 raytracer
 *.o
-*.json
 *.so
+output.ppm
+*.json

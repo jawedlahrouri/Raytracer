@@ -34,7 +34,7 @@ namespace RayTracer {
         RayTracer::Ray ray(double u, double v) const {
             Math::Point3D point_on_screen = screen.pointAt(u, v);
             Math::Vector3D direction = point_on_screen - origin;
-            return RayTracer::Ray(Math::Vector3D(origin.X, origin.Y, origin.Z), direction);
+            return RayTracer::Ray(origin, direction);
         }
     };
 }
