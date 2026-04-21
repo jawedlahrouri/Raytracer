@@ -33,13 +33,14 @@ namespace Raytracer {
     };
 
     struct Plane {
-        std::map<std::string, enum Raytracer::planesType> localisation; // axis X, Y or Z
-        std::map<enum Raytracer::colorType, int> color; // RED, GREEN, BLUE
+        enum Raytracer::planesType axis; // axis X, Y or Z
+        float positions;
+        std::map<enum Raytracer::colorType, std::size_t> color; // RED, GREEN, BLUE
     };
 
     struct Primitive {
-        std::map<enum Raytracer::shapesType, Shape> listOfShapes; // sphere, cube, ect
-        std::map<enum Raytracer::planesType, Plane> listOfPlane; // axis, position
+        std::map<std::string, Shape> listOfShapes; // sphere, cube, ect
+        std::map<int, Plane> listOfPlane; // axis, position
     };
 
     struct Lights {

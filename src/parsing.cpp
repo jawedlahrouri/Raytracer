@@ -96,60 +96,98 @@ void Raytracer::Parser::parseCamera()
 void Raytracer::Parser::parsePrimitive()
 {
     Raytracer::Primitive prim;
-    std::map<enum Raytracer::shapesType, Raytracer::Shape> shapeMap;
+    std::map<std::string, Raytracer::Shape> shapeMap;
+    std::map<int, Raytracer::Plane> planeMap;
+    int id_plane = 0;
 
     // Shape parsing
     for (int i = 0; i <= _config["Primitives"].size(); i++) {
-        Raytracer::Shape shape;
+        if (_config["Primitives"][i]["type"].get<std::string>() != "Plane") {
+            Raytracer::Shape shape;
 
-        // name of the shape
-        std::string name = _config["Primitives"][i]["type"].get<std::string>();
-        shape.shapeName = name;
-        
-        // coords of the shape
-        std::map<Raytracer::coordType, float> coord;
-        float val;
-        for (int j = 0; j <= 2; j++) {
-            val = _config["Primitives"][i]["coords"][j].get<float>();
-            if (j == 0)
-                coord.insert({Raytracer::coordType::x, val});
-            else if (j == 1)
-                coord.insert({Raytracer::coordType::y, val});
-            else
-                coord.insert({Raytracer::coordType::z, val});
-        }
-        shape.coords = coord;
-
-        // specifications of the shape
-        std::map<Raytracer::specsType, float> spec;
-        for (int k = 0; k <= _config["Primitives"][i]["specification"].size(); k++) {
-            switch (k) {
-                case 0 :
-                    spec.insert({Raytracer::specsType::r, _config["Primitives"][i]["specification"][k].get<float>()});
-                case 1 :
-                    spec.insert({Raytracer::specsType::width, _config["Primitives"][i]["specification"][k].get<float>()});
-                case 2 :
-                    spec.insert({Raytracer::specsType::height, _config["Primitives"][i]["specification"][k].get<float>()});
-                case 3 :
-                    spec.insert({Raytracer::specsType::length, _config["Primitives"][i]["specification"][k].get<float>()});
+            // name of the shape
+            std::string name = _config["Primitives"][i]["type"].get<std::string>();
+            shape.shapeName = name;
+            
+            // coords of the shape
+            std::map<Raytracer::coordType, float> coord;
+            float val;
+            for (int j = 0; j <= 2; j++) {
+                val = _config["Primitives"][i]["coords"][j].get<float>();
+                if (j == 0)
+                    coord.insert({Raytracer::coordType::x, val});
+                else if (j == 1)
+                    coord.insert({Raytracer::coordType::y, val});
+                else
+                    coord.insert({Raytracer::coordType::z, val});
             }
-        }
-        shape.specs = spec;
+            shape.coords = coord;
 
-        // color of the shape
-        std::map<Raytracer::colorType, std::size_t> colorMap;
-        std::size_t valPixel;
-        for (int l = 0; l <= 2; l++) {
-            valPixel = _config["Primitives"][i]["color"][l].get<std::size_t>();
-            if (l == 0)
-                colorMap.insert({Raytracer::colorType::RED, valPixel});
-            else if (l == 1)
-                colorMap.insert({Raytracer::colorType::GREEN, valPixel});
-            else
-                colorMap.insert({Raytracer::colorType::BLUE, valPixel});
+            // specifications of the shape
+            std::map<Raytracer::specsType, float> spec;
+            for (int k = 0; k <= _config["Primitives"][i]["specification"].size(); k++) {
+                switch (k) {
+                    case 0 :
+                        spec.insert({Raytracer::specsType::r, _config["Primitives"][i]["specification"][k].get<float>()});
+                    case 1 :
+                        spec.insert({Raytracer::specsType::width, _config["Primitives"][i]["specification"][k].get<float>()});
+                    case 2 :
+                        spec.insert({Raytracer::specsType::height, _config["Primitives"][i]["specification"][k].get<float>()});
+                    case 3 :
+                        spec.insert({Raytracer::specsType::length, _config["Primitives"][i]["specification"][k].get<float>()});
+                }
+            }
+            shape.specs = spec;
+
+            // color of the shape
+            std::map<Raytracer::colorType, std::size_t> colorMap;
+            std::size_t valPixel;
+            for (int l = 0; l <= 2; l++) {
+                valPixel = _config["Primitives"][i]["color"][l].get<std::size_t>();
+                if (l == 0)
+                    colorMap.insert({Raytracer::colorType::RED, valPixel});
+                else if (l == 1)
+                    colorMap.insert({Raytracer::colorType::GREEN, valPixel});
+                else
+                    colorMap.insert({Raytracer::colorType::BLUE, valPixel});
+            }
+            shape.color = colorMap;
+            shapeMap.insert({name, shape});
         }
-        shape.color = colorMap; 
+        else {
+            Raytracer::Plane floor;
+
+            // get the axis
+            std::string axe = _config["Primitives"][i]["axis"].get<std::string>();
+            if (axe == "X")
+                floor.axis == Raytracer::planesType::X;
+            else if (axe == "Y")
+                floor.axis == Raytracer::planesType::Y;
+            else
+                floor.axis == Raytracer::planesType::Z;
+            
+            // get the position
+            float pos = _config["Primitives"][i]["position"].get<float>();
+            floor.positions = pos;
+
+            // get the color
+            std::map<enum Raytracer::colorType, std::size_t> colorPlane;
+            std::size_t colorVal;
+            for (int j = 0; j <= 2; j++) {
+                colorVal = _config["Primitives"][i]["color"][j].get<std::size_t>();
+                if (j == 0)
+                    colorPlane.insert({Raytracer::colorType::RED, colorVal});
+                else if (j == 1)
+                    colorPlane.insert({Raytracer::colorType::GREEN, colorVal});
+                else
+                    colorPlane.insert({Raytracer::colorType::BLUE, colorVal});
+            }
+            floor.color = colorPlane;
+            planeMap.insert({id_plane, floor});
+            id_plane++;
+        }
     }
+        
 }
 
 void Raytracer::Parser::parseLight()
