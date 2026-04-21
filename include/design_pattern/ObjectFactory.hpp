@@ -13,6 +13,9 @@
 #include <memory>
 #include <functional>
 
+#include "IPrimitive.hpp"
+#include "ILight.hpp"
+
 namespace Raytracer {
     class ObjectFactory {
         private:
