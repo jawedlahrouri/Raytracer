@@ -19,7 +19,6 @@ PRIMITIVE_SRC   =   $(wildcard src/plugins/primitives/*.cpp)
 
 
 PLUGIN_DIR = plugins
-# Générer un .so par primitive automatiquement
 PRIMITIVE_SO = $(patsubst src/plugins/primitives/%.cpp,$(PLUGIN_DIR)/lib%.so,$(PRIMITIVE_SRC))
 # LIGHT_SO = $(PLUGIN_DIR)/liblight.so
 # MATERIAL_SO = $(PLUGIN_DIR)/libmaterial.so
