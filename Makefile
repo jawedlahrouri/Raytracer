@@ -14,13 +14,13 @@ SRC  =   $(wildcard src/*.cpp) \
 
 
 PRIMITIVE_SRC   =   $(wildcard src/plugins/primitives/*.cpp)
-# LIGHT_SRC   =   $(wildcard src/plugins/lights/*.cpp)
+LIGHT_SRC   =   $(wildcard src/plugins/lights/*.cpp)
 # MATERIAL_SRC    =   $(wildcard src/plugins/materials/*.cpp)
 
 
 PLUGIN_DIR = plugins
 PRIMITIVE_SO = $(patsubst src/plugins/primitives/%.cpp,$(PLUGIN_DIR)/lib%.so,$(PRIMITIVE_SRC))
-# LIGHT_SO = $(PLUGIN_DIR)/liblight.so
+LIGHT_SO = $(PLUGIN_DIR)/liblight.so
 # MATERIAL_SO = $(PLUGIN_DIR)/libmaterial.so
 
 SRC_TESTS   =   $(wildcard tests/*.cpp)

@@ -16,9 +16,9 @@ namespace RayTracer {
     class Camera {
         public:
         Camera() : origin (0, 0, 0) {
-            Math::Point3D screen_origin(-1.0, -1.0, 1.0);
+            Math::Point3D screen_origin(-1.0, 1.0, -1.0);
             Math::Vector3D screen_bottom(2.0, 0.0, 0.0);
-            Math::Vector3D screen_left(0.0, 2.0, 0.0);
+            Math::Vector3D screen_left(0.0, -2.0, 0.0);
             
             screen = Math::Rectangle3D(screen_origin, screen_bottom, screen_left);
         }

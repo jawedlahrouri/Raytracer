@@ -11,6 +11,7 @@
 #include "math/Point3D.hpp"
 #include <cmath>
 #include "./utils/Ray.hpp"
+#include "./utils/HitRecord.hpp"
 #include "math/Vector3D.hpp"
 
 namespace RayTracer {
@@ -18,11 +19,12 @@ namespace RayTracer {
     public:
         Math::Point3D center;
         Math::Vector3D normal;
+        Math::Vector3D color;
 
         // Constructor
-        Rect(const Math::Point3D& c, const Math::Vector3D& n) : center(c), normal(n) {}
+        Rect(const Math::Point3D& c, const Math::Vector3D& n, const Math::Vector3D& col = Math::Vector3D(0, 0, 255)) : center(c), normal(n), color(col) {}
 
-        bool hits(const Ray& ray) const;
+        bool hits(const Ray& ray, double t_min, double t_max, HitRecord& rec) const;
     };
 }
 

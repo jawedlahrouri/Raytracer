@@ -24,6 +24,9 @@ class ILight {
         // Get the distance from the hit point to the light source (for shadow calculations)
         virtual float getDistanceToLight(const Math::Vector3D& hitPoint) const = 0;
 
+        // Calculate illumination color
+        virtual Math::Vector3D calculateIllumination(const Math::Vector3D& hitPoint, const Math::Vector3D& normal, const Math::Vector3D& baseColor) const = 0;
+
     protected:
     private:
 };
