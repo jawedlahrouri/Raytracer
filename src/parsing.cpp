@@ -90,6 +90,16 @@ void Raytracer::Parser::parseCamera()
     _camera = cam;
 }
 
+std::string Raytracer::Parser::setName(std::string name)
+{
+    int currentCount = typeCounter[name]; 
+    std::string newName = name + "_" + std::to_string(currentCount);
+    
+    typeCounter[name]++; 
+    
+    return newName;
+}
+
 void Raytracer::Parser::parsePrimitive()
 {
     Raytracer::Primitive prim;
@@ -102,7 +112,7 @@ void Raytracer::Parser::parsePrimitive()
             Raytracer::Shape shape;
 
             // name of the shape
-            shape.shapeName = type;
+            shape.shapeName = setName(type);
             
             // coords of the shape
             if (_config["Primitives"][i]["coords"].isNull() || _config["Primitives"][i]["coords"].size() < 3) {
@@ -137,7 +147,7 @@ void Raytracer::Parser::parsePrimitive()
                 {Raytracer::colorType::BLUE, _config["Primitives"][i]["color"][2].get<std::size_t>()},
             };
 
-            _primitive.listOfShapes[type] = shape;
+            _primitive.listOfShapes[shape.shapeName] = shape;
         }
         else {
             Raytracer::Plane floor;

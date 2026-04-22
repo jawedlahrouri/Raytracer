@@ -12,8 +12,8 @@
 #include <cmath>
 #include "./utils/Ray.hpp"
 
-namespace RayTracer {
-    class Sphere {
+namespace Raytracer {
+    class Shape {
     public:
         Math::Point3D center;
         double radius;

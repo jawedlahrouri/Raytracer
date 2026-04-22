@@ -59,6 +59,7 @@ namespace Raytracer {
             Raytracer::Camera _camera;
             Raytracer::Primitive _primitive;
             Raytracer::Lights _lights;
+            std::map<std::string, int> typeCounter;
 
         public:
             Parser(std::string filename);
@@ -71,6 +72,7 @@ namespace Raytracer {
             void setInfoCamera(Raytracer::Camera camera);
             void setInfoPrimitive(Raytracer::Primitive primitive);
             void setInfoLights(Raytracer::Lights lights);
+            std::string setName(std::string name);
 
             int parser();
             void parseCamera();
