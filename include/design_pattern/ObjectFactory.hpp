@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <unordered_map>
+#include <map>
 #include <memory>
 #include <functional>
 
@@ -19,13 +20,14 @@
 namespace Raytracer {
     class ObjectFactory {
         private:
-            std::unordered_map<std::string, std::function<std::unique_ptr<Raytracer::IPrimitive>()>> _createPrimitive;
-            std::unordered_map<std::string, std::function<std::unique_ptr<Raytracer::ILight>()>> _createLight;
+            std::unordered_map<std::string, std::function<std::shared_ptr<Raytracer::IPrimitive>()>> _createPrimitive;
+            std::unordered_map<std::string, std::function<std::shared_ptr<Raytracer::ILight>()>> _createLight;
+            std::map<std::string, int> _counts;
 
         public:
             ObjectFactory();
-            std::unique_ptr<Raytracer::IPrimitive> createPrimitive(const std::string &type);
-            std::unique_ptr<Raytracer::ILight> createLight(const std::string &type);
+            std::shared_ptr<Raytracer::IPrimitive> createPrimitive(const std::string &type);
+            std::shared_ptr<Raytracer::ILight> createLight(const std::string &type);
     };
 }
 

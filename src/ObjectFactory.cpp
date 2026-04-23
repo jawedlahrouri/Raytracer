@@ -5,33 +5,44 @@
 ** Object Factory
 */
 #include "ObjectFactory.hpp"
-#include "FactoryException.hpp"
 
 Raytracer::ObjectFactory::ObjectFactory()
 {
     // Primitives Objects
-    // _createPrimitive["sphere"] = []() { return std::make_unique<Raytracer::SphereObject(); };
-    // _createPrimitive["plane"] = []() { return std::make_unique<Raytracer::PlaneObject(); };
+    // _createPrimitive["Sphere"] = []() { return std::make_shared<Raytracer::Sphere(); };
+    // _createPrimitive["Plane"] = []() { return std::make_shared<Raytracer::Plane(); };
 
     // Lights Objects
-    // _createLight["ambient"] = []() { return std::make_unique<Raytracer::AmbientObject(); };
-    // _createLight["directional"] = []() { return std::make_unique<Raytracer::DirectionalObject(); };
+    // _createLight["ambient"] = []() { return std::make_shared<Raytracer::Ambient(); };
+    // _createLight["directional"] = []() { return std::make_shared<Raytracer::Directional(); };
 }
 
-std::unique_ptr<Raytracer::IPrimitive> Raytracer::ObjectFactory::createPrimitive(const std::string &type)
+std::shared_ptr<Raytracer::IPrimitive> Raytracer::ObjectFactory::createPrimitive(const std::string &type)
 {
+    int id = 0;
+
     if (_createPrimitive.find(type) == _createPrimitive.end) {
-        throw Raytracer::FactoryException("Unknow primitive type :" + type);
+        throw ErrorException("Unknow primitive type :" + type);
     }
 
-    return _createPrimitive[type]();
+    id = _counts[type]++;   
+    static std::string primitiveOrderedName = type + "_" + std::to_string(id);
+    auto newPrimitive = _createPrimitive[type]();
+
+    return newPrimitive;
 }
 
-std::unique_ptr<Raytracer::ILight> Raytracer::ObjectFactory::createLight(const std::string &type)
+std::shared_ptr<Raytracer::ILight> Raytracer::ObjectFactory::createLight(const std::string &type)
 {
+    int id = 0;
+
     if (_createLight.find(type) == _createLight.end()) {
-        throw Raytracer::FactoryException("Unknow light type :" + type);
+        throw ErrorException("Unknow light type :" + type);
     }
 
-    return _createLight[type]();
+    id = _counts[type]++;
+    std::string lightOrderedName = type + "_" + std::to_string(id);
+    auto newLight = _createLight[type]();
+
+    return newLight;
 }
