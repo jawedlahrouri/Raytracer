@@ -26,7 +26,7 @@ std::shared_ptr<Raytracer::IPrimitive> Raytracer::ObjectFactory::createPrimitive
     }
 
     id = _counts[type]++;   
-    static std::string primitiveOrderedName = type + "_" + std::to_string(id);
+    std::string primitiveOrderedName = type + "_" + std::to_string(id);
     auto newPrimitive = _createPrimitive[type]();
 
     return newPrimitive;
