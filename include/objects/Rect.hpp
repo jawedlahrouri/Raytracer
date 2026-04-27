@@ -24,7 +24,7 @@ namespace Raytracer {
         // Constructor
         Rect(const Math::Point3D& c, const Math::Vector3D& n, const Math::Vector3D& col = Math::Vector3D(0, 0, 255)) : center(c), normal(n), color(col) {}
 
-        bool hits(const Ray& ray, double t_min, double t_max, HitRecord& rec) const;
+        bool hits(const Ray& ray, HitRecord& rec) const;
     };
 }
 

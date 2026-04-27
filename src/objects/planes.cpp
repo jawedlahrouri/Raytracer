@@ -20,8 +20,10 @@ static void fill_hit_record(HitRecord& rec, double t, const Math::Point3D& hitPo
     rec.color = color;
 }
 
-bool Raytracer::PlaneClass::hits(const Ray& ray, double t_min, double t_max, HitRecord& rec) const {
+bool Raytracer::PlaneClass::hits(const Ray& ray, HitRecord& rec) const {
     try {
+        double t_min = 0.001;
+        double t_max = 1000000.0;
         // t = [(center - ray.origin) . normal] / [ray.direction . normal]
         double denom = ray.direction.dot(normal);
         if (std::abs(denom) < 1e-6)

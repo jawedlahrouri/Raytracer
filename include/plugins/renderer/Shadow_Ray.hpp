@@ -20,7 +20,7 @@ namespace Raytracer {
             ~Shadow_Ray() = default;
     
             // check if the ray hits
-            bool hits(const Raytracer::Ray& ray, double t_min, double t_max, const Raytracer::Sphere& s, const Raytracer::PlaneClass& p) const;
+            bool hits(const Raytracer::Ray& ray, const Raytracer::Sphere& s, const Raytracer::PlaneClass& p) const;
     };
 }
 

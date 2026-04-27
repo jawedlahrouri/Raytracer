@@ -23,8 +23,10 @@ static void fill_hit_record(HitRecord& rec, double t, const Math::Point3D& hitPo
     rec.color = color;
 }
 
-bool Raytracer::Rect::hits(const Ray& ray, double t_min, double t_max, HitRecord& rec) const {
+bool Raytracer::Rect::hits(const Ray& ray, HitRecord& rec) const {
     try {
+        double t_min = 0.001;
+        double t_max = 1000000.0;
         double denominator = ray.direction.dot(normal);
         if (std::abs(denominator) < 1e-6)
             return false;

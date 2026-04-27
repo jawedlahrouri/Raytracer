@@ -24,7 +24,7 @@ namespace Raytracer {
         // Constructor
         PlaneClass(const Math::Point3D& c, const Math::Vector3D& n) : center(c), normal(n) {}
 
-        bool hits(const Ray& ray, double t_min, double t_max, HitRecord& rec) const;
+        bool hits(const Ray& ray, HitRecord& rec) const;
     };
 }
 

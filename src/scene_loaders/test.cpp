@@ -27,7 +27,8 @@ void Raytracer::test::drawSphere()
             double u = static_cast<double>(i) / (_camera.size.first - 1);
             double v = static_cast<double>(j) / (_camera.size.second - 1);
             Raytracer::Ray r = _cam.ray(u, v);
-            if (s.hits(r)) {
+            HitRecord rec;
+            if (s.hits(r, rec)) {
                 std::cout << "#";
             } else {
                 std::cout << ".";
@@ -44,7 +45,8 @@ void Raytracer::test::drawPlane() {
             double u = static_cast<double>(i) / (_camera.size.first - 1);
             double v = static_cast<double>(j) / (_camera.size.second - 1);
             Raytracer::Ray r = _cam.ray(u, v);
-            if (p.hits(r)) {
+            HitRecord rec;
+            if (p.hits(r, rec)) {
                 std::cout << "@"; //@ for the floor
             } else {
                 std::cout << ".";

@@ -22,12 +22,14 @@ static void fill_hit_record(HitRecord& rec, double t, const Math::Point3D& hitPo
 }
 
 namespace Raytracer {
-    bool Sphere::hits(const Ray& ray, double t_min, double t_max, HitRecord& rec) const {
+    bool Sphere::hits(const Ray& ray, HitRecord& rec) const {
         try {
             Math::Vector3D oc = ray.origin - center;
             double a = ray.direction.dot(ray.direction);
             double b = 2.0 * oc.dot(ray.direction);
             double c = oc.dot(oc) - radius * radius;
+            double t_min = 0.001;
+            double t_max = 1000000.0;
             double discriminant = b * b - 4 * a * c;
             
             // if is 0 no intersection, if is 
