@@ -7,7 +7,8 @@
 
 #include "plugins/renderer/Shadow_Ray.hpp"
 
-bool Shadow_Ray::hits(const RayTracer::Ray& ray, double t_min, double t_max, const RayTracer::Sphere& s, const RayTracer::Plane& p) const
+
+bool Raytracer::Shadow_Ray::hits(const Raytracer::Ray& ray, double t_min, double t_max, const Raytracer::Sphere& s, const Raytracer::PlaneClass& p) const
 {
     HitRecord temp_rec;
     // if we touch the first sphere

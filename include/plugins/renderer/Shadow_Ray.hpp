@@ -13,13 +13,15 @@
 #include "objects/Sphere.hpp"
 #include "objects/Plane.hpp"
 
-class Shadow_Ray {
-    public:
-        Shadow_Ray() = default;
-        ~Shadow_Ray() = default;
-
-        // check if the ray hits
-        bool hits(const RayTracer::Ray& ray, double t_min, double t_max, const RayTracer::Sphere& s, const RayTracer::Plane& p) const;
-};
+namespace Raytracer {
+    class Shadow_Ray {
+        public:
+            Shadow_Ray() = default;
+            ~Shadow_Ray() = default;
+    
+            // check if the ray hits
+            bool hits(const Raytracer::Ray& ray, double t_min, double t_max, const Raytracer::Sphere& s, const Raytracer::PlaneClass& p) const;
+    };
+}
 
 #endif /* !SHADOW_RAY_HPP_ */

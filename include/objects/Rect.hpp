@@ -14,7 +14,7 @@
 #include "./utils/HitRecord.hpp"
 #include "math/Vector3D.hpp"
 
-namespace RayTracer {
+namespace Raytracer {
     class Rect {
     public:
         Math::Point3D center;
