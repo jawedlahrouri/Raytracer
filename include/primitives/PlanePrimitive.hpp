@@ -10,12 +10,15 @@
 
 #include "./interface/IPrimitive.hpp"
 
-class PlanePrimitive : public IPrimitive {
-public:
-    PlanePrimitive() = default;
-    ~PlanePrimitive() = default;
+namespace Raytracer {
+    class PlanePrimitive : public IPrimitive {
+        public:
+            PlanePrimitive() = default;
+            ~PlanePrimitive() = default;
 
-    bool intersect(const RayTracer::Ray& ray, float t_min, float t_max, HitRecord& record) const override;
-};
+            bool intersect(const Raytracer::Ray& ray, float t_min, float t_max, HitRecord& record) const override;
+            void drawShape();
+    };
+}
 
 #endif /* !PLANE_PRIMITIVE_HPP_ */

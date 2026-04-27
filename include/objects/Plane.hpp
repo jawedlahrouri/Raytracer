@@ -13,14 +13,14 @@
 #include "./utils/Ray.hpp"
 #include "math/Vector3D.hpp"
 
-namespace RayTracer {
-    class Plane {
+namespace Raytracer {
+    class PlaneClass {
     public:
         Math::Point3D center;
         Math::Vector3D normal;
 
         // Constructor
-        Plane(const Math::Point3D& c, const Math::Vector3D& n) : center(c), normal(n) {}
+        PlaneClass(const Math::Point3D& c, const Math::Vector3D& n) : center(c), normal(n) {}
 
         bool hits(const Ray& ray) const;
     };

@@ -59,8 +59,8 @@ void Raytracer::Parser::parseCamera()
     }
 
     cam.size =  {
-        _config["Camera"]["resolution"][0].get<int>(),
-        _config["Camera"]["resolution"][1].get<int>(),
+        _config["Camera"]["resolution"][0].get<double>(),
+        _config["Camera"]["resolution"][1].get<double>(),
     };
 
     // position parsing
@@ -69,9 +69,9 @@ void Raytracer::Parser::parseCamera()
     }
 
     cam.posCoords = {
-        {Raytracer::coordType::x, _config["Camera"]["position"][0].get<float>()},
-        {Raytracer::coordType::y, _config["Camera"]["position"][1].get<float>()},
-        {Raytracer::coordType::z, _config["Camera"]["position"][2].get<float>()},
+        {Raytracer::coordType::x, _config["Camera"]["position"][0].get<double>()},
+        {Raytracer::coordType::y, _config["Camera"]["position"][1].get<double>()},
+        {Raytracer::coordType::z, _config["Camera"]["position"][2].get<double>()},
     };
 
     // rotation parsing
@@ -80,13 +80,13 @@ void Raytracer::Parser::parseCamera()
     }
 
     cam.rotaCoords = {
-        {Raytracer::coordType::x, _config["Camera"]["rotation"][0].get<float>()},
-        {Raytracer::coordType::y, _config["Camera"]["rotation"][1].get<float>()},
-        {Raytracer::coordType::z, _config["Camera"]["rotation"][2].get<float>()},
+        {Raytracer::coordType::x, _config["Camera"]["rotation"][0].get<double>()},
+        {Raytracer::coordType::y, _config["Camera"]["rotation"][1].get<double>()},
+        {Raytracer::coordType::z, _config["Camera"]["rotation"][2].get<double>()},
     };
 
     // field of view parsing
-    cam.fieldOfView = _config["Camera"]["fieldOfView"].get<float>();
+    cam.fieldOfView = _config["Camera"]["fieldOfView"].get<double>();
     _camera = cam;
 }
 
@@ -102,7 +102,6 @@ std::string Raytracer::Parser::setName(std::string name)
 
 void Raytracer::Parser::parsePrimitive()
 {
-    Raytracer::Primitive prim;
     int id_plane = 0;
     
     // Shape parsing and plane
@@ -151,6 +150,9 @@ void Raytracer::Parser::parsePrimitive()
         }
         else {
             Raytracer::Plane floor;
+            std::string name;
+
+            name = "Plane_" + std::to_string(id_plane);
 
             // get the axis
             std::string axe = _config["Primitives"][i]["axis"].get<std::string>();
@@ -176,7 +178,7 @@ void Raytracer::Parser::parsePrimitive()
                 {Raytracer::colorType::BLUE, _config["Primitives"][i]["color"][2].get<std::size_t>()},
             };
 
-            _primitive.listOfPlane[id_plane] = floor;
+            _primitive.listOfPlane[name] = floor;
             id_plane++;
         }
     }

@@ -20,9 +20,9 @@
 
 namespace Raytracer {
     struct Camera {
-        std::pair<size_t, std::size_t> size;
-        std::map<enum Raytracer::coordType, float> posCoords; // enum values (x, y, z)
-        std::map<enum Raytracer::coordType, float> rotaCoords; //  enum values (x, y, z) (on peut changer zehma c chaud)
+        std::pair<double, double> size;
+        std::map<enum Raytracer::coordType, double> posCoords; // enum values (x, y, z)
+        std::map<enum Raytracer::coordType, double> rotaCoords; //  enum values (x, y, z) (on peut changer zehma c chaud)
         size_t fieldOfView; // in degree
     };
 
@@ -41,7 +41,7 @@ namespace Raytracer {
 
     struct Primitive {
         std::map<std::string, Shape> listOfShapes; // sphere, cube, ect
-        std::map<unsigned int, Plane> listOfPlane; // axis, position
+        std::map<std::string, Plane> listOfPlane; // axis, position
     };
 
     struct Lights {

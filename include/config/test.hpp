@@ -10,6 +10,7 @@
 
 #include "../parsing.hpp"
 #include "../RaytracerType.hpp"
+#include "../plugins/renderer/Camera.hpp"
 
 namespace Raytracer {
     class test {
@@ -18,11 +19,13 @@ namespace Raytracer {
             Raytracer::Camera _camera;
             Raytracer::Lights _lights;
 
+            Raytracer::CameraClass _cam;
+
         public:
-            test (Raytracer::Primitive primitive, Raytracer::Camera camera, Raytracer::Lights lights);
+            test(const Raytracer::Primitive& primitive, const Raytracer::Camera& camera, const Raytracer::Lights& lights);
             ~test();
 
-            void drawShape();
+            void drawSphere();
             void drawPlane();
             void createScene();
     };

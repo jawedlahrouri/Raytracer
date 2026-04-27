@@ -13,7 +13,7 @@
 #include "./utils/Ray.hpp"
 
 namespace Raytracer {
-    class Shape {
+    class Sphere {
     public:
         Math::Point3D center;
         double radius;

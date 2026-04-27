@@ -10,7 +10,7 @@
 #include "exception.hpp"
 #include <iostream>
 
-bool RayTracer::Plane::hits(const Ray& ray) const {
+bool Raytracer::PlaneClass::hits(const Ray& ray) const {
     try {
         // t = [(center - ray.origin) . normal] / [ray.direction . normal]
         double denom = ray.direction.dot(normal);

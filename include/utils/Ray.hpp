@@ -11,14 +11,14 @@
 #include "./math/Vector3D.hpp"
 #include "./math/Point3D.hpp"
 
-namespace RayTracer {
+namespace Raytracer {
     class Ray {
         public:
-        Ray(const Math::Point3D& origin = Math::Point3D(), const Math::Vector3D& direction = Math::Vector3D());
-        ~Ray();
+            Ray(const Math::Point3D& origin = Math::Point3D(), const Math::Vector3D& direction = Math::Vector3D());
+            ~Ray();
         
-        Math::Point3D origin;
-        Math::Vector3D direction;
+            Math::Point3D origin;
+            Math::Vector3D direction;
 
         protected:
         private:
