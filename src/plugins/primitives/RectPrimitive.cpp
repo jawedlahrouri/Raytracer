@@ -19,7 +19,7 @@ extern "C" {
         return 0; // 0 for primitives
     }
 
-    IPrimitive* entryPoint() {
-        return new RectPrimitive();
+    Raytracer::IPrimitive* entryPoint() {
+        return new Raytracer::RectPrimitive();
     }
 }

@@ -11,16 +11,20 @@
 #include "./utils/HitRecord.hpp"
 #include "RaytracerType.hpp"
 
-class IPrimitive  {
-    public:
-        IPrimitive();
-        ~IPrimitive();
+namespace Raytracer {
+    class IPrimitive  {
+        public:
+            IPrimitive();
+            ~IPrimitive();
 
-        // Check if the ray intersects with the primitive and fill the hit record if it does
-        virtual bool intersect(const RayTracer::Ray& ray, float t_min, float t_max, HitRecord& record) const = 0;
+            // Check if the ray intersects with the primitive and fill the hit record if it does
+            virtual bool intersect(const Raytracer::Ray& ray, float t_min, float t_max, HitRecord& record) const = 0;
 
-    protected:
-    private:
-};
+            virtual void drawShape() = 0;
+
+        protected:
+        private:
+    };
+}
 
 #endif /* !IPRIMITIVE_HPP_ */

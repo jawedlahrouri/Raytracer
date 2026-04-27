@@ -17,6 +17,7 @@
 #include "plugins/renderer/Shadow_Ray.hpp"
 #include "math/Point3D.hpp"
 #include "utils/Ray.hpp"
+#include "config/test.hpp"
 #include "utils/HitRecord.hpp"
 #include "plugins/lights/PointLight.hpp"
 #include "plugins/renderer/Shadow_Ray.hpp"
@@ -50,127 +51,6 @@ bool isJson(char *configFile)
     return true;
 }
 
-void temp_draw_sphere() {
-    RayTracer::Camera cam;
-    RayTracer::Sphere s(Math::Point3D(0, 0, -1), 0.5);
-    const int image_width = 50;
-    const int image_height = 25;
-    for (int j = 0; j < image_height; ++j) {
-        for (int i = 0; i < image_width; ++i) {
-            double u = static_cast<double>(i) / (image_width - 1);
-            double v = static_cast<double>(j) / (image_height - 1);
-            RayTracer::Ray r = cam.ray(u, v);
-            HitRecord rec;
-            if (s.hits(r, 0.001, 1000.0, rec)) {
-                std::cout << "#";
-            } else {
-                std::cout << ".";
-            }
-        }
-        std::cout << std::endl;
-    }
-}
-
-void temp_draw_rect() {
-    RayTracer::Camera cam;
-    RayTracer::Rect r(Math::Point3D(0, 0, 3), Math::Vector3D(0, 0, -1));
-    const int image_width = 800;
-    const int image_height = 600;
-    std::vector<std::vector<Math::Vector3D>> pixels(image_height, std::vector<Math::Vector3D>(image_width));
-
-    for (int j = 0; j < image_height; ++j) {
-        for (int i = 0; i < image_width; ++i) {
-            double u = static_cast<double>(i) / (image_width - 1);
-            double v = static_cast<double>(j) / (image_height - 1);
-            RayTracer::Ray ray = cam.ray(u, v);
-            HitRecord rec;
-            if (r.hits(ray, 0.001, 1000.0, rec)) {
-                pixels[j][i] = Math::Vector3D(255, 0, 0); // rouge
-            } else {
-                pixels[j][i] = Math::Vector3D(0, 0, 0); // noir
-            }
-        }
-    }
-    PPMExporter exporter;
-    exporter.write_image(image_width, image_height, pixels);
-}
-
-void temp_draw_plane() {
-    RayTracer::Camera cam;
-    RayTracer::Plane p(Math::Point3D(0, 0, -1), Math::Vector3D(0, 1, 0));
-    const int image_width = 50;
-    const int image_height = 25;
-    for (int j = 0; j < image_height; ++j) {
-        for (int i = 0; i < image_width; ++i) {
-            double u = static_cast<double>(i) / (image_width - 1);
-            double v = static_cast<double>(j) / (image_height - 1);
-            RayTracer::Ray r = cam.ray(u, v);
-            HitRecord rec;
-            if (p.hits(r, 0.001, 1000.0, rec)) {
-                std::cout << "@"; //@ for the floor
-            } else {
-                std::cout << ".";
-            }
-        }
-        std::cout << std::endl;
-    }
-}
-
-void temp_draw_scene() {
-    RayTracer::Camera cam;
-    RayTracer::Sphere s(Math::Point3D(0, 0, -1), 0.5);
-    RayTracer::Plane p(Math::Point3D(0, -0.5, 0), Math::Vector3D(0, 1, 0));
-    // Ajout d'une lumière ponctuelle au-dessus de la sphère
-    PointLight light(Math::Point3D(0, 2, -0.5), Raytracer::RED);
-    Shadow_Ray sr;
-    const int image_width = 800;
-    const int image_height = 600;
-    PointLight Shadow_Ray(Math::Point3D(0, 2, -0.5), Raytracer::RED);
-
-    std::vector<std::vector<Math::Vector3D>> pixels(image_height, std::vector<Math::Vector3D>(image_width));
-    for (int j = 0; j < image_height; ++j) {
-        for (int i = 0; i < image_width; ++i) {
-            double u = static_cast<double>(i) / (image_width - 1);
-            double v = static_cast<double>(j) / (image_height - 1);
-            RayTracer::Ray r = cam.ray(u, v);
-            
-            HitRecord rec;
-            HitRecord temp_rec;
-            bool hit_anything = false;
-            double closest_so_far = 1e9; // infini
-
-            if (s.hits(r, 0.001, closest_so_far, temp_rec)) {
-                hit_anything = true;
-                closest_so_far = temp_rec.t;
-                rec = temp_rec;
-            }
-            if (p.hits(r, 0.001, closest_so_far, temp_rec)) {
-                hit_anything = true;
-                closest_so_far = temp_rec.t;
-                rec = temp_rec;
-            }
-
-            if (hit_anything) {
-                Math::Vector3D dir_to_light = light.getDirectionToLight(rec.point);
-                float dist_to_light = light.getDistanceToLight(rec.point);
-                Math::Point3D shadow_origin(rec.point.X, rec.point.Y, rec.point.Z);
-                RayTracer::Ray shadow_ray(shadow_origin, dir_to_light);
-
-                if (sr.hits(shadow_ray, 0.001, dist_to_light, s, p)) {
-                    pixels[j][i] = Math::Vector3D(0, 0, 0); // Ombre
-                } else {
-                    Math::Vector3D color = light.calculateIllumination(rec.point, rec.normal, rec.color);
-                    pixels[j][i] = color;
-                }
-            } else {
-                pixels[j][i] = Math::Vector3D(0, 0, 0); // noir
-            }
-        }
-    }
-    PPMExporter exporter;
-    exporter.write_image(image_width, image_height, pixels);
-}
-
 int main(int argc, char **argv)
 {
     try {
@@ -179,13 +59,18 @@ int main(int argc, char **argv)
             return 84;
         }
 
-        if (isJson(argv[1]) == true) {
-            Raytracer::Parser parser(argv[1]);
-            parser.parser();
+        if (isJson(argv[1]) == false) {
+            throw ErrorException("Le fichier n'est pas un .json");
         }
 
+        Raytracer::Parser parser(argv[1]);
+        parser.parser();
+
+        Raytracer::test test(parser.getInfoPrimitive(), parser.getInfoCamera(), parser.getInfoLights());
+        test.createScene();
+
         //open_lib_so(std::filesystem::path(argv[1]));
-        temp_draw_scene();
+        // temp_draw_scene();
         return 0;
     } catch (const WarningException& e) {
         std::cerr << "WarningException in main: " << e.what() << std::endl;

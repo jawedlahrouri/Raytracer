@@ -54,33 +54,54 @@ void Raytracer::Parser::parseCamera()
     Raytracer::Camera cam;
 
     // resolution parsing
+    if (_config["Camera"]["resolution"].isNull() || _config["Camera"]["resolution"].size() < 2) {
+            throw ErrorException("Camera resolution est invalide ou incomplet.");
+    }
+
     cam.size =  {
-        _config["Camera"]["resolution"][0].get<int>(),
-        _config["Camera"]["resolution"][1].get<int>(),
+        _config["Camera"]["resolution"][0].get<double>(),
+        _config["Camera"]["resolution"][1].get<double>(),
     };
 
     // position parsing
+    if (_config["Camera"]["position"].isNull() || _config["Camera"]["position"].size() < 3) {
+        throw ErrorException("Camera position est invalide ou incomplet.");
+    }
+
     cam.posCoords = {
-        {Raytracer::coordType::x, _config["Camera"]["position"][0].get<float>()},
-        {Raytracer::coordType::y, _config["Camera"]["position"][1].get<float>()},
-        {Raytracer::coordType::z, _config["Camera"]["position"][2].get<float>()},
+        {Raytracer::coordType::x, _config["Camera"]["position"][0].get<double>()},
+        {Raytracer::coordType::y, _config["Camera"]["position"][1].get<double>()},
+        {Raytracer::coordType::z, _config["Camera"]["position"][2].get<double>()},
     };
 
     // rotation parsing
+    if (_config["Camera"]["rotation"].isNull() || _config["Camera"]["rotation"].size() < 3) {
+            throw ErrorException("Camera rotation est invalide ou incomplet.");
+    }
+
     cam.rotaCoords = {
-        {Raytracer::coordType::x, _config["Camera"]["rotation"][0].get<float>()},
-        {Raytracer::coordType::y, _config["Camera"]["rotation"][1].get<float>()},
-        {Raytracer::coordType::z, _config["Camera"]["rotation"][2].get<float>()},
+        {Raytracer::coordType::x, _config["Camera"]["rotation"][0].get<double>()},
+        {Raytracer::coordType::y, _config["Camera"]["rotation"][1].get<double>()},
+        {Raytracer::coordType::z, _config["Camera"]["rotation"][2].get<double>()},
     };
 
     // field of view parsing
-    cam.fieldOfView = _config["Camera"]["fieldOfView"].get<float>();
+    cam.fieldOfView = _config["Camera"]["fieldOfView"].get<double>();
     _camera = cam;
+}
+
+std::string Raytracer::Parser::setName(std::string name)
+{
+    int currentCount = typeCounter[name]; 
+    std::string newName = name + "_" + std::to_string(currentCount);
+    
+    typeCounter[name]++; 
+    
+    return newName;
 }
 
 void Raytracer::Parser::parsePrimitive()
 {
-    Raytracer::Primitive prim;
     int id_plane = 0;
     
     // Shape parsing and plane
@@ -90,9 +111,13 @@ void Raytracer::Parser::parsePrimitive()
             Raytracer::Shape shape;
 
             // name of the shape
-            shape.shapeName = type;
+            shape.shapeName = setName(type);
             
             // coords of the shape
+            if (_config["Primitives"][i]["coords"].isNull() || _config["Primitives"][i]["coords"].size() < 3) {
+                throw ErrorException("Primitives position est invalide ou incomplet.");
+            }
+        
             shape.coords = {
                 {Raytracer::coordType::x, _config["Primitives"][i]["coords"][0].get<float>()},
                 {Raytracer::coordType::y, _config["Primitives"][i]["coords"][1].get<float>()},
@@ -111,16 +136,23 @@ void Raytracer::Parser::parsePrimitive()
                 shape.specs[Raytracer::specsType::length] = specs_json[3].get<float>();
 
             // color of the shape
+            if (_config["Primitives"][i]["color"].isNull() || _config["Primitives"][i]["color"].size() < 3) {
+                throw ErrorException("Primitives color est invalide ou incomplet.");
+            }
+            
             shape.color = {
                 {Raytracer::colorType::RED, _config["Primitives"][i]["color"][0].get<std::size_t>()},
                 {Raytracer::colorType::GREEN, _config["Primitives"][i]["color"][1].get<std::size_t>()},
                 {Raytracer::colorType::BLUE, _config["Primitives"][i]["color"][2].get<std::size_t>()},
             };
 
-            _primitive.listOfShapes[type] = shape;
+            _primitive.listOfShapes[shape.shapeName] = shape;
         }
         else {
             Raytracer::Plane floor;
+            std::string name;
+
+            name = "Plane_" + std::to_string(id_plane);
 
             // get the axis
             std::string axe = _config["Primitives"][i]["axis"].get<std::string>();
@@ -136,13 +168,17 @@ void Raytracer::Parser::parsePrimitive()
             floor.positions = pos;
 
             // get the color
+            if (_config["Primitives"][i]["color"].isNull() || _config["Primitives"][i]["color"].size() < 3) {
+                throw ErrorException("Primitives color est invalide ou incomplet.");
+            }
+        
             floor.color = {
                 {Raytracer::colorType::RED, _config["Primitives"][i]["color"][0].get<std::size_t>()},
                 {Raytracer::colorType::GREEN, _config["Primitives"][i]["color"][1].get<std::size_t>()},
                 {Raytracer::colorType::BLUE, _config["Primitives"][i]["color"][2].get<std::size_t>()},
             };
 
-            _primitive.listOfPlane[id_plane] = floor;
+            _primitive.listOfPlane[name] = floor;
             id_plane++;
         }
     }
@@ -156,14 +192,24 @@ void Raytracer::Parser::parseLight()
         {Raytracer::lightsType::diffuse, _config["Lights"]["diffuse"].get<float>()},
     };
 
+    if (_config["Lights"]["point"].isNull() || _config["Lights"]["point"].size() < 1)
+        throw ErrorException("Light point est invalide ou incomplet.");
+
     unsigned int id_point = 0;
-    for (std::size_t i = 0; i <= _config["Lights"]["point"].size(); i++) {
+    for (std::size_t i = 0; i < _config["Lights"]["point"].size(); i++) {
+        if (_config["Lights"]["point"][i].isNull() || _config["Lights"]["point"][i].size() < 3)
+            throw ErrorException("Light point est invalide ou incomplet.");
         Math::Point3D point = {_config["Lights"]["point"][i][0].get<double>(), _config["Lights"]["point"][i][1].get<double>(), _config["Lights"]["point"][i][2].get<double>()};
         light.listPoints[id_point] = point;
         id_point++;
     }
+
+    if (_config["Lights"]["directional"].isNull() || _config["Lights"]["directional"].size() < 1)
+        throw ErrorException("Light directional est invalide ou incomplet.");
     unsigned int id_vector = 0;
-    for (std::size_t j = 0; j <= _config["Lights"]["directional"].size(); j++) {
+    for (std::size_t j = 0; j < _config["Lights"]["directional"].size(); j++) {
+        if (_config["Lights"]["directional"][j].isNull() || _config["Lights"]["directional"][j].size() < 3)
+            throw ErrorException("Light directional est invalide ou incomplet.");
         Math::Vector3D vector = {_config["Lights"]["directional"][j][0].get<double>(), _config["Lights"]["directional"][j][1].get<double>(), _config["Lights"]["directional"][j][2].get<double>()};
         light.listDirectional[id_vector] = vector;
         id_vector++;

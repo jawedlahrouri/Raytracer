@@ -13,7 +13,7 @@
 #include "./utils/Ray.hpp"
 #include "./utils/HitRecord.hpp"
 
-namespace RayTracer {
+namespace Raytracer {
     class Sphere {
     public:
         Math::Point3D center;

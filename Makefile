@@ -8,9 +8,10 @@
 SRC  =   $(wildcard src/*.cpp) \
         $(wildcard src/objects/*.cpp) \
         $(wildcard src/plugins/renderer/*.cpp) \
+        $(wildcard src/utils/*.cpp) \
+		    $(wildcard src/scene_loaders/*.cpp)
         $(wildcard src/plugins/lights/*.cpp) \
         $(wildcard src/plugins/interface/*.cpp) \
-        $(wildcard src/utils/*.cpp)
 
 
 PRIMITIVE_SRC   =   $(wildcard src/plugins/primitives/*.cpp)

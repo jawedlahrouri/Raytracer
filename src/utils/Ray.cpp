@@ -10,7 +10,7 @@
 #include "math/Point3D.hpp"
 #include <iostream>
 
-namespace RayTracer {
+namespace Raytracer {
     Ray::Ray(const Math::Point3D& origin, const Math::Vector3D& direction) : origin(origin), direction(direction) {
         try {
             // Construction normale

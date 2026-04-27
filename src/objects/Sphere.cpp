@@ -21,7 +21,7 @@ static void fill_hit_record(HitRecord& rec, double t, const Math::Point3D& hitPo
     rec.color = color;
 }
 
-namespace RayTracer {
+namespace Raytracer {
     bool Sphere::hits(const Ray& ray, double t_min, double t_max, HitRecord& rec) const {
         try {
             Math::Vector3D oc = ray.origin - center;
