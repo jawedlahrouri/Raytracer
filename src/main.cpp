@@ -12,10 +12,15 @@
 #include "plugins/renderer/Camera.hpp"
 #include "objects/Sphere.hpp"
 #include "objects/Plane.hpp"
+#include "objects/Rect.hpp"
 #include "plugins/renderer/ppm_export.hpp"
+#include "plugins/renderer/Shadow_Ray.hpp"
 #include "math/Point3D.hpp"
 #include "utils/Ray.hpp"
 #include "config/test.hpp"
+#include "utils/HitRecord.hpp"
+#include "plugins/lights/PointLight.hpp"
+#include "plugins/renderer/Shadow_Ray.hpp"
 
 void print_help()
 {

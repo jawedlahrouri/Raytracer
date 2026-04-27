@@ -12,17 +12,19 @@
 #include <cmath>
 #include "./utils/Ray.hpp"
 #include "math/Vector3D.hpp"
+#include "./utils/HitRecord.hpp"
 
 namespace Raytracer {
     class PlaneClass {
     public:
         Math::Point3D center;
         Math::Vector3D normal;
+        Math::Vector3D color;
 
         // Constructor
         PlaneClass(const Math::Point3D& c, const Math::Vector3D& n) : center(c), normal(n) {}
 
-        bool hits(const Ray& ray) const;
+        bool hits(const Ray& ray, double t_min, double t_max, HitRecord& rec) const;
     };
 }
 

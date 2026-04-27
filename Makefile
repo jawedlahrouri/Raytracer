@@ -9,18 +9,19 @@ SRC  =   $(wildcard src/*.cpp) \
         $(wildcard src/objects/*.cpp) \
         $(wildcard src/plugins/renderer/*.cpp) \
         $(wildcard src/utils/*.cpp) \
-		$(wildcard src/scene_loaders/*.cpp)
+		    $(wildcard src/scene_loaders/*.cpp)
+        $(wildcard src/plugins/lights/*.cpp) \
+        $(wildcard src/plugins/interface/*.cpp) \
 
 
 PRIMITIVE_SRC   =   $(wildcard src/plugins/primitives/*.cpp)
-# LIGHT_SRC   =   $(wildcard src/plugins/lights/*.cpp)
+LIGHT_SRC   =   $(wildcard src/plugins/lights/*.cpp)
 # MATERIAL_SRC    =   $(wildcard src/plugins/materials/*.cpp)
 
 
 PLUGIN_DIR = plugins
-# Générer un .so par primitive automatiquement
 PRIMITIVE_SO = $(patsubst src/plugins/primitives/%.cpp,$(PLUGIN_DIR)/lib%.so,$(PRIMITIVE_SRC))
-# LIGHT_SO = $(PLUGIN_DIR)/liblight.so
+LIGHT_SO = $(PLUGIN_DIR)/liblight.so
 # MATERIAL_SO = $(PLUGIN_DIR)/libmaterial.so
 
 SRC_TESTS   =   $(wildcard tests/*.cpp)
