@@ -10,7 +10,8 @@
 #include "./math/Vector3D.hpp"
 #include "./RaytracerType.hpp"
 
-class ILight {
+namespace Raytracer {
+    class ILight {
     public:
         ILight();
         ~ILight();
@@ -30,5 +31,7 @@ class ILight {
     protected:
     private:
 };
+
+}
 
 #endif /* !ILIGHT_HPP_ */
