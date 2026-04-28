@@ -11,6 +11,8 @@
 #include "./utils/HitRecord.hpp"
 #include "RaytracerType.hpp"
 
+#include <iostream>
+
 namespace Raytracer {
     class IPrimitive  {
         public:
@@ -21,6 +23,8 @@ namespace Raytracer {
             virtual bool intersect(const Raytracer::Ray& ray, float t_min, float t_max, HitRecord& record) const = 0;
 
             virtual void drawShape() = 0;
+
+            virtual void setName(std::string name);
 
         protected:
         private:
