@@ -2,8 +2,8 @@
 #include "exception.hpp"
 #include <iostream>
 
-namespace RayTracer {
-    Camera::~Camera() {
+namespace Raytracer {
+    Raytracer::CameraClass::~CameraClass() {
         try {
             // Destruction normale
         } catch (const WarningException& e) {

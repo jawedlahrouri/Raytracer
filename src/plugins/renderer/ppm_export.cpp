@@ -10,7 +10,7 @@
 #include "exception.hpp"
 #include <iostream>
 
-void PPMExporter::write_color(unsigned int r, unsigned int g, unsigned int b)
+void Raytracer::PPMExporter::write_color(unsigned int r, unsigned int g, unsigned int b)
 {
     unsigned int color[3];
     color[Raytracer::RED] = r;
@@ -25,18 +25,18 @@ void PPMExporter::write_color(unsigned int r, unsigned int g, unsigned int b)
     Math::Vector3D colorVec(color[Raytracer::RED], color[Raytracer::GREEN], color[Raytracer::BLUE]);
 }
 
-void PPMExporter::write_header(int width, int height)
+void Raytracer::PPMExporter::write_header(int width, int height)
 {
     std::cout << "P3\n" << width << " " << height << "\n255\n";
 }
 
-void PPMExporter::write_pixel(int r, int g, int b)
+void Raytracer::PPMExporter::write_pixel(int r, int g, int b)
 {
     write_color(r, g, b);
     std::cout << r << " " << g << " " << b << "\n";
 }
 
-void PPMExporter::write_image(int width, int height, const std::vector<std::vector<Math::Vector3D>>& pixels)
+void Raytracer::PPMExporter::write_image(int width, int height, const std::vector<std::vector<Math::Vector3D>>& pixels)
 {
     write_header(width, height);
     for (int j = 0; j < height; ++j) {

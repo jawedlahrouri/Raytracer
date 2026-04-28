@@ -12,30 +12,31 @@
 #include "math/Rectangle3D.hpp"
 #include "./utils/Ray.hpp"
 
-namespace RayTracer {
-    class Camera {
+namespace Raytracer {
+    class CameraClass {
         public:
-        Camera() : origin (0, 0, 0) {
-            Math::Point3D screen_origin(-1.0, -1.0, 1.0);
-            Math::Vector3D screen_bottom(2.0, 0.0, 0.0);
-            Math::Vector3D screen_left(0.0, 2.0, 0.0);
-            
-            screen = Math::Rectangle3D(screen_origin, screen_bottom, screen_left);
-        }
+            Math::Point3D origin;
+            Math::Rectangle3D screen;
 
-        ~Camera();
+            CameraClass(double width, double height) {
+                origin = Math::Point3D(0, 0, 0);
+                double scale = width / height;
+                double size_scaled = scale * 2.0;
 
-        Math::Point3D origin;
-        Math::Rectangle3D screen;
+                Math::Point3D screen_origin(origin.X - (size_scaled / 2.0), origin.Y - (2.0 / 2.0), -1.0); 
+                Math::Vector3D screen_bottom(size_scaled, 0.0, 0.0);
+                Math::Vector3D screen_left(0.0, 2.0, 0.0);
+                
+                screen = Math::Rectangle3D(screen_origin, screen_bottom, screen_left);
+            }
 
-        double u;
-        double v;
+            ~CameraClass();
 
-        RayTracer::Ray ray(double u, double v) const {
-            Math::Point3D point_on_screen = screen.pointAt(u, v);
-            Math::Vector3D direction = point_on_screen - origin;
-            return RayTracer::Ray(origin, direction);
-        }
+            Raytracer::Ray ray(double u, double v) const {
+                Math::Point3D point_on_screen = screen.pointAt(u, v);
+                Math::Vector3D direction = point_on_screen - origin;
+                return Raytracer::Ray(origin, direction);
+            }
     };
 }
 

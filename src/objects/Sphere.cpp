@@ -10,36 +10,45 @@
 #include "math/Point3D.hpp"
 #include "math/Vector3D.hpp"
 #include "./utils/Ray.hpp"
+#include "./utils/HitRecord.hpp"
 #include "exception.hpp"
 #include <iostream>
 
-namespace RayTracer {
-    // Formula:
-    // (D·D)t^2 + 2D·(O-C)t + (O-C)·(O-C) - R^2 = 0
-    bool Sphere::hits(const Ray& ray) const {
+static void fill_hit_record(HitRecord& rec, double t, const Math::Point3D& hitPoint, const Math::Point3D& center, double radius, const Math::Vector3D& color) {
+    rec.t = t;
+    rec.point = Math::Vector3D(hitPoint.X, hitPoint.Y, hitPoint.Z);
+    rec.normal = (hitPoint - center) / radius;
+    rec.color = color;
+}
+
+namespace Raytracer {
+    bool Sphere::hits(const Ray& ray, HitRecord& rec) const {
         try {
-            Math::Vector3D oc = ray.origin - center; // Point3D - Point3D = Vector3D
+            Math::Vector3D oc = ray.origin - center;
             double a = ray.direction.dot(ray.direction);
             double b = 2.0 * oc.dot(ray.direction);
             double c = oc.dot(oc) - radius * radius;
+            double t_min = 0.001;
+            double t_max = 1000000.0;
             double discriminant = b * b - 4 * a * c;
-            return discriminant >= 0;
-        } catch (const WarningException& e) {
-            std::cerr << "WarningException in Sphere::hits: " << e.what() << std::endl;
-            return false;
-        } catch (const ErrorException& e) {
-            std::cerr << "ErrorException in Sphere::hits: " << e.what() << std::endl;
-            return false;
-        } catch (const CrashException& e) {
-            std::cerr << "CrashException in Sphere::hits: " << e.what() << std::endl;
-            return false;
+            
+            // if is 0 no intersection, if is 
+            if (discriminant < 0)
+                return false;
+            double sqrtd = std::sqrt(discriminant);
+            
+            // find the nearest root that lies in the acceptable range
+            double root = (-b - sqrtd) / (2.0 * a);
+            if (root <= t_min || t_max <= root) {
+                root = (-b + sqrtd) / (2.0 * a);
+                if (root <= t_min || t_max <= root)
+                    return false;
+            }
+            Math::Point3D temp_point = ray.origin + ray.direction * root;
+            fill_hit_record(rec, root, temp_point, center, radius, color);
+            return true;
         } catch (const Exception& e) {
-            std::cerr << "Exception in Sphere::hits: " << e.what() << std::endl;
-            return false;
-        } catch (...) {
-            std::cerr << "Unknown exception in Sphere::hits" << std::endl;
             return false;
         }
     }
-
 }

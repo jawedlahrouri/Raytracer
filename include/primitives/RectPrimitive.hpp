@@ -10,12 +10,15 @@
 
 #include "./interface/IPrimitive.hpp"
 
-class RectPrimitive : public IPrimitive {
-public:
-    RectPrimitive() = default;
-    ~RectPrimitive()  = default;
-
-    bool intersect(const RayTracer::Ray& ray, float t_min, float t_max, HitRecord& record) const override;
-};
+namespace Raytracer {
+    class RectPrimitive : public IPrimitive {
+    public:
+        RectPrimitive() = default;
+        ~RectPrimitive()  = default;
+    
+        bool intersect(const Raytracer::Ray& ray, float t_min, float t_max, HitRecord& record) const override;
+        void drawShape();
+    };
+}
 
 #endif /* !RECT_PRIMITIVE_HPP_ */
