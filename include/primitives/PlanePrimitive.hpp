@@ -9,14 +9,21 @@
 #define PLANE_PRIMITIVE_HPP_
 
 #include "./interface/IPrimitive.hpp"
+#include "./exception.hpp"
+#include "./parsing.hpp"
+#include "./math.h"
 
 namespace Raytracer {
     class PlanePrimitive : public IPrimitive {
         public:
-            PlanePrimitive() = default;
+            Math::Point3D center;
+            Math::Vector3D normal;
+            Math::Vector3D color;
+
+            PlanePrimitive(const Raytracer::Plane& data) : center(Math::Point3D(0, 0, data.positions)), normal(Math::Vector3D()) {}
             ~PlanePrimitive() = default;
 
-            bool intersect(const Raytracer::Ray& ray, float t_min, float t_max, HitRecord& record) const override;
+            bool intersect(const Raytracer::Ray& ray, HitRecord& record) const override;
             void drawShape();
     };
 }
