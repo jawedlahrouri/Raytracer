@@ -10,6 +10,7 @@
 #include "plugins/renderer/ppm_export.hpp"
 #include "primitives/SpherePrimitive.hpp"
 #include "primitives/PlanePrimitive.hpp"
+#include <memory>
 
 Raytracer::test::test(const Raytracer::Primitive& primitive, const Raytracer::Camera& camera, const Raytracer::Lights& lights) : _primitive(primitive), _camera(camera), _lights(lights), _cam(camera.size.first, camera.size.second), _pixels(camera.size.second, std::vector<Math::Vector3D>(camera.size.first))
 {
@@ -22,16 +23,15 @@ Raytracer::test::~test()
 void Raytracer::test::createScene()
 {
     //futurement ce qui vas etre appeller par la factory a chaque sphere rencontrer i guess
-    std::vector<Raytracer::SpherePrimitive> physical_sphere;
+    std::vector<std::unique_ptr<Raytracer::IPrimitive>> shapes;
     for (const auto& [name, shapeData] : _primitive.listOfShapes) {
         if (shapeData.shapeName.rfind("Sphere", 0) == 0) {
-            physical_sphere.push_back(Raytracer::SpherePrimitive(shapeData)); // ici il faudras appeler l'entry point via la factory
+            shapes.push_back(std::make_unique<Raytracer::SpherePrimitive>(shapeData)); // ici il faudras appeler l'entry point via la factory
         }
     }
 
-    std::vector<Raytracer::PlanePrimitive> physical_plane;
     for (const auto& [name, planeData] : _primitive.listOfPlane) {
-        physical_plane.push_back(Raytracer::PlanePrimitive(planeData)); 
+        shapes.push_back(std::make_unique<Raytracer::PlanePrimitive>(planeData)); 
     }
 
     for (int j = 0; j < _camera.size.second; j++) {
@@ -45,27 +45,16 @@ void Raytracer::test::createScene()
             HitRecord rec;
             bool hit = false;
             double closest_so_far = std::numeric_limits<double>::max();
-            for (auto& sphere : physical_sphere) {
+            for (std::size_t i = 0; i <= shapes.size(); i++) {
                 HitRecord temp_rec;
-                if (sphere.intersect(r, temp_rec) && temp_rec.t < closest_so_far) {
+                if (shapes.at(i)->intersect(r, temp_rec) && temp_rec.t < closest_so_far) {
                     hit = true;
                     closest_so_far = temp_rec.t;
                     rec = temp_rec;
-                    pixel_color = Math::Vector3D(255, 0, 0);
+                    // pixel_color = ; a coder mais jsp comment
                 }
+            
             }
-
-            for (auto& plane : physical_plane) {
-                HitRecord temp_rec;
-                
-                if (plane.intersect(r, temp_rec) && temp_rec.t < closest_so_far) {
-                    hit = true;
-                    closest_so_far = temp_rec.t;
-                    rec = temp_rec;
-                    pixel_color = Math::Vector3D(0, 255, 0);
-                }
-            }
-
             _pixels[j][i] = pixel_color;
         }
     }
