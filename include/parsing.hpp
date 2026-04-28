@@ -28,13 +28,13 @@ namespace Raytracer {
 
     struct Shape {
         std::string shapeName;
-        std::map<enum Raytracer::coordType, float> coords; // enum values (x, y, z)
-        std::map<enum Raytracer::specsType, float> specs; // specifications for shape
+        std::map<enum Raytracer::coordType, double> coords; // enum values (x, y, z)
+        std::map<enum Raytracer::specsType, double> specs; // specifications for shape
         std::map<enum Raytracer::colorType, std::size_t> color; // RED, GREEN, BLUE
     };
 
     struct Plane {
-        enum Raytracer::planesType axis; // axis X, Y or Z
+        std::map<enum Raytracer::planesType, double> axis; // axis X, Y or Z
         float positions;
         std::map<enum Raytracer::colorType, std::size_t> color; // RED, GREEN, BLUE
     };

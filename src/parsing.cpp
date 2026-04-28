@@ -155,16 +155,13 @@ void Raytracer::Parser::parsePrimitive()
             name = "Plane_" + std::to_string(id_plane);
 
             // get the axis
-            std::string axe = _config["Primitives"][i]["axis"].get<std::string>();
-            if (axe == "X")
-                floor.axis = Raytracer::planesType::X;
-            else if (axe == "Y")
-                floor.axis = Raytracer::planesType::Y;
-            else
-                floor.axis = Raytracer::planesType::Z;
-            
+            floor.axis = {
+                {Raytracer::planesType::X, _config["Primitives"][i]["axis"][0].get<double>()},
+                {Raytracer::planesType::Y, _config["Primitives"][i]["axis"][1].get<double>()},
+                {Raytracer::planesType::Z, _config["Primitives"][i]["axis"][2].get<double>()}
+            };
             // get the position
-            float pos = _config["Primitives"][i]["position"].get<float>();
+            double pos = _config["Primitives"][i]["position"].get<double>();
             floor.positions = pos;
 
             // get the color
