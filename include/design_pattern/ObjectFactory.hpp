@@ -25,8 +25,8 @@ namespace Raytracer {
 
         public:
             ObjectFactory();
-            std::shared_ptr<Raytracer::IPrimitive> createPrimitive(const std::string &type);
-            std::shared_ptr<Raytracer::ILight> createLight(const std::string &type);
+            std::shared_ptr<Raytracer::IPrimitive> createPrimitive(const std::string &type, const std::string name);
+            std::shared_ptr<Raytracer::ILight> createLight(const std::string &type, const std::string name);
     };
 }
 
