@@ -15,24 +15,22 @@
 namespace Raytracer {
     class CameraClass {
         public:
+            Math::Point3D origin;
+            Math::Rectangle3D screen;
+
             CameraClass(double width, double height) {
-                double scale = height / width;
+                origin = Math::Point3D(0, 0, 0);
+                double scale = width / height;
                 double size_scaled = scale * 2.0;
-                Math::Point3D screen_origin(-1.0, 1.0, size_scaled / 2); // - 1 pour aller derriere, 1 pour correspondre a la moitier du bas (2) et size_scaled / 2 pour correspondre a la moitié du left qui correspondras toujours a size scaled
-                Math::Vector3D screen_bottom(0.0, 2.0, 0.0);
-                Math::Vector3D screen_left(0.0, 0.0, size_scaled);
+
+                Math::Point3D screen_origin(origin.X - (size_scaled / 2.0), origin.Y - (2.0 / 2.0), -1.0); 
+                Math::Vector3D screen_bottom(size_scaled, 0.0, 0.0);
+                Math::Vector3D screen_left(0.0, 2.0, 0.0);
                 
                 screen = Math::Rectangle3D(screen_origin, screen_bottom, screen_left);
             }
 
             ~CameraClass();
-
-            Math::Point3D origin;
-            Math::Rectangle3D screen;
-            
-
-            double u;
-            double v;
 
             Raytracer::Ray ray(double u, double v) const {
                 Math::Point3D point_on_screen = screen.pointAt(u, v);
