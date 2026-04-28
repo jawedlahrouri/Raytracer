@@ -14,15 +14,14 @@
 #include <memory>
 #include <functional>
 
-#include "IPrimitive.hpp"
-#include "ILight.hpp"
+#include "../include/interface/IPrimitive.hpp"
+#include "../include/interface/ILight.hpp"
 
 namespace Raytracer {
     class ObjectFactory {
         private:
             std::unordered_map<std::string, std::function<std::shared_ptr<Raytracer::IPrimitive>()>> _createPrimitive;
             std::unordered_map<std::string, std::function<std::shared_ptr<Raytracer::ILight>()>> _createLight;
-            std::map<std::string, int> _counts;
 
         public:
             ObjectFactory();
