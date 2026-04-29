@@ -45,7 +45,8 @@
          * @param symbol Name of the exported factory symbol.
          * @return Pointer to the created instance.
          */
-        T* getInstance(const std::string &symbol) {
+        template <typename... Args>
+        T* getInstance(const std::string &symbol, Args&&... args) {
             ::dlerror();
             void* raw_sym = ::dlsym(_handle, symbol.c_str());
             const char* dlsym_error = ::dlerror();
@@ -53,9 +54,9 @@
             if (dlsym_error) {
                 throw Exception(dlsym_error);
             }
-            typedef T* (*CreatorFunc)();
+            typedef T* (*CreatorFunc)(Args...);
             CreatorFunc creator = reinterpret_cast<CreatorFunc>(raw_sym);
-            T* instance = creator();
+            T* instance = creator(std::forward<Args>(args)...);
             return instance;
         }
 

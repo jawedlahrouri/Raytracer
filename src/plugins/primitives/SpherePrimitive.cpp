@@ -5,7 +5,7 @@
 ** sphere
 */
 
-#include "./primitives/SpherePrimitive.hpp"
+#include "primitives/SpherePrimitive.hpp"
 
 static void fill_hit_record(HitRecord& rec, double t, const Math::Point3D& hitPoint, const Math::Point3D& center, double radius, const Math::Vector3D& color) {
     rec.t = t;
@@ -52,6 +52,10 @@ void Raytracer::SpherePrimitive::setName(const std::string &name)
 void Raytracer::SpherePrimitive::setPosition(const Math::Point3D& position)
 {
     center = position;    
+}
+
+void Raytracer::SpherePrimitive::drawShape()
+{
 }
 
 extern "C" {
