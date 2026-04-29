@@ -11,6 +11,8 @@
 #include "./utils/HitRecord.hpp"
 #include "RaytracerType.hpp"
 
+#include <string>
+
 namespace Raytracer {
     class IPrimitive  {
         public:
