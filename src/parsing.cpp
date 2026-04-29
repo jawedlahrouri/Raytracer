@@ -69,9 +69,9 @@ void Raytracer::Parser::parseCamera()
     }
 
     cam.posCoords = {
-        {Raytracer::coordType::x, _config["Camera"]["position"][0].get<double>()},
-        {Raytracer::coordType::y, _config["Camera"]["position"][1].get<double>()},
-        {Raytracer::coordType::z, _config["Camera"]["position"][2].get<double>()},
+        {_config["Camera"]["position"][0].get<double>()},
+        {_config["Camera"]["position"][1].get<double>()},
+        {_config["Camera"]["position"][2].get<double>()},
     };
 
     // rotation parsing

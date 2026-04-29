@@ -10,6 +10,8 @@
 #include "math/Point3D.hpp"
 #include "math/Vector3D.hpp"
 #include "math/Rectangle3D.hpp"
+#include <map>
+#include "RaytracerType.hpp"
 #include "./utils/Ray.hpp"
 
 namespace Raytracer {
@@ -18,11 +20,12 @@ namespace Raytracer {
             Math::Point3D origin;
             Math::Rectangle3D screen;
 
-            CameraClass(double width, double height, double FieldOfView) {
-                origin = Math::Point3D(0, 0, 0);
+            CameraClass(double width, double height, double FieldOfView, Math::Point3D poscoords) {
+                origin = poscoords;
                 double scale = width / height;
                 double size_scaled = scale * 2.0;
-                double projection_point = (FieldOfView/90) - 2;
+                double projection_distance = (FieldOfView/90) - 2;
+                double projection_point = origin.Z - projection_distance;
 
                 Math::Point3D screen_origin(origin.X - (size_scaled / 2.0), origin.Y - (2.0 / 2.0), projection_point); 
                 Math::Vector3D screen_bottom(size_scaled, 0.0, 0.0);
