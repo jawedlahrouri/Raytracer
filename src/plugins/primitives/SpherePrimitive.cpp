@@ -44,6 +44,16 @@ bool Raytracer::SpherePrimitive::intersect(const Ray& ray, HitRecord& rec) const
     }
 }
 
+void Raytracer::SpherePrimitive::setName(const std::string &name)
+{
+    _name = name;
+}
+
+void Raytracer::SpherePrimitive::setPosition(const Math::Point3D& position)
+{
+    center = position;    
+}
+
 void Raytracer::SpherePrimitive::drawShape()
 {
 }

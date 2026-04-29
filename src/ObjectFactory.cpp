@@ -10,42 +10,32 @@
 Raytracer::ObjectFactory::ObjectFactory()
 {
     // Primitives Objects
-    // _createPrimitive["Sphere"] = []() { return std::make_shared<Raytracer::Sphere(); };
-    // _createPrimitive["Plane"] = []() { return std::make_shared<Raytracer::Plane(); };
+    // _createPrimitive["Sphere"] = []() { return std::make_shared<Raytracer::SpherePrimitive(); };
+    // _createPrimitive["Plane"] = []() { return std::make_shared<Raytracer::PlanePrimitive(); };
 
     // Lights Objects
     // _createLight["ambient"] = []() { return std::make_shared<Raytracer::Ambient(); };
     // _createLight["directional"] = []() { return std::make_shared<Raytracer::Directional(); };
 }
 
-std::shared_ptr<Raytracer::IPrimitive> Raytracer::ObjectFactory::createPrimitive(const std::string &type)
+std::shared_ptr<Raytracer::IPrimitive> Raytracer::ObjectFactory::createPrimitive(const std::string &type, const std::string name)
 {
-    int id = 0;
-
     if (_createPrimitive.find(type) == _createPrimitive.end()) {
         throw ErrorException("Unknow primitive type :" + type);
     }
-
-    id = _counts[type]++;   
-    std::string primitiveOrderedName = type + "_" + std::to_string(id);
     auto newPrimitive = _createPrimitive[type]();
-    // newPrimitive->setName(primitiveOrderedName);
+    newPrimitive->setName(name);
 
     return newPrimitive;
 }
 
-std::shared_ptr<Raytracer::ILight> Raytracer::ObjectFactory::createLight(const std::string &type)
+std::shared_ptr<Raytracer::ILight> Raytracer::ObjectFactory::createLight(const std::string &type, const std::string name)
 {
-    int id = 0;
-
     if (_createLight.find(type) == _createLight.end()) {
         throw ErrorException("Unknow light type :" + type);
     }
-
-    id = _counts[type]++;
-    std::string lightOrderedName = type + "_" + std::to_string(id);
     auto newLight = _createLight[type]();
-    // newLight->setName(lightOrderedName);
+    newLight->setName(name);
 
     return newLight;
 }

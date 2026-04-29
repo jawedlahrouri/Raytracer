@@ -23,12 +23,11 @@ namespace Raytracer {
         private:
             std::unordered_map<std::string, std::function<std::shared_ptr<Raytracer::IPrimitive>()>> _createPrimitive;
             std::unordered_map<std::string, std::function<std::shared_ptr<Raytracer::ILight>()>> _createLight;
-            std::map<std::string, int> _counts;
 
         public:
             ObjectFactory();
-            std::shared_ptr<Raytracer::IPrimitive> createPrimitive(const std::string &type);
-            std::shared_ptr<Raytracer::ILight> createLight(const std::string &type);
+            std::shared_ptr<Raytracer::IPrimitive> createPrimitive(const std::string &type, const std::string name);
+            std::shared_ptr<Raytracer::ILight> createLight(const std::string &type, const std::string name);
     };
 }
 
