@@ -10,6 +10,7 @@
 #include "utils/Ray.hpp"
 #include "objects/Plane.hpp"
 #include "plugins/renderer/ppm_export.hpp"
+#include "design_pattern/ObjectFactory.hpp"
 
 Raytracer::test::test(const Raytracer::Primitive& primitive, const Raytracer::Camera& camera, const Raytracer::Lights& lights) : _primitive(primitive), _camera(camera), _lights(lights), _cam(camera.size.first, camera.size.second), _pixels(camera.size.second, std::vector<Math::Vector3D>(camera.size.first))
 {
@@ -21,21 +22,40 @@ Raytracer::test::~test()
 
 void Raytracer::test::createScene()
 {
-    //futurement ce qui vas etre appeller par la factory a chaque sphere rencontrer i guess
-    std::vector<Raytracer::Sphere> physical_sphere;
+    std::vector<std::shared_ptr<Raytracer::IPrimitive>> physical_primitives;
+    Raytracer::ObjectFactory factory; 
+
     for (const auto& [name, shapeData] : _primitive.listOfShapes) {
-        if (shapeData.shapeName.rfind("Sphere", 0) == 0) {
-            Math::Point3D center(shapeData.coords.at(Raytracer::coordType::x), shapeData.coords.at(Raytracer::coordType::y), shapeData.coords.at(Raytracer::coordType::z));
-            double radius = shapeData.specs.at(Raytracer::specsType::r);
-            physical_sphere.push_back(Raytracer::Sphere(center, radius));
+        try {
+            auto newPrimitive = factory.createPrimitive("Sphere", name);
+
+            newPrimitive->setPosition(
+                shapeData.coords.at(Raytracer::coordType::x),
+                shapeData.coords.at(Raytracer::coordType::y),
+                shapeData.coords.at(Raytracer::coordType::z)
+            );
+
+            physical_primitives.push_back(newPrimitive);
+        } catch (const ErrorException &e) {
+            std::cerr << "Factory Error: " << e.what() << std::endl;
         }
     }
 
-    std::vector<Raytracer::PlaneClass> physical_plane;
     for (const auto& [name, planeData] : _primitive.listOfPlane) {
-        Math::Vector3D normal(planeData.axis.at(Raytracer::planesType::X), planeData.axis.at(Raytracer::planesType::Y), planeData.axis.at(Raytracer::planesType::Z));
-        Math::Point3D center(0, 0, planeData.positions);
-        physical_plane.push_back(Raytracer::PlaneClass(center, normal));
+        try {
+            auto newPlane = factory.createPrimitive("Plane", name);
+
+            newPlane->setPosition(0, 0, planeData.positions);
+            newPlane->setAxis(
+            planeData.axis.at(Raytracer::planesType::X),
+            planeData.axis.at(Raytracer::planesType::Y),
+            planeData.axis.at(Raytracer::planesType::Z)
+            );
+
+            physical_primitives.push_back(newPlane);
+        } catch (const ErrorException &e) {
+            std::cerr << "Factory Error: " << e.what() << std::endl;
+        }
     }
 
     for (int j = 0; j < _camera.size.second; j++) {
@@ -45,31 +65,19 @@ void Raytracer::test::createScene()
             Raytracer::Ray r = _cam.ray(u, v);
 
             Math::Vector3D pixel_color(0, 0, 0);
-
             HitRecord rec;
             bool hit = false;
             double closest_so_far = std::numeric_limits<double>::max();
-            for (auto& sphere : physical_sphere) {
+
+            for (auto& primitive : physical_primitives) {
                 HitRecord temp_rec;
-                if (sphere.hits(r, temp_rec) && temp_rec.t < closest_so_far) {
+                if (primitive->hits(r, temp_rec) && temp_rec.t < closest_so_far) {
                     hit = true;
                     closest_so_far = temp_rec.t;
                     rec = temp_rec;
-                    pixel_color = Math::Vector3D(255, 0, 0);
+                    pixel_color = Math::Vector3D(255, 0, 0); 
                 }
             }
-
-            for (auto& plane : physical_plane) {
-                HitRecord temp_rec;
-                
-                if (plane.hits(r, temp_rec) && temp_rec.t < closest_so_far) {
-                    hit = true;
-                    closest_so_far = temp_rec.t;
-                    rec = temp_rec;
-                    pixel_color = Math::Vector3D(0, 255, 0);
-                }
-            }
-
             _pixels[j][i] = pixel_color;
         }
     }
