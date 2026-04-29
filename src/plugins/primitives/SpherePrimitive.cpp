@@ -5,7 +5,7 @@
 ** sphere
 */
 
-#include "./primitives/SpherePrimitive.hpp"
+#include "primitives/SpherePrimitive.hpp"
 
 static void fill_hit_record(HitRecord& rec, double t, const Math::Point3D& hitPoint, const Math::Point3D& center, double radius, const Math::Vector3D& color) {
     rec.t = t;
@@ -42,6 +42,10 @@ bool Raytracer::SpherePrimitive::intersect(const Ray& ray, HitRecord& rec) const
     } catch (const Exception& e) {
         return false;
     }
+}
+
+void Raytracer::SpherePrimitive::drawShape()
+{
 }
 
 extern "C" {

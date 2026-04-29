@@ -4,3 +4,4 @@ raytracer
 output.ppm
 *.json
 vgcore.*
+*.ppm

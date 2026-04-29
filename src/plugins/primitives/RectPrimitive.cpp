@@ -5,7 +5,7 @@
 ** rect
 */
 
-#include "./primitives/RectPrimitive.hpp"
+#include "primitives/RectPrimitive.hpp"
 
 /// Fills the hit record with the intersectio
 static void fill_hit_record(HitRecord& rec, double t, const Math::Point3D& hitPoint, const Math::Vector3D& normal, double denominator, const Math::Vector3D& color) {
@@ -42,6 +42,10 @@ bool Raytracer::RectPrimitive::intersect(const Ray& ray, HitRecord& rec) const {
         return false;
     }
     return false;
+}
+
+void Raytracer::RectPrimitive::drawShape()
+{
 }
 
 extern "C" {
