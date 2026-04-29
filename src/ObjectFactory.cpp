@@ -10,8 +10,8 @@
 Raytracer::ObjectFactory::ObjectFactory()
 {
     // Primitives Objects
-    // _createPrimitive["Sphere"] = []() { return std::make_shared<Raytracer::Sphere(); };
-    // _createPrimitive["Plane"] = []() { return std::make_shared<Raytracer::Plane(); };
+    // _createPrimitive["Sphere"] = []() { return std::make_shared<Raytracer::SpherePrimitive(); };
+    // _createPrimitive["Plane"] = []() { return std::make_shared<Raytracer::PlanePrimitive(); };
 
     // Lights Objects
     // _createLight["ambient"] = []() { return std::make_shared<Raytracer::Ambient(); };
