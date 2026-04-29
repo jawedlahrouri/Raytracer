@@ -6,7 +6,7 @@
 ##
 
 SRC  =   $(wildcard src/*.cpp) \
-        $(wildcard src/objects/*.cpp) \
+        $(wildcard src/plugins/primitive/*.cpp) \
         $(wildcard src/plugins/renderer/*.cpp) \
         $(wildcard src/utils/*.cpp) \
 		$(wildcard src/scene_loaders/*.cpp) \

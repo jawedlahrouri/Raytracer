@@ -10,8 +10,8 @@
 
 #include "utils/HitRecord.hpp"
 #include "utils/Ray.hpp"
-#include "objects/Sphere.hpp"
-#include "objects/Plane.hpp"
+#include "primitives/SpherePrimitive.hpp"
+#include "primitives/PlanePrimitive.hpp"
 
 namespace Raytracer {
     class Shadow_Ray {
@@ -20,7 +20,7 @@ namespace Raytracer {
             ~Shadow_Ray() = default;
     
             // check if the ray hits
-            bool hits(const Raytracer::Ray& ray, const Raytracer::Sphere& s, const Raytracer::PlaneClass& p) const;
+            bool hits(const Raytracer::Ray& ray, const Raytracer::SpherePrimitive& s, const Raytracer::PlanePrimitive& p) const;
     };
 }
 
