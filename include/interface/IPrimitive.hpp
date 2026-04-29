@@ -11,8 +11,6 @@
 #include "./utils/HitRecord.hpp"
 #include "RaytracerType.hpp"
 
-#include <iostream>
-
 namespace Raytracer {
     class IPrimitive  {
         public:
@@ -23,10 +21,10 @@ namespace Raytracer {
 
             virtual void drawShape() = 0;
 
-            virtual void setName(std::string name);
-            virtual bool hits(const Raytracer::Ray& ray, HitRecord& record) const = 0;
-            virtual void setPosition(double x, double y, double z) = 0;
-            virtual void setAxis(double x, double y, double z) = 0;
+            // Setters aren't initialized to prevent objects from having to use all of them if they're unnecessary for their proper functioning
+            virtual void setName(const std::string &name) {};
+            virtual void setPosition(const Math::Point3D& position) {};
+            virtual void setAxis(const Math::Vector3D& axis) {};
             
         protected:
         private:
