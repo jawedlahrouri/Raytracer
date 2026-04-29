@@ -87,6 +87,8 @@ void Raytracer::Parser::parseCamera()
 
     // field of view parsing
     cam.fieldOfView = _config["Camera"]["fieldOfView"].get<double>();
+    if (cam.fieldOfView > 180)
+        throw ErrorException("Le champ de vision est trop grand");
     _camera = cam;
 }
 

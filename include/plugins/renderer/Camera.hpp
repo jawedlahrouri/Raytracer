@@ -18,12 +18,13 @@ namespace Raytracer {
             Math::Point3D origin;
             Math::Rectangle3D screen;
 
-            CameraClass(double width, double height) {
+            CameraClass(double width, double height, double FieldOfView) {
                 origin = Math::Point3D(0, 0, 0);
                 double scale = width / height;
                 double size_scaled = scale * 2.0;
+                double projection_point = (FieldOfView/90) - 2;
 
-                Math::Point3D screen_origin(origin.X - (size_scaled / 2.0), origin.Y - (2.0 / 2.0), -1.0); 
+                Math::Point3D screen_origin(origin.X - (size_scaled / 2.0), origin.Y - (2.0 / 2.0), projection_point); 
                 Math::Vector3D screen_bottom(size_scaled, 0.0, 0.0);
                 Math::Vector3D screen_left(0.0, 2.0, 0.0);
                 
