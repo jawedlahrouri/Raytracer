@@ -20,22 +20,42 @@ Raytracer::ObjectFactory::ObjectFactory()
 
 std::shared_ptr<Raytracer::IPrimitive> Raytracer::ObjectFactory::createPrimitive(const std::string &type, const std::string name)
 {
-    if (_createPrimitive.find(type) == _createPrimitive.end()) {
-        throw ErrorException("Unknow primitive type :" + type);
-    }
-    auto newPrimitive = _createPrimitive[type]();
-    newPrimitive->setName(name);
+    std::string path = "./plugins/lib" + type + "Primitive.so";
 
-    return newPrimitive;
+    try {
+        auto loader = std::make_unique<DLLoader<Raytracer::IPrimitive>>(path);
+        Raytracer::IPrimitive* getEntryPoint = loader->getInstance("entryPoint");
+
+        if (!getEntryPoint) {
+            throw ErrorException("EntryPoint returned nullptr for " + type);
+        }
+        std::shared_ptr<Raytracer::IPrimitive> newPrimitive(getEntryPoint);
+        newPrimitive->setName(name);
+        _primitiveLoader.push_back(std::move(loader));
+
+        return newPrimitive;
+    } catch (const std::exception &e) {
+        throw ErrorException("Failed to load plugin " + type + ": " + e.what());
+    }
 }
 
 std::shared_ptr<Raytracer::ILight> Raytracer::ObjectFactory::createLight(const std::string &type, const std::string name)
 {
-    if (_createLight.find(type) == _createLight.end()) {
-        throw ErrorException("Unknow light type :" + type);
-    }
-    auto newLight = _createLight[type]();
-    newLight->setName(name);
+    std::string path = "./plugins/lib" + type + "Light.so";
 
-    return newLight;
+    try {
+        auto loader = std::make_unique<DLLoader<Raytracer::ILight>>(path);
+        Raytracer::ILight* getEntryPoint = loader->getInstance("entryPoint");
+
+        if (!getEntryPoint) {
+            throw ErrorException("EntryPoint returned nullptr for " + type);
+        }
+        std::shared_ptr<Raytracer::ILight> newLight(getEntryPoint);
+        newLight->setName(name);
+        _lightLoader.push_back(std::move(loader));
+
+        return newLight;
+    } catch (const std::exception &e) {
+        throw ErrorException("Failed to load plugin " + type + ":" + e.what());
+    }
 }
