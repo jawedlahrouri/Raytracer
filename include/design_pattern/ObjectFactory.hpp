@@ -14,8 +14,9 @@
 #include <memory>
 #include <functional>
 
-#include "../include/interface/IPrimitive.hpp"
-#include "../include/interface/ILight.hpp"
+#include "interface/IPrimitive.hpp"
+#include "interface/ILight.hpp"
+#include "exception.hpp"
 
 namespace Raytracer {
     class ObjectFactory {

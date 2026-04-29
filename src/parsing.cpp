@@ -119,9 +119,9 @@ void Raytracer::Parser::parsePrimitive()
             }
         
             shape.coords = {
-                {Raytracer::coordType::x, _config["Primitives"][i]["coords"][0].get<float>()},
-                {Raytracer::coordType::y, _config["Primitives"][i]["coords"][1].get<float>()},
-                {Raytracer::coordType::z, _config["Primitives"][i]["coords"][2].get<float>()},
+                {_config["Primitives"][i]["coords"][0].get<float>()},
+                {_config["Primitives"][i]["coords"][1].get<float>()},
+                {_config["Primitives"][i]["coords"][2].get<float>()},
             };
 
             // specifications of the shape
@@ -141,9 +141,9 @@ void Raytracer::Parser::parsePrimitive()
             }
             
             shape.color = {
-                {Raytracer::colorType::RED, _config["Primitives"][i]["color"][0].get<std::size_t>()},
-                {Raytracer::colorType::GREEN, _config["Primitives"][i]["color"][1].get<std::size_t>()},
-                {Raytracer::colorType::BLUE, _config["Primitives"][i]["color"][2].get<std::size_t>()},
+                {_config["Primitives"][i]["color"][0].get<double>()},
+                {_config["Primitives"][i]["color"][1].get<double>()},
+                {_config["Primitives"][i]["color"][2].get<double>()},
             };
 
             _primitive.listOfShapes[shape.shapeName] = shape;
@@ -156,9 +156,9 @@ void Raytracer::Parser::parsePrimitive()
 
             // get the axis
             floor.axis = {
-                {Raytracer::planesType::X, _config["Primitives"][i]["axis"][0].get<double>()},
-                {Raytracer::planesType::Y, _config["Primitives"][i]["axis"][1].get<double>()},
-                {Raytracer::planesType::Z, _config["Primitives"][i]["axis"][2].get<double>()}
+                {_config["Primitives"][i]["axis"][0].get<double>()},
+                {_config["Primitives"][i]["axis"][1].get<double>()},
+                {_config["Primitives"][i]["axis"][2].get<double>()}
             };
             // get the position
             double pos = _config["Primitives"][i]["position"].get<double>();
@@ -170,9 +170,9 @@ void Raytracer::Parser::parsePrimitive()
             }
         
             floor.color = {
-                {Raytracer::colorType::RED, _config["Primitives"][i]["color"][0].get<std::size_t>()},
-                {Raytracer::colorType::GREEN, _config["Primitives"][i]["color"][1].get<std::size_t>()},
-                {Raytracer::colorType::BLUE, _config["Primitives"][i]["color"][2].get<std::size_t>()},
+                {_config["Primitives"][i]["color"][0].get<double>()},
+                {_config["Primitives"][i]["color"][1].get<double>()},
+                {_config["Primitives"][i]["color"][2].get<double>()},
             };
 
             _primitive.listOfPlane[name] = floor;

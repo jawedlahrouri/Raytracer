@@ -16,11 +16,10 @@
 namespace Raytracer {
     class IPrimitive  {
         public:
-            IPrimitive();
             virtual ~IPrimitive() = default;
 
             // Check if the ray intersects with the primitive and fill the hit record if it does
-            virtual bool intersect(const Raytracer::Ray& ray, float t_min, float t_max, HitRecord& record) const = 0;
+            virtual bool intersect(const Raytracer::Ray& ray, HitRecord& record) const = 0;
 
             virtual void drawShape() = 0;
 

@@ -10,8 +10,6 @@
 #include "./math/Vector3D.hpp"
 #include "./RaytracerType.hpp"
 
-#include <iostream>
-
 namespace Raytracer {
     class ILight {
         public:

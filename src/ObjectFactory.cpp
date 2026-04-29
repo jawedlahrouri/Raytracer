@@ -4,8 +4,8 @@
 ** File description:
 ** Object Factory
 */
-#include "../include/design_pattern/ObjectFactory.hpp"
-#include "../include/exception.hpp"
+
+#include "design_pattern/ObjectFactory.hpp"
 
 Raytracer::ObjectFactory::ObjectFactory()
 {

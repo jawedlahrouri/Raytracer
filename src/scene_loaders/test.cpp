@@ -6,11 +6,12 @@
 */
 
 #include "config/test.hpp"
-#include "objects/Sphere.hpp"
 #include "utils/Ray.hpp"
-#include "objects/Plane.hpp"
 #include "plugins/renderer/ppm_export.hpp"
 #include "design_pattern/ObjectFactory.hpp"
+#include "primitives/SpherePrimitive.hpp"
+#include "primitives/PlanePrimitive.hpp"
+#include <memory>
 
 Raytracer::test::test(const Raytracer::Primitive& primitive, const Raytracer::Camera& camera, const Raytracer::Lights& lights) : _primitive(primitive), _camera(camera), _lights(lights), _cam(camera.size.first, camera.size.second), _pixels(camera.size.second, std::vector<Math::Vector3D>(camera.size.first))
 {
@@ -29,11 +30,7 @@ void Raytracer::test::createScene()
         try {
             auto newPrimitive = factory.createPrimitive("Sphere", name);
 
-            newPrimitive->setPosition(
-                shapeData.coords.at(Raytracer::coordType::x),
-                shapeData.coords.at(Raytracer::coordType::y),
-                shapeData.coords.at(Raytracer::coordType::z)
-            );
+            newPrimitive->setPosition(shapeData.coords);
 
             physical_primitives.push_back(newPrimitive);
         } catch (const ErrorException &e) {
@@ -45,12 +42,8 @@ void Raytracer::test::createScene()
         try {
             auto newPlane = factory.createPrimitive("Plane", name);
 
-            newPlane->setPosition(0, 0, planeData.positions);
-            newPlane->setAxis(
-            planeData.axis.at(Raytracer::planesType::X),
-            planeData.axis.at(Raytracer::planesType::Y),
-            planeData.axis.at(Raytracer::planesType::Z)
-            );
+            newPlane->setPosition(Math::Point3D(0, 0, planeData.positions));
+            newPlane->setAxis(planeData.axis);
 
             physical_primitives.push_back(newPlane);
         } catch (const ErrorException &e) {
@@ -71,12 +64,13 @@ void Raytracer::test::createScene()
 
             for (auto& primitive : physical_primitives) {
                 HitRecord temp_rec;
-                if (primitive->hits(r, temp_rec) && temp_rec.t < closest_so_far) {
+                if (primitive->intersect(r, temp_rec) && temp_rec.t < closest_so_far) {
                     hit = true;
                     closest_so_far = temp_rec.t;
                     rec = temp_rec;
                     pixel_color = Math::Vector3D(255, 0, 0); 
                 }
+            
             }
             _pixels[j][i] = pixel_color;
         }
