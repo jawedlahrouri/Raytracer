@@ -5,7 +5,7 @@
 ** planes
 */
 
-#include "./primitives/PlanePrimitive.hpp"
+#include "primitives/PlanePrimitive.hpp"
 
 /// Fills the hit record with the intersection 
 static void fill_hit_record(HitRecord& rec, double t, const Math::Point3D& hitPoint, const Math::Vector3D& normal, double denom, const Math::Vector3D& color) {
@@ -42,6 +42,10 @@ bool Raytracer::PlanePrimitive::intersect(const Ray& ray, HitRecord& rec) const 
     } catch (const Exception& e) {
         return false;
     }
+}
+
+void Raytracer::PlanePrimitive::drawShape()
+{
 }
 
 extern "C" {
