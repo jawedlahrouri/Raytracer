@@ -32,7 +32,7 @@ OBJ  =   $(SRC:.cpp=.o)
 NAME =   raytracer
 TEST_NAME   =   unit_tests
 
-CXXFLAGS    =   -Wall -Wextra -Iinclude -g
+CXXFLAGS    =   -Wall -Wextra -Iinclude -g -std=c++20
 CPPFLAGS    =   -Iinclude
 
 CXX         =   g++

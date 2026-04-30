@@ -69,9 +69,9 @@ void Raytracer::Parser::parseCamera()
     }
 
     cam.posCoords = {
-        {Raytracer::coordType::x, _config["Camera"]["position"][0].get<double>()},
-        {Raytracer::coordType::y, _config["Camera"]["position"][1].get<double>()},
-        {Raytracer::coordType::z, _config["Camera"]["position"][2].get<double>()},
+        {_config["Camera"]["position"][0].get<double>()},
+        {_config["Camera"]["position"][1].get<double>()},
+        {_config["Camera"]["position"][2].get<double>()},
     };
 
     // rotation parsing
@@ -87,6 +87,8 @@ void Raytracer::Parser::parseCamera()
 
     // field of view parsing
     cam.fieldOfView = _config["Camera"]["fieldOfView"].get<double>();
+    if (cam.fieldOfView > 180)
+        throw ErrorException("Le champ de vision est trop grand");
     _camera = cam;
 }
 
@@ -109,6 +111,7 @@ void Raytracer::Parser::parsePrimitive()
         std::string type = _config["Primitives"][i]["type"].get<std::string>();
         if (type != "Plane") {
             Raytracer::Shape shape;
+            shape.type = type;
 
             // name of the shape
             shape.shapeName = setName(type);

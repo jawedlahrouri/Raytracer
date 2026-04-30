@@ -8,30 +8,33 @@
 #ifndef ILIGHT_HPP_
 #define ILIGHT_HPP_
 #include "./math/Vector3D.hpp"
+#include "./math/Point3D.hpp"
 #include "./RaytracerType.hpp"
+
+#include <string>
 
 namespace Raytracer {
     class ILight {
-    public:
-        ILight();
-        ~ILight();
+        public:
+            virtual ~ILight() = default;
 
-        // Get the direction from the hit point to the light source
-        virtual Math::Vector3D getDirectionToLight(const Math::Vector3D& hitPoint) const = 0;
+            // Get the direction from the hit point to the light source
+            virtual Math::Vector3D getDirectionToLight(const Math::Vector3D& hitPoint) const = 0;
 
-        // Get the intensity of the light at the hit point
-        virtual Raytracer::colorType getIntensity() const = 0;
+            // Get the intensity of the light at the hit point
+            virtual Raytracer::colorType getIntensity() const = 0;
 
-        // Get the distance from the hit point to the light source (for shadow calculations)
-        virtual float getDistanceToLight(const Math::Vector3D& hitPoint) const = 0;
+            // Get the distance from the hit point to the light source (for shadow calculations)
+            virtual float getDistanceToLight(const Math::Vector3D& hitPoint) const = 0;
 
-        // Calculate illumination color
-        virtual Math::Vector3D calculateIllumination(const Math::Vector3D& hitPoint, const Math::Vector3D& normal, const Math::Vector3D& baseColor) const = 0;
+            // Calculate illumination color
+            virtual Math::Vector3D calculateIllumination(const Math::Vector3D& hitPoint, const Math::Vector3D& normal, const Math::Vector3D& baseColor) const = 0;
 
-    protected:
-    private:
-};
-
+            virtual void setName(const std::string &name) {};
+            virtual void setPosition(const Math::Point3D& /*position*/) {};
+        protected:
+        private:
+    };
 }
 
 #endif /* !ILIGHT_HPP_ */

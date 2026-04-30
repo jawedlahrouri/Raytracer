@@ -15,12 +15,15 @@
 
 namespace Raytracer {
     class PlanePrimitive : public IPrimitive {
+        private:
+            std::string _name;
+
         public:
             Math::Point3D center;
             Math::Vector3D normal;
             Math::Vector3D color;
 
-            PlanePrimitive(const Raytracer::Plane& data) : center(Math::Point3D(0, 0, data.positions)), normal(Math::Vector3D()) {}
+            PlanePrimitive(const Raytracer::Plane& data) : center(Math::Point3D(data.axis.X * data.positions, data.axis.Y * data.positions, data.axis.Z * data.positions)), normal(data.axis), color(data.color) {}
             ~PlanePrimitive() = default;
 
             bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& rec) const override;

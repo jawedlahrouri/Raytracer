@@ -21,12 +21,18 @@
 namespace Raytracer {
     struct Camera {
         std::pair<double, double> size;
-        std::map<enum Raytracer::coordType, double> posCoords; // enum values (x, y, z)
+        Math::Point3D posCoords; // enum values (x, y, z)
         std::map<enum Raytracer::coordType, double> rotaCoords; //  enum values (x, y, z) (on peut changer zehma c chaud)
         size_t fieldOfView; // in degree
     };
 
+    struct Light {
+        Math::Point3D position;
+        Raytracer::colorType intensity;
+    };
+
     struct Shape {
+        std::string type;
         std::string shapeName;
         Math::Point3D coords; // enum values (x, y, z)
         std::map<enum Raytracer::specsType, double> specs; // specifications for shape

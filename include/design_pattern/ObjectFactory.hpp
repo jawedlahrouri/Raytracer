@@ -17,18 +17,20 @@
 #include "./interface/IPrimitive.hpp"
 #include "./interface/ILight.hpp"
 #include "exception.hpp"
+#include "DLLoader/load_so.hpp"
+#include "parsing.hpp"
 
 namespace Raytracer {
     class ObjectFactory {
         private:
-            std::unordered_map<std::string, std::function<std::shared_ptr<Raytracer::IPrimitive>()>> _createPrimitive;
-            std::unordered_map<std::string, std::function<std::shared_ptr<Raytracer::ILight>()>> _createLight;
-            std::map<std::string, int> _counts;
+            std::vector<std::unique_ptr<DLLoader<Raytracer::IPrimitive>>> _primitiveLoader;
+            std::vector<std::unique_ptr<DLLoader<Raytracer::ILight>>> _lightLoader;
 
         public:
             ObjectFactory();
-            std::shared_ptr<Raytracer::IPrimitive> createPrimitive(const std::string &type);
-            std::shared_ptr<Raytracer::ILight> createLight(const std::string &type);
+            std::shared_ptr<Raytracer::IPrimitive> createPrimitive(const std::string &type, const std::string &name, const Raytracer::Shape &data);
+            std::shared_ptr<Raytracer::IPrimitive> createPrimitive(const std::string &type, const std::string &name, const Raytracer::Plane &data);
+            std::shared_ptr<Raytracer::ILight> createLight(const std::string &type, const std::string name);
     };
 }
 

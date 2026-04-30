@@ -11,12 +11,15 @@
 #include "interface/ILight.hpp"
 #include "math/Point3D.hpp"
 #include "RaytracerType.hpp"
+#include "parsing.hpp"
 
 namespace Raytracer {
     class PointLight : public ILight {
         public:
+            PointLight(const Raytracer::Light& data)
+                : _position(data.position), _intensity(data.intensity) {}
             PointLight(const Math::Point3D& pos, Raytracer::colorType intensity)
-                : position(pos), intensity_(intensity) {}
+                : _position(pos), _intensity(intensity) {}
             ~PointLight() = default;
 
             Math::Vector3D getDirectionToLight(const Math::Vector3D& hitPoint) const override;
@@ -24,9 +27,13 @@ namespace Raytracer {
             float getDistanceToLight(const Math::Vector3D& hitPoint) const override;
             Math::Vector3D calculateIllumination(const Math::Vector3D& hitPoint, const Math::Vector3D& normal, const Math::Vector3D& baseColor) const override;
 
+            void setName(const std::string &name) override;
+            void setPosition(const Math::Point3D& position) override;
+
         private:
-            Math::Point3D position;
-            Raytracer::colorType intensity_;
+            std::string _name;
+            Math::Point3D _position;
+            Raytracer::colorType _intensity;
     };
 }
 

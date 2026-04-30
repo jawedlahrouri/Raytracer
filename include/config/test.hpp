@@ -22,6 +22,7 @@ namespace Raytracer {
 
             Raytracer::CameraClass _cam;
             std::vector<std::vector<Math::Vector3D>> _pixels;
+            std::vector<std::unique_ptr<DLLoader<Raytracer::IPrimitive>>> _loaders;
 
         public:
             test(const Raytracer::Primitive& primitive, const Raytracer::Camera& camera, const Raytracer::Lights& lights);
