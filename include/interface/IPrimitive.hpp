@@ -22,11 +22,6 @@ namespace Raytracer {
             virtual bool intersect(const Raytracer::Ray& ray, HitRecord& record) const = 0;
 
             virtual void drawShape() = 0;
-
-            // Setters aren't initialized to prevent objects from having to use all of them if they're unnecessary for their proper functioning
-            virtual void setName(const std::string & /*name*/) {};
-            virtual void setPosition(const Math::Point3D& /*position*/) {};
-            virtual void setAxis(const Math::Vector3D& /*axis*/) {};
             
         protected:
         private:
