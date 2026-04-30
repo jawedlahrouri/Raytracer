@@ -24,7 +24,7 @@ namespace Raytracer {
                 origin = poscoords;
                 double scale = width / height;
                 double size_scaled = scale * 2.0;
-                double projection_distance = (FieldOfView/90) - 2;
+                double projection_distance = 2.0 - (FieldOfView / 90.0);
                 double projection_point = origin.Z - projection_distance;
 
                 Math::Point3D screen_origin(origin.X - (size_scaled / 2.0), origin.Y - (2.0 / 2.0), projection_point); 

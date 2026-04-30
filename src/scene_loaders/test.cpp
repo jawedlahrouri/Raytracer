@@ -35,10 +35,10 @@ void Raytracer::test::createScene()
 
     for (const auto& [name, shapeData] : _primitive.listOfShapes) {
         try {
-            auto newPrimitive = factory.createPrimitive("Sphere", name, shapeData);
+            auto newPrimitive = factory.createPrimitive(shapeData.type, name, shapeData);
             physical_primitives.push_back(newPrimitive);
         } catch (const ErrorException &e) {
-            std::cerr << "Factory Error (Sphere): " << e.what() << std::endl;
+            std::cerr << "Factory Error (" << shapeData.type << "): " << e.what() << std::endl;
         }
     }
 

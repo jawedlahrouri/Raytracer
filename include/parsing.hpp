@@ -32,6 +32,7 @@ namespace Raytracer {
     };
 
     struct Shape {
+        std::string type;
         std::string shapeName;
         Math::Point3D coords; // enum values (x, y, z)
         std::map<enum Raytracer::specsType, double> specs; // specifications for shape

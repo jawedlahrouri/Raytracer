@@ -111,6 +111,7 @@ void Raytracer::Parser::parsePrimitive()
         std::string type = _config["Primitives"][i]["type"].get<std::string>();
         if (type != "Plane") {
             Raytracer::Shape shape;
+            shape.type = type;
 
             // name of the shape
             shape.shapeName = setName(type);
