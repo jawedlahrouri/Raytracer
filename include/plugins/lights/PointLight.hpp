@@ -19,7 +19,7 @@ namespace Raytracer {
             PointLight(const Raytracer::Light& data)
                 : position(data.position), intensity_(data.intensity) {}
             PointLight(const Math::Point3D& pos, Raytracer::colorType intensity)
-                : position(pos), intensity_(intensity) {}
+                : _position(pos), intensity_(intensity) {}
             ~PointLight() = default;
 
             Math::Vector3D getDirectionToLight(const Math::Vector3D& hitPoint) const override;
@@ -27,8 +27,12 @@ namespace Raytracer {
             float getDistanceToLight(const Math::Vector3D& hitPoint) const override;
             Math::Vector3D calculateIllumination(const Math::Vector3D& hitPoint, const Math::Vector3D& normal, const Math::Vector3D& baseColor) const override;
 
+            void setName(const std::string &name);
+            void setPosition(const Math::Point3D& position);
+
         private:
-            Math::Point3D position;
+            std::string _name;
+            Math::Point3D _position;
             Raytracer::colorType intensity_;
     };
 }
