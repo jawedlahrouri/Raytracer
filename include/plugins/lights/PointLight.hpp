@@ -11,10 +11,13 @@
 #include "interface/ILight.hpp"
 #include "math/Point3D.hpp"
 #include "RaytracerType.hpp"
+#include "parsing.hpp"
 
 namespace Raytracer {
     class PointLight : public ILight {
         public:
+            PointLight(const Raytracer::Light& data)
+                : position(data.position), intensity_(data.intensity) {}
             PointLight(const Math::Point3D& pos, Raytracer::colorType intensity)
                 : _position(pos), intensity_(intensity) {}
             ~PointLight() = default;
