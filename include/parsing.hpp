@@ -26,6 +26,11 @@ namespace Raytracer {
         size_t fieldOfView; // in degree
     };
 
+    struct Light {
+        Math::Point3D position;
+        Raytracer::colorType intensity;
+    };
+
     struct Shape {
         std::string shapeName;
         Math::Point3D coords; // enum values (x, y, z)
