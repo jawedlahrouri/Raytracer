@@ -1,3 +1,7 @@
-.so
 raytracer
 *.o
+*.so
+output.ppm
+*.json
+vgcore.*
+*.ppm

@@ -5,8 +5,24 @@
 ## Makefile
 ##
 
-SRC  =   $(wildcard src/*.cpp)
+SRC  =   $(wildcard src/*.cpp) \
+        $(wildcard src/plugins/primitive/*.cpp) \
+        $(wildcard src/plugins/renderer/*.cpp) \
+        $(wildcard src/utils/*.cpp) \
+		$(wildcard src/scene_loaders/*.cpp) \
+        $(wildcard src/plugins/lights/*.cpp) \
+        $(wildcard src/plugins/interface/*.cpp) \
 
+
+PRIMITIVE_SRC   =   $(wildcard src/plugins/primitives/*.cpp)
+LIGHT_SRC   =   $(wildcard src/plugins/lights/*.cpp)
+# MATERIAL_SRC    =   $(wildcard src/plugins/materials/*.cpp)
+
+
+PLUGIN_DIR = plugins
+PRIMITIVE_SO = $(patsubst src/plugins/primitives/%.cpp,$(PLUGIN_DIR)/lib%.so,$(PRIMITIVE_SRC))
+LIGHT_SO = $(PLUGIN_DIR)/liblight.so
+# MATERIAL_SO = $(PLUGIN_DIR)/libmaterial.so
 
 SRC_TESTS   =   $(wildcard tests/*.cpp)
 
@@ -15,20 +31,36 @@ OBJ  =   $(SRC:.cpp=.o)
 NAME =   raytracer
 TEST_NAME   =   unit_tests
 
-CXXFLAGS    =   -Wall -Wextra -Iinclude -g
+CXXFLAGS    =   -Wall -Wextra -Iinclude -g -std=c++20
 CPPFLAGS    =   -Iinclude
 
 CXX         =   g++
 RM          =   rm -f
 
-all:    $(NAME)
+all:    $(NAME) $(PRIMITIVE_SO)
 
 $(NAME):    $(OBJ)
 	$(CXX) -o $(NAME) $(OBJ) $(LDFLAGS) $(LDLIBS)
 
+
+# Règle générique pour chaque .so de primitive
+$(PLUGIN_DIR)/lib%.so: src/plugins/primitives/%.cpp
+	mkdir -p $(PLUGIN_DIR)
+	$(CXX) -shared -fPIC -o $@ $< $(CXXFLAGS) $(CPPFLAGS)
+
+##$(LIGHT_SO): $(LIGHT_SRC)
+#	mkdir -p $(PLUGIN_DIR)
+#	$(CXX) -shared -fPIC -o $@ $^ $(CXXFLAGS) $(CPPFLAGS)
+#
+#$(MATERIAL_SO): $(MATERIAL_SRC)
+#	mkdir -p $(PLUGIN_DIR)
+#	$(CXX) -shared -fPIC -o $@ $^ $(CXXFLAGS) $(CPPFLAGS)
+
+
 clean:
 	$(RM) $(OBJ)
 	$(RM) *.gcno *.gcda
+	$(RM) $(PRIMITIVE_SO)
 
 fclean: clean
 	$(RM) $(NAME)
