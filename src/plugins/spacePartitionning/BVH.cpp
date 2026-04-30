@@ -5,7 +5,7 @@
 ** BVH functions for space partitionning optimisation
 */
 
-#include "../spacePartitionning/BVH.hpp"
+#include "./spacePartitionning/BVH.hpp"
 
 void Raytracer::BVH::build(std::vector<std::shared_ptr<IPrimitive>> primitives)
 {
@@ -40,9 +40,12 @@ std::unique_ptr<Raytracer::BVHNode> Raytracer::BVH::buildRecursive(int start, in
     float parentSA  = node->bounds.surfaceArea();
 
     for (int axis = 0; axis < 3; ++axis) {
-        std::sort(prims.begin()+start, prims.begin()+end,
-            [axis](const auto& a, const auto& b){
-                return (&a->centroid().x)[axis] < (&b->centroid().x)[axis];
+        std::sort(prims.begin()+start, prims.begin()+end, [axis](const auto& a, const auto& b) {
+                Math::Point3D ca = a->centroid();
+                Math::Point3D cb = b->centroid();
+                if (axis == 0) return ca.X < cb.X;
+                if (axis == 1) return ca.Y < cb.Y;
+                            return ca.Z < cb.Z;
             });
 
         for (int split = start+1; split < end; ++split) {
@@ -68,8 +71,12 @@ std::unique_ptr<Raytracer::BVHNode> Raytracer::BVH::buildRecursive(int start, in
 
     std::sort(prims.begin()+start, prims.begin()+end,
         [bestAxis](const auto& a, const auto& b){
-            return (&a->centroid().x)[bestAxis] < (&b->centroid().x)[bestAxis];
-        });
+            Math::Point3D ca = a->centroid();
+            Math::Point3D cb = b->centroid();
+            if (bestAxis == 0) return ca.X < cb.X;
+            if (bestAxis == 1) return ca.Y < cb.Y;
+                            return ca.Z < cb.Z;
+    });
 
     node->left  = buildRecursive(start, bestSplit);
     node->right = buildRecursive(bestSplit, end);

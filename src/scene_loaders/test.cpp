@@ -27,7 +27,7 @@ void Raytracer::test::createScene(BVH& bvh)
     std::vector<std::unique_ptr<Raytracer::IPrimitive>> shapes;
     for (const auto& [name, shapeData] : _primitive.listOfShapes) {
         if (shapeData.shapeName.rfind("Sphere", 0) == 0) {
-            shapes.push_back(std::make_unique<Raytracer::SpherePrimitive>()); // ici il faudras appeler l'entry point via la factory
+            shapes.push_back(std::make_unique<Raytracer::SpherePrimitive>(shapeData)); // ici il faudras appeler l'entry point via la factory
         }
     }
 

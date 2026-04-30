@@ -13,6 +13,7 @@
 #include "./math/Point3D.hpp"
 #include "./math/Vector3D.hpp"
 #include "utils/Ray.hpp"
+#include "spacePartitionning/AABB.hpp"
 
 // namespace Raytracer {
 //     class SpherePrimitive : public IPrimitive {

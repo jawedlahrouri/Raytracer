@@ -5,7 +5,7 @@
 ** AABB for BVH algo to process i a better way the shapes
 */
 
-#include "../spacePartitionning/AABB.hpp"
+#include "./spacePartitionning/AABB.hpp"
 
 bool Raytracer::AABB::intersect(const Ray& ray, double tMin, double tMax) const
 {
