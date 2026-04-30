@@ -7,7 +7,6 @@
 
 #include "primitives/RectPrimitive.hpp"
 
-/// Fills the hit record with the intersectio
 static void fill_hit_record(HitRecord& rec, double t, const Math::Point3D& hitPoint, const Math::Vector3D& normal, double denominator, const Math::Vector3D& color) {
     rec.t = t;
     rec.point = Math::Vector3D(hitPoint.X, hitPoint.Y, hitPoint.Z);
@@ -17,29 +16,33 @@ static void fill_hit_record(HitRecord& rec, double t, const Math::Point3D& hitPo
     rec.color = color;
 }
 
-bool Raytracer::RectPrimitive::intersect(const Ray& ray, HitRecord& rec) const { // mettre les bon calcule wsh
-    try {
-        // double t_min = 0.001;
-        // double t_max = 1000000.0;
-        // double denominator = ray.direction.dot(normal);
-        // if (std::abs(denominator) < 1e-6)
-        //     return false;
-            
-        // Math::Vector3D diff = center - ray.origin;
-        // double t = diff.dot(normal) / denominator;
-        
-        // // Check the intersection point
-        // if (t < t_min || t > t_max)
-        //     return false;
-        // Math::Point3D hitPoint = ray.origin + ray.direction * t;
-        // Math::Vector3D localHitPoint = hitPoint - center;
-        // // Check the hit point 
-        // if (std::abs(localHitPoint.X) <= 0.5 && std::abs(localHitPoint.Y) <= 0.5) {
-        //     fill_hit_record(rec, t, hitPoint, normal, denominator, color);
-        //     return true;
-        // }
-    } catch (const Exception& e) {
+bool Raytracer::RectPrimitive::intersect(const Ray& ray, HitRecord& rec) const {
+    double t_min = 0.001;
+    double t_max = 1000000.0;
+    Math::Vector3D normal(0, 0, 1);
+    double denominator = ray.direction.dot(normal);
+    
+    if (std::abs(denominator) < 1e-6)
         return false;
+        
+    Math::Vector3D origin_vec(ray.origin.X, ray.origin.Y, ray.origin.Z);
+    Math::Vector3D center_vec(center.X, center.Y, center.Z);
+    Math::Vector3D diff = center_vec - origin_vec;
+    double t = diff.dot(normal) / denominator;
+    
+    if (t < t_min || t > t_max)
+        return false;
+
+    Math::Point3D hitPoint = Math::Point3D(ray.origin.X + ray.direction.X * t, 
+    ray.origin.Y + ray.direction.Y * t, 
+    ray.origin.Z + ray.direction.Z * t);
+    
+    double dx = std::abs(hitPoint.X - center.X);
+    double dy = std::abs(hitPoint.Y - center.Y);
+
+    if (dx <= width / 2.0 && dy <= height / 2.0) {
+        fill_hit_record(rec, t, hitPoint, normal, denominator, color);
+        return true;
     }
     return false;
 }
