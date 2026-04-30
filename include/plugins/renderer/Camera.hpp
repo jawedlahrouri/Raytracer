@@ -27,9 +27,9 @@ namespace Raytracer {
                 double projection_distance = (FieldOfView/90) - 2;
                 double projection_point = origin.Z - projection_distance;
 
-                Math::Point3D screen_origin(origin.X - (size_scaled / 2.0), origin.Y - (2.0 / 2.0), projection_point); 
+                Math::Point3D screen_origin(origin.X - (size_scaled / 2.0), origin.Y + (2.0 / 2.0), projection_point); 
                 Math::Vector3D screen_bottom(size_scaled, 0.0, 0.0);
-                Math::Vector3D screen_left(0.0, 2.0, 0.0);
+                Math::Vector3D screen_left(0.0, -2.0, 0.0);
                 if (!rotation.empty()) {
                     double rot_x = rotation.count(Raytracer::coordType::x) ? rotation.at(Raytracer::coordType::x) : 0.0;
                     double rot_y = rotation.count(Raytracer::coordType::y) ? rotation.at(Raytracer::coordType::y) : 0.0;
