@@ -16,11 +16,20 @@
 namespace Raytracer {
     class RectPrimitive : public IPrimitive {
     public:
-        RectPrimitive(const Raytracer::Shape& data) {} // a modifier avec les bon variables et les bonne valeur qui seront dans shape
+        Math::Point3D center;
+        double width;
+        double height;
+        Math::Vector3D color;
+
+        RectPrimitive(const Raytracer::Shape& data) : 
+            center(data.coords), 
+            width(data.specs.at(Raytracer::specsType::width)), 
+            height(data.specs.at(Raytracer::specsType::height)),
+            color(data.color) {}
         ~RectPrimitive()  = default;
     
         bool intersect(const Raytracer::Ray& ray, HitRecord& record) const override;
-        void drawShape();
+        void drawShape() override;
     };
 }
 
