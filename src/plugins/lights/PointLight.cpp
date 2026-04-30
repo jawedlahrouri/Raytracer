@@ -19,7 +19,7 @@ Math::Vector3D Raytracer::PointLight::getDirectionToLight(const Math::Vector3D& 
 }
 
 Raytracer::colorType Raytracer::PointLight::getIntensity() const {
-    return intensity_;
+    return _intensity;
 }
 
 float Raytracer::PointLight::getDistanceToLight(const Math::Vector3D& hitPoint) const {

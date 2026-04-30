@@ -30,7 +30,7 @@ namespace Raytracer {
             // Calculate illumination color
             virtual Math::Vector3D calculateIllumination(const Math::Vector3D& hitPoint, const Math::Vector3D& normal, const Math::Vector3D& baseColor) const = 0;
 
-            virtual void setName(std::string name) {};
+            virtual void setName(const std::string &name) {};
             virtual void setPosition(const Math::Point3D& /*position*/) {};
         protected:
         private:
