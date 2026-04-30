@@ -52,6 +52,35 @@ namespace Math {
         Vector3D operator+(const Vector3D& other) const {
             return Vector3D(X + other.X, Y + other.Y, Z + other.Z);
         }
+
+        Vector3D cross(const Vector3D& other) const {
+            return Vector3D(Y * other.Z - Z * other.Y, Z * other.X - X * other.Z, X * other.Y - Y * other.X            );
+        }
+
+        Vector3D rotateX(double angle_deg) const {
+            double angle_rad = angle_deg * M_PI / 180.0;
+            double cos_a = std::cos(angle_rad);
+            double sin_a = std::sin(angle_rad);
+
+            return Vector3D(X, Y * cos_a - Z * sin_a, Y * sin_a + Z * cos_a);
+        }
+
+        Vector3D rotateY(double angle_deg) const {
+            double angle_rad = angle_deg * M_PI / 180.0;
+            double cos_a = std::cos(angle_rad);
+            double sin_a = std::sin(angle_rad);
+
+            return Vector3D(X * cos_a + Z * sin_a, Y, -X * sin_a + Z * cos_a
+            );
+        }
+
+        Vector3D rotateZ(double angle_deg) const {
+            double angle_rad = angle_deg * M_PI / 180.0;
+            double cos_a = std::cos(angle_rad);
+            double sin_a = std::sin(angle_rad);
+
+            return Vector3D(X * cos_a - Y * sin_a, X * sin_a + Y * cos_a, Z);
+        }
     };
 }
 
