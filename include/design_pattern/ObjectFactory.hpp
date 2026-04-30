@@ -18,6 +18,7 @@
 #include "interface/ILight.hpp"
 #include "exception.hpp"
 #include "DLLoader/load_so.hpp"
+#include "parsing.hpp"
 
 namespace Raytracer {
     class ObjectFactory {
@@ -27,7 +28,8 @@ namespace Raytracer {
 
         public:
             ObjectFactory();
-            std::shared_ptr<Raytracer::IPrimitive> createPrimitive(const std::string &type, const std::string name);
+            std::shared_ptr<Raytracer::IPrimitive> createPrimitive(const std::string &type, const std::string &name, const Raytracer::Shape &data);
+            std::shared_ptr<Raytracer::IPrimitive> createPrimitive(const std::string &type, const std::string &name, const Raytracer::Plane &data);
             std::shared_ptr<Raytracer::ILight> createLight(const std::string &type, const std::string name);
     };
 }
