@@ -11,12 +11,8 @@
 #include "exception.hpp"
 #include "interface/ILight.hpp"
 
-Raytracer::ILight::ILight() {}
-Raytracer::ILight::~ILight() {}
-
-
 Math::Vector3D Raytracer::PointLight::getDirectionToLight(const Math::Vector3D& hitPoint) const {
-    Math::Vector3D dir = Math::Vector3D(position.X, position.Y, position.Z) - hitPoint;
+    Math::Vector3D dir = Math::Vector3D(_position.X, _position.Y, _position.Z) - hitPoint;
     double len = dir.length();
     if (len == 0) return Math::Vector3D(0, 0, 0);
     return dir / len;
@@ -27,7 +23,7 @@ Raytracer::colorType Raytracer::PointLight::getIntensity() const {
 }
 
 float Raytracer::PointLight::getDistanceToLight(const Math::Vector3D& hitPoint) const {
-    Math::Vector3D diff = Math::Vector3D(position.X, position.Y, position.Z) - hitPoint;
+    Math::Vector3D diff = Math::Vector3D(_position.X, _position.Y, _position.Z) - hitPoint;
     return static_cast<float>(diff.length());
 }
 
@@ -39,6 +35,16 @@ Math::Vector3D Raytracer::PointLight::calculateIllumination(const Math::Vector3D
         baseColor.Y * diffuseIntensity,
         baseColor.Z * diffuseIntensity
     );
+}
+
+void Raytracer::PointLight::setName(const std::string &name)
+{
+    _name = name;
+}
+
+void Raytracer::PointLight::setPosition(const Math::Point3D& position)
+{
+    _position = position;
 }
 
 extern "C" {
