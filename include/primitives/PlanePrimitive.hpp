@@ -23,8 +23,9 @@ namespace Raytracer {
             PlanePrimitive(const Raytracer::Plane& data) : center(Math::Point3D(0, 0, data.positions)), normal(Math::Vector3D()) {}
             ~PlanePrimitive() = default;
 
-            bool intersect(const Raytracer::Ray& ray, HitRecord& record) const override;
-            void drawShape();
+            bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& rec) const override;
+            AABB bounds() const override;
+            Math::Point3D centroid() const override;
     };
 }
 

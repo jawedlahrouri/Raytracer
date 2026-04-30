@@ -8,9 +8,10 @@
 #ifndef TEST_HPP_
 #define TEST_HPP_
 
-#include "../parsing.hpp"
-#include "../RaytracerType.hpp"
-#include "../plugins/renderer/Camera.hpp"
+#include "./parsing.hpp"
+#include "./RaytracerType.hpp"
+#include "./plugins/renderer/Camera.hpp"
+#include "spacePartitionning/BVH.hpp"
 
 namespace Raytracer {
     class test {
@@ -28,7 +29,7 @@ namespace Raytracer {
 
             void drawSphere();
             void drawPlane();
-            void createScene();
+            void createScene(BVH& bvh);
     };
 }
 

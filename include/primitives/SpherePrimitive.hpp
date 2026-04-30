@@ -14,19 +14,37 @@
 #include "./math/Vector3D.hpp"
 #include "utils/Ray.hpp"
 
+// namespace Raytracer {
+//     class SpherePrimitive : public IPrimitive {
+//         public:
+//             Math::Point3D center;
+//             double radius;
+//             Math::Vector3D color;
+
+//             SpherePrimitive(const Raytracer::Shape& data) : center(data.coords), radius(data.specs.at(Raytracer::specsType::r)), color() {}
+//             ~SpherePrimitive() = default;
+
+//             void sphere_logic();
+//             bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& rec) const override {
+//             void drawShape();
+//     };
+// }
+
 namespace Raytracer {
-    class SpherePrimitive : public IPrimitive {
-        public:
-            Math::Point3D center;
-            double radius;
-            Math::Vector3D color;
 
-            SpherePrimitive(const Raytracer::Shape& data) : center(data.coords), radius(data.specs.at(Raytracer::specsType::r)), color() {}
-            ~SpherePrimitive() = default;
+class SpherePrimitive : public IPrimitive {
+    public:
+        Math::Point3D center;
+        double radius;
+        Math::Vector3D color;
 
-            void sphere_logic();
-            bool intersect(const Raytracer::Ray& ray, HitRecord& record) const override;
-            void drawShape();
+        SpherePrimitive(const Raytracer::Shape& data) : center(data.coords), radius(data.specs.at(Raytracer::specsType::r)), color() {}
+
+        ~SpherePrimitive() = default;
+
+        bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& rec) const override;
+        AABB bounds() const override;
+        Math::Point3D centroid() const override;
     };
 }
 

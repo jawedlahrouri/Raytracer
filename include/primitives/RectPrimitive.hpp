@@ -19,8 +19,9 @@ namespace Raytracer {
         RectPrimitive(const Raytracer::Shape& data) {} // a modifier avec les bon variables et les bonne valeur qui seront dans shape
         ~RectPrimitive()  = default;
     
-        bool intersect(const Raytracer::Ray& ray, HitRecord& record) const override;
-        void drawShape();
+        bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& rec) const override;
+        AABB bounds() const override;
+        Math::Point3D centroid() const override;
     };
 }
 

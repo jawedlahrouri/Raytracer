@@ -9,6 +9,8 @@
 #define HITRECORD_HPP_
 
 #include "./math/Vector3D.hpp"
+#include "math/Point3D.hpp"
+
 class IMaterial;
 
 class HitRecord {
@@ -18,7 +20,7 @@ class HitRecord {
         double t;
         double u;
         double v;
-        Math::Vector3D point;        //coordinates of the hit point in 3D space (x, y, z)
+        Math::Point3D point;        //coordinates of the hit point in 3D space (x, y, z)
         Math::Vector3D normal;     // the normal vector at the hit point (vital for lighting calculations)
         Math::Vector3D color;        // the base color of the hit object
         const IMaterial* material; // the material of the hit object

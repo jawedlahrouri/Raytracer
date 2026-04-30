@@ -11,6 +11,7 @@
 #include "primitives/SpherePrimitive.hpp"
 #include "primitives/PlanePrimitive.hpp"
 #include <memory>
+#include "spacePartitionning/BVH.hpp"
 
 Raytracer::test::test(const Raytracer::Primitive& primitive, const Raytracer::Camera& camera, const Raytracer::Lights& lights) : _primitive(primitive), _camera(camera), _lights(lights), _cam(camera.size.first, camera.size.second), _pixels(camera.size.second, std::vector<Math::Vector3D>(camera.size.first))
 {
@@ -20,19 +21,19 @@ Raytracer::test::~test()
 {
 }
 
-void Raytracer::test::createScene()
+void Raytracer::test::createScene(BVH& bvh)
 {
     //futurement ce qui vas etre appeller par la factory a chaque sphere rencontrer i guess
     std::vector<std::unique_ptr<Raytracer::IPrimitive>> shapes;
     for (const auto& [name, shapeData] : _primitive.listOfShapes) {
         if (shapeData.shapeName.rfind("Sphere", 0) == 0) {
-            shapes.push_back(std::make_unique<Raytracer::SpherePrimitive>(shapeData)); // ici il faudras appeler l'entry point via la factory
+            shapes.push_back(std::make_unique<Raytracer::SpherePrimitive>()); // ici il faudras appeler l'entry point via la factory
         }
     }
 
-    for (const auto& [name, planeData] : _primitive.listOfPlane) {
-        shapes.push_back(std::make_unique<Raytracer::PlanePrimitive>(planeData)); 
-    }
+    // for (const auto& [name, planeData] : _primitive.listOfPlane) {
+    //     shapes.push_back(std::make_unique<Raytracer::PlanePrimitive>(planeData)); 
+    // }
 
     for (int j = 0; j < _camera.size.second; j++) {
         for (int i = 0; i < _camera.size.first; i++) {
@@ -43,19 +44,10 @@ void Raytracer::test::createScene()
             Math::Vector3D pixel_color(0, 0, 0);
 
             HitRecord rec;
-            bool hit = false;
-            double closest_so_far = std::numeric_limits<double>::max();
-            for (std::size_t i = 0; i <= shapes.size(); i++) {
-                HitRecord temp_rec;
-                if (shapes.at(i)->intersect(r, temp_rec) && temp_rec.t < closest_so_far) {
-                    hit = true;
-                    closest_so_far = temp_rec.t;
-                    rec = temp_rec;
-                    // pixel_color = ; a coder mais jsp comment
-                }
-            
+            if (bvh.intersect(r, 0.001f, 1e9f, rec)) {
+                Math::Vector3D n = (rec.normal + Math::Vector3D{1, 1, 1}) * 0.5f;
+                //image[j * width + i] = n;
             }
-            _pixels[j][i] = pixel_color;
         }
     }
     Raytracer::PPMExporter exporter;
