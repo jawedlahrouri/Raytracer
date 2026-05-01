@@ -29,7 +29,7 @@ namespace Raytracer {
         public:
             std::shared_ptr<Raytracer::IPrimitive> createPrimitive(const std::string &type, const Raytracer::Shape &data);
             std::shared_ptr<Raytracer::IPrimitive> createPrimitive(const std::string &type, const Raytracer::Plane &data);
-            std::shared_ptr<Raytracer::ILight> createLight(const std::string &type);
+            std::shared_ptr<Raytracer::ILight> createLight(const std::string &type, const Raytracer::Light &data);
     };
 }
 
