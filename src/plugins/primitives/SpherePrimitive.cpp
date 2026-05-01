@@ -41,9 +41,10 @@ bool Raytracer::SpherePrimitive::intersect(const Ray& ray, float tMin, float tMa
 
 Raytracer::AABB Raytracer::SpherePrimitive::bounds() const
 {
-    Math::Vector3D r(radius, radius, radius);
-
-    return Raytracer::AABB();
+    AABB box;
+    box.min = Math::Vector3D(center.X - radius, center.Y - radius, center.Z - radius);
+    box.max = Math::Vector3D(center.X + radius, center.Y + radius, center.Z + radius);
+    return box;
 }
 
 Math::Point3D Raytracer::SpherePrimitive::centroid() const
@@ -61,9 +62,6 @@ void Raytracer::SpherePrimitive::setPosition(const Math::Point3D& position)
     center = position;    
 }
 
-void Raytracer::SpherePrimitive::drawShape()
-{
-}
 
 extern "C" {
     int getType() {

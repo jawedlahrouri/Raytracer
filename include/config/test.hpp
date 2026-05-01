@@ -12,6 +12,8 @@
 #include "./RaytracerType.hpp"
 #include "./plugins/renderer/Camera.hpp"
 #include "spacePartitionning/BVH.hpp"
+#include "DLLoader/load_so.hpp"
+#include "design_pattern/ObjectFactory.hpp"
 
 namespace Raytracer {
     class test {
@@ -30,7 +32,7 @@ namespace Raytracer {
 
             void drawSphere();
             void drawPlane();
-            void createScene(BVH& bvh);
+            void createScene(BVH& bvh, Raytracer::ObjectFactory& factory);
     };
 }
 

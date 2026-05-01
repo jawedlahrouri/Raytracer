@@ -34,6 +34,8 @@
 namespace Raytracer {
 
 class SpherePrimitive : public IPrimitive {
+    private:
+        std::string _name;
     public:
         Math::Point3D center;
         double radius;
@@ -46,6 +48,9 @@ class SpherePrimitive : public IPrimitive {
         bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& rec) const override;
         AABB bounds() const override;
         Math::Point3D centroid() const override;
+
+        void setName(const std::string& name) override;
+        void setPosition(const Math::Point3D& position) override;
     };
 }
 

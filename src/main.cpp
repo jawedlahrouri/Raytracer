@@ -64,11 +64,9 @@ int main(int argc, char **argv)
         parser.parser();
 
         Raytracer::test test(parser.getInfoPrimitive(), parser.getInfoCamera(), parser.getInfoLights());
+        Raytracer::ObjectFactory factory;
         Raytracer::BVH bvh;
-        test.createScene(bvh);
-
-        //open_lib_so(std::filesystem::path(argv[1]));
-        // temp_draw_scene();
+        test.createScene(bvh, factory);
         return 0;
     } catch (const WarningException& e) {
         std::cerr << "WarningException in main: " << e.what() << std::endl;
