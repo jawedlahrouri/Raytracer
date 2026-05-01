@@ -12,6 +12,7 @@ SRC  =   $(wildcard src/*.cpp) \
 		$(wildcard src/scene_loaders/*.cpp) \
         $(wildcard src/plugins/lights/*.cpp) \
         $(wildcard src/plugins/interface/*.cpp) \
+        $(wildcard src/Materials/*.cpp) \
 
 
 PRIMITIVE_SRC   =   $(wildcard src/plugins/primitives/*.cpp)

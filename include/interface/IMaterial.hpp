@@ -8,17 +8,22 @@
 #ifndef IMATERIAL_HPP_
 #define IMATERIAL_HPP_
 
-#include "./utils/Ray.hpp"
-#include "./utils/HitRecord.hpp"
-#include "./interface/ILight.hpp"
+#include <memory>
+#include "utils/Ray.hpp"
+#include "utils/HitRecord.hpp"
+#include "interface/ILight.hpp"
+#include "interface/IPrimitive.hpp"
+#include "math/Vector3D.hpp"
+#include "RaytracerType.hpp"
+#include "parsing.hpp"
+
 
 class IMaterial {
     public:
-        IMaterial();
-        ~IMaterial();
+        IMaterial() = default;
+        ~IMaterial() = default;
 
-        virtual Raytracer::colorType getDiffuseColor(const HitRecord& record) const = 0;
-
+        virtual Math::Vector3D getDiffuseColor(const HitRecord& record, const Raytracer::Lights& lights, const std::vector<std::shared_ptr<Raytracer::IPrimitive>>& physical_primitives) const = 0;
     protected:
     private:
 };

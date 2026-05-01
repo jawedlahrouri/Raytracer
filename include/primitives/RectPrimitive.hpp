@@ -16,6 +16,7 @@
 namespace Raytracer {
     class RectPrimitive : public IPrimitive {
     public:
+        IMaterial* material;
         Math::Point3D center;
         double width;
         double height;

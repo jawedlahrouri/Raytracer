@@ -23,25 +23,26 @@ bool Raytracer::RectPrimitive::intersect(const Ray& ray, HitRecord& rec) const {
     double denominator = ray.direction.dot(normal);
     
     if (std::abs(denominator) < 1e-6)
-        return false;
-        
+    return false;
+    
     Math::Vector3D origin_vec(ray.origin.X, ray.origin.Y, ray.origin.Z);
     Math::Vector3D center_vec(center.X, center.Y, center.Z);
     Math::Vector3D diff = center_vec - origin_vec;
     double t = diff.dot(normal) / denominator;
     
     if (t < t_min || t > t_max)
-        return false;
-
-    Math::Point3D hitPoint = Math::Point3D(ray.origin.X + ray.direction.X * t, 
-    ray.origin.Y + ray.direction.Y * t, 
-    ray.origin.Z + ray.direction.Z * t);
+    return false;
     
-    double dx = std::abs(hitPoint.X - center.X);
-    double dy = std::abs(hitPoint.Y - center.Y);
-
+    Math::Point3D hitPoint = Math::Point3D(ray.origin.X + ray.direction.X * t, 
+        ray.origin.Y + ray.direction.Y * t, 
+        ray.origin.Z + ray.direction.Z * t);
+        
+        double dx = std::abs(hitPoint.X - center.X);
+        double dy = std::abs(hitPoint.Y - center.Y);
+        
     if (dx <= width / 2.0 && dy <= height / 2.0) {
         fill_hit_record(rec, t, hitPoint, normal, denominator, color);
+        rec.material = material;
         return true;
     }
     return false;

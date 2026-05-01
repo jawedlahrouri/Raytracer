@@ -16,7 +16,7 @@
 #include "plugins/lights/PointLight.hpp"
 #include "plugins/renderer/Shadow_Ray.hpp"
 #include "parsing.hpp"
-
+#include "Materials/FlatMaterial.hpp"
 #include <memory>
 #include <limits>
 
@@ -31,7 +31,8 @@ Raytracer::test::~test()
 void Raytracer::test::createScene()
 {
     std::vector<std::shared_ptr<Raytracer::IPrimitive>> physical_primitives;
-    Raytracer::ObjectFactory factory; 
+    Raytracer::ObjectFactory factory;
+    auto material = std::make_shared<Raytracer::FlatMaterial>(); 
 
     for (const auto& [name, shapeData] : _primitive.listOfShapes) {
         try {
@@ -72,32 +73,8 @@ void Raytracer::test::createScene()
             }
 
             if (hit) {
-                Math::Vector3D illumination_color(0, 0, 0);
-                
-                for (auto const& [id, light_pos] : _lights.listPoints) {
-                    Raytracer::PointLight light(light_pos, Raytracer::RED);     
-                    Math::Vector3D dir_to_light = light.getDirectionToLight(rec.point);
-                    float dist_to_light = light.getDistanceToLight(rec.point);
-
-                    Math::Point3D shadow_origin(rec.point.X + rec.normal.X * 0.01, rec.point.Y + rec.normal.Y * 0.01, rec.point.Z + rec.normal.Z * 0.01);
-                    Raytracer::Ray shadow_ray(shadow_origin, dir_to_light);
-                    bool in_shadow = false;
-
-                    for (auto& primitive_shadow : physical_primitives) {
-                        HitRecord shadow_rec;
-                        if (primitive_shadow->intersect(shadow_ray, shadow_rec) && 
-                            shadow_rec.t > 0.01 && shadow_rec.t < dist_to_light) {
-                            in_shadow = true;
-                            break;
-                        }
-                    }
-                    if (!in_shadow) {
-                        illumination_color = illumination_color + light.calculateIllumination(rec.point, rec.normal, rec.color);
-                    }
-                }
-                double ambient_factor = 0.2;
-
-                pixel_color = illumination_color + (rec.color * ambient_factor);
+                rec.material = material.get();
+                pixel_color = rec.material->getDiffuseColor(rec, _lights, physical_primitives);
                 if (pixel_color.X > 255) pixel_color.X = 255;
                 if (pixel_color.Y > 255) pixel_color.Y = 255;
                 if (pixel_color.Z > 255) pixel_color.Z = 255;
