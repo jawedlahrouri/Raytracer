@@ -52,7 +52,8 @@ void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory)
     }
 
     bvh.build(std::move(physical_primitives));
-    std::cerr << "[DEBUG] BVH prims count: " << bvh.getPrimCount() << std::endl;
+    // Lignes de debug
+    std::cerr << "BVH prims count: " << bvh.getPrimCount() << std::endl;
 
     for (int j = 0; j < _camera.size.second; j++) {
         for (int i = 0; i < _camera.size.first; i++) {
@@ -60,21 +61,26 @@ void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory)
             double v = static_cast<double>(j) / (_camera.size.second - 1);
             Raytracer::Ray r = _cam.ray(u, v);
 
-            Math::Vector3D pixel_color(0, 0, 0);
+            Math::Vector3D pixel_color(0, 0, 0); // ici 
             HitRecord rec;
             if (bvh.intersect(r, 0.001f, 1e9f, rec)) {
-                pixel_color = (rec.normal + Math::Vector3D{1, 1, 1}) * 0.5f;
+                pixel_color = Math::Vector3D(
+                    rec.color.X / 255.0,
+                    rec.color.Y / 255.0,
+                    rec.color.Z / 255.0
+                );
             }
             _pixels[j][i] = pixel_color;
         }
     }
 
+    // lignes de debug 
     int hitCount = 0;
     for (int j = 0; j < _camera.size.second; j++)
         for (int i = 0; i < _camera.size.first; i++)
             if (_pixels[j][i].X != 0 || _pixels[j][i].Y != 0 || _pixels[j][i].Z != 0)
                 hitCount++;
-    std::cerr << "[DEBUG] Pixels hit: " << hitCount << "/" 
+    std::cerr << "Pixels hit: " << hitCount << "/" 
             << _camera.size.first * _camera.size.second << std::endl;
 
     Raytracer::PPMExporter exporter;

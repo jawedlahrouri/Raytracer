@@ -41,7 +41,7 @@ class SpherePrimitive : public IPrimitive {
         double radius;
         Math::Vector3D color;
 
-        SpherePrimitive(const Raytracer::Shape& data) : center(data.coords), radius(data.specs.at(Raytracer::specsType::r)), color() {}
+        SpherePrimitive(const Raytracer::Shape& data) : center(data.coords), radius(data.specs.at(Raytracer::specsType::r)), color(data.color) {}
 
         ~SpherePrimitive() = default;
 
