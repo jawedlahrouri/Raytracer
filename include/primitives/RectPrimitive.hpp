@@ -28,8 +28,9 @@ namespace Raytracer {
             color(data.color) {}
         ~RectPrimitive()  = default;
     
-        bool intersect(const Raytracer::Ray& ray, HitRecord& record) const override;
-        void drawShape() override;
+        bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& rec) const override;
+        AABB bounds() const override;
+        Math::Point3D centroid() const override;
     };
 }
 

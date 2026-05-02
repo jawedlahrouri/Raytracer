@@ -11,6 +11,7 @@
 #include "design_pattern/ObjectFactory.hpp"
 #include "primitives/SpherePrimitive.hpp"
 #include "primitives/PlanePrimitive.hpp"
+#include "spacePartitionning/BVH.hpp"
 #include "RaytracerType.hpp"
 #include "utils/HitRecord.hpp"
 #include "plugins/lights/PointLight.hpp"
@@ -29,21 +30,21 @@ Raytracer::test::~test()
 {
 }
 
-void Raytracer::test::createScene()
+// test.cpp — signature modifiée
+void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory)
 {
     std::vector<std::shared_ptr<Raytracer::IPrimitive>> physical_primitives;
     Raytracer::MaterialFactory material_factory;
     std::vector<std::shared_ptr<Raytracer::ILight>> physical_lights;
-    Raytracer::ObjectFactory factory; 
 
     for (const auto& [name, shapeData] : _primitive.listOfShapes) {
         try {
-            auto newPrimitive = factory.createPrimitive(shapeData.type, shapeData);
+            auto prim = factory.createPrimitive(shapeData.type, name, shapeData);
             auto material = material_factory.createMaterial(shapeData.material);
-            newPrimitive->material = material;
-            physical_primitives.push_back(newPrimitive);
-        } catch (const ErrorException &e) {
-            std::cerr << "Factory Error (" << shapeData.type << "): " << e.what() << std::endl;
+            prim->material = material;
+            physical_primitives.push_back(prim);
+        } catch (const ErrorException& e) {
+            std::cerr << "Factory Error: " << e.what() << std::endl;
         }
     }
 
@@ -70,6 +71,10 @@ void Raytracer::test::createScene()
             std::cerr << "Factory Error (PointLight " << id << "): " << e.what() << std::endl;
         }
     }
+  
+    bvh.build(std::move(physical_primitives));
+    // Lignes de debug
+    std::cerr << "BVH prims count: " << bvh.getPrimCount() << std::endl;
 
     for (int j = 0; j < _camera.size.second; j++) {
         for (int i = 0; i < _camera.size.first; i++) {
@@ -77,29 +82,28 @@ void Raytracer::test::createScene()
             double v = static_cast<double>(j) / (_camera.size.second - 1);
             Raytracer::Ray r = _cam.ray(u, v);
 
-            Math::Vector3D pixel_color(0, 0, 0);
+            Math::Vector3D pixel_color(0, 0, 0); // ici 
             HitRecord rec;
-            bool hit = false;
-            double closest_so_far = std::numeric_limits<double>::max();
-
-            for (auto& primitive : physical_primitives) {
-                HitRecord temp_rec;
-                if (primitive->intersect(r, temp_rec) && temp_rec.t < closest_so_far) {
-                    hit = true;
-                    closest_so_far = temp_rec.t;
-                    rec = temp_rec;
-                }
-            }
-
-            if (hit) {
-                pixel_color = rec.material->getDiffuseColor(rec, physical_lights, physical_primitives);
-                if (pixel_color.X > 255) pixel_color.X = 255;
-                if (pixel_color.Y > 255) pixel_color.Y = 255;
-                if (pixel_color.Z > 255) pixel_color.Z = 255;
+            if (bvh.intersect(r, 0.001f, 1e9f, rec)) {
+                pixel_color = Math::Vector3D(
+                    rec.color.X / 255.0,
+                    rec.color.Y / 255.0,
+                    rec.color.Z / 255.0
+                );
             }
             _pixels[j][i] = pixel_color;
         }
     }
+
+    // lignes de debug 
+    int hitCount = 0;
+    for (int j = 0; j < _camera.size.second; j++)
+        for (int i = 0; i < _camera.size.first; i++)
+            if (_pixels[j][i].X != 0 || _pixels[j][i].Y != 0 || _pixels[j][i].Z != 0)
+                hitCount++;
+    std::cerr << "Pixels hit: " << hitCount << "/" 
+            << _camera.size.first * _camera.size.second << std::endl;
+
     Raytracer::PPMExporter exporter;
     exporter.write_image(_camera.size.first, _camera.size.second, _pixels);
     physical_lights.clear();
