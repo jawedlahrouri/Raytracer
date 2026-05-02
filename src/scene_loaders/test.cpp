@@ -39,7 +39,7 @@ void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory)
 
     for (const auto& [name, shapeData] : _primitive.listOfShapes) {
         try {
-            auto prim = factory.createPrimitive(shapeData.type, name, shapeData);
+            auto prim = factory.createPrimitive(shapeData.type, shapeData);
             auto material = material_factory.createMaterial(shapeData.material);
             prim->material = material;
             physical_primitives.push_back(prim);
@@ -72,6 +72,8 @@ void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory)
         }
     }
   
+    // Copie avant le move pour les shadow rays dans getDiffuseColor
+    std::vector<std::shared_ptr<Raytracer::IPrimitive>> primitives_for_shadows = physical_primitives;
     bvh.build(std::move(physical_primitives));
     // Lignes de debug
     std::cerr << "BVH prims count: " << bvh.getPrimCount() << std::endl;
@@ -82,14 +84,23 @@ void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory)
             double v = static_cast<double>(j) / (_camera.size.second - 1);
             Raytracer::Ray r = _cam.ray(u, v);
 
-            Math::Vector3D pixel_color(0, 0, 0); // ici 
+            Math::Vector3D pixel_color(0, 0, 0);
             HitRecord rec;
             if (bvh.intersect(r, 0.001f, 1e9f, rec)) {
-                pixel_color = Math::Vector3D(
-                    rec.color.X / 255.0,
-                    rec.color.Y / 255.0,
-                    rec.color.Z / 255.0
-                );
+                if (rec.material && !physical_lights.empty()) {
+                    Math::Vector3D lit = rec.material->getDiffuseColor(rec, physical_lights, primitives_for_shadows);
+                    pixel_color = Math::Vector3D(
+                        lit.X / 255.0,
+                        lit.Y / 255.0,
+                        lit.Z / 255.0
+                    );
+                } else {
+                    pixel_color = Math::Vector3D(
+                        rec.color.X / 255.0,
+                        rec.color.Y / 255.0,
+                        rec.color.Z / 255.0
+                    );
+                }
             }
             _pixels[j][i] = pixel_color;
         }
