@@ -37,6 +37,7 @@ bool Raytracer::PlanePrimitive::intersect(const Ray& ray, float tMin, float tMax
         ray.origin.Z + ray.direction.Z * t
     );
     fill_hit_record(rec, t, hitPoint, normal, denom, color);
+    rec.material = material.get();
     return true;
 }
 

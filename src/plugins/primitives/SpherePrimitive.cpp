@@ -31,11 +31,11 @@ bool Raytracer::SpherePrimitive::intersect(const Ray& ray, float tMin, float tMa
         return false;
     }
 
-    rec.t      = t;
-    rec.point  = ray.at(t); // Point3D du hit
-    rec.normal = (rec.point - center) * (1.f / (float)radius); // normale unitaire
-    // std::cout << "val red for sphere : " << color.X << std::endl;
-    rec.color  = color; // ta couleur à la place de materialID
+    rec.t        = t;
+    rec.point    = ray.at(t);
+    rec.normal   = (rec.point - center) * (1.f / (float)radius);
+    rec.color    = color;
+    rec.material = material.get();
 
     return true;
 }
