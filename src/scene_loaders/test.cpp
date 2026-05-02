@@ -17,6 +17,7 @@
 #include "plugins/renderer/Shadow_Ray.hpp"
 #include "parsing.hpp"
 #include "Materials/FlatMaterial.hpp"
+#include "design_pattern/MaterialFactory.hpp"
 #include <memory>
 #include <limits>
 
@@ -32,14 +33,13 @@ void Raytracer::test::createScene()
 {
     std::vector<std::shared_ptr<Raytracer::IPrimitive>> physical_primitives;
     Raytracer::ObjectFactory factory;
+    Raytracer::MaterialFactory material_factory;
 
     for (const auto& [name, shapeData] : _primitive.listOfShapes) {
         try {
             auto newPrimitive = factory.createPrimitive(shapeData.type, name, shapeData);
-            if (shapeData.material == "FlatMaterial" || shapeData.material == "FlatMaterials")
-                newPrimitive->material = std::make_shared<Raytracer::FlatMaterial>();
-            else
-                newPrimitive->material = std::make_shared<Raytracer::FlatMaterial>(); 
+            auto material = material_factory.createMaterial(shapeData.material);
+            newPrimitive->material = material;
             physical_primitives.push_back(newPrimitive);
         } catch (const ErrorException &e) {
             std::cerr << "Factory Error (" << shapeData.type << "): " << e.what() << std::endl;
@@ -49,10 +49,8 @@ void Raytracer::test::createScene()
     for (const auto& [name, planeData] : _primitive.listOfPlane) {
         try {
             auto newPlane = factory.createPrimitive("Plane", name, planeData);   
-            if (planeData.material == "FlatMaterial" || planeData.material == "FlatMaterials")
-                newPlane->material = std::make_shared<Raytracer::FlatMaterial>();
-            else
-                newPlane->material = std::make_shared<Raytracer::FlatMaterial>(); 
+            auto material = material_factory.createMaterial(planeData.material);
+            newPlane->material = material;
             physical_primitives.push_back(newPlane);
         } catch (const ErrorException &e) {
             std::cerr << "Factory Error (Plane): " << e.what() << std::endl;
