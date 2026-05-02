@@ -16,14 +16,14 @@
 #include "math/Vector3D.hpp"
 #include "RaytracerType.hpp"
 #include "parsing.hpp"
-
+#include "spacePartitionning/BVH.hpp"
 
 class IMaterial {
     public:
         IMaterial() = default;
         ~IMaterial() = default;
 
-    virtual Math::Vector3D getDiffuseColor(const HitRecord& record, const std::vector<std::shared_ptr<Raytracer::ILight>>& physical_lights, const std::vector<std::shared_ptr<Raytracer::IPrimitive>>& physical_primitives) const = 0;
+    virtual Math::Vector3D getDiffuseColor(const HitRecord& record, const std::vector<std::shared_ptr<Raytracer::ILight>>& physical_lights, const Raytracer::BVH& bvh) const = 0;
     protected:
     private:
 };
