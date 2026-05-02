@@ -30,9 +30,6 @@ namespace Raytracer {
             void sphere_logic();
             bool intersect(const Raytracer::Ray& ray, HitRecord& record) const override;
             void drawShape() override;
-
-            void setName(const std::string &name) override;
-            void setPosition(const Math::Point3D& position) override;
     };
 }
 
