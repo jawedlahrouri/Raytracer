@@ -38,7 +38,7 @@ bool Raytracer::SpherePrimitive::intersect(const Ray& ray, HitRecord& rec) const
         }
         Math::Point3D temp_point = ray.origin + ray.direction * root;
         fill_hit_record(rec, root, temp_point, center, radius, color);
-        rec.material = material;
+        rec.material = material.get();
         return true;
     } catch (const Exception& e) {
         return false;

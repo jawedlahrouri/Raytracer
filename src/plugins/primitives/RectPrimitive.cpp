@@ -42,7 +42,7 @@ bool Raytracer::RectPrimitive::intersect(const Ray& ray, HitRecord& rec) const {
         
     if (dx <= width / 2.0 && dy <= height / 2.0) {
         fill_hit_record(rec, t, hitPoint, normal, denominator, color);
-        rec.material = material;
+        rec.material = material.get();
         return true;
     }
     return false;

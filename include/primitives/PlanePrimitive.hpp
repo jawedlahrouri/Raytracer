@@ -19,7 +19,6 @@ namespace Raytracer {
             std::string _name;
 
         public:
-            IMaterial* material;
             Math::Point3D center;
             Math::Vector3D normal;
             Math::Vector3D color;

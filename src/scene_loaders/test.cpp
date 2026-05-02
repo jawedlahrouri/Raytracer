@@ -32,11 +32,14 @@ void Raytracer::test::createScene()
 {
     std::vector<std::shared_ptr<Raytracer::IPrimitive>> physical_primitives;
     Raytracer::ObjectFactory factory;
-    auto material = std::make_shared<Raytracer::FlatMaterial>(); 
 
     for (const auto& [name, shapeData] : _primitive.listOfShapes) {
         try {
             auto newPrimitive = factory.createPrimitive(shapeData.type, name, shapeData);
+            if (shapeData.material == "FlatMaterial" || shapeData.material == "FlatMaterials")
+                newPrimitive->material = std::make_shared<Raytracer::FlatMaterial>();
+            else
+                newPrimitive->material = std::make_shared<Raytracer::FlatMaterial>(); 
             physical_primitives.push_back(newPrimitive);
         } catch (const ErrorException &e) {
             std::cerr << "Factory Error (" << shapeData.type << "): " << e.what() << std::endl;
@@ -45,7 +48,11 @@ void Raytracer::test::createScene()
 
     for (const auto& [name, planeData] : _primitive.listOfPlane) {
         try {
-            auto newPlane = factory.createPrimitive("Plane", name, planeData);
+            auto newPlane = factory.createPrimitive("Plane", name, planeData);   
+            if (planeData.material == "FlatMaterial" || planeData.material == "FlatMaterials")
+                newPlane->material = std::make_shared<Raytracer::FlatMaterial>();
+            else
+                newPlane->material = std::make_shared<Raytracer::FlatMaterial>(); 
             physical_primitives.push_back(newPlane);
         } catch (const ErrorException &e) {
             std::cerr << "Factory Error (Plane): " << e.what() << std::endl;
@@ -73,7 +80,6 @@ void Raytracer::test::createScene()
             }
 
             if (hit) {
-                rec.material = material.get();
                 pixel_color = rec.material->getDiffuseColor(rec, _lights, physical_primitives);
                 if (pixel_color.X > 255) pixel_color.X = 255;
                 if (pixel_color.Y > 255) pixel_color.Y = 255;

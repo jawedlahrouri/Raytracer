@@ -37,8 +37,7 @@ bool Raytracer::PlanePrimitive::intersect(const Ray& ray, HitRecord& rec) const 
         // Fill the hit record
         Math::Point3D temp_point = ray.origin + ray.direction * t;
         fill_hit_record(rec, t, temp_point, normal, denom, color);
-        rec.material = material;
-        
+        rec.material = material.get();
         return true;
     } catch (const Exception& e) {
         return false;
