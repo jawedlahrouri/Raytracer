@@ -13,7 +13,7 @@ bool Raytracer::RectPrimitive::intersect(const Ray& ray, float tMin, float tMax,
 
     if (std::abs(denominator) < 1e-6)
         return false;
-
+    
     Math::Vector3D origin_vec(ray.origin.X, ray.origin.Y, ray.origin.Z);
     Math::Vector3D center_vec(center.X, center.Y, center.Z);
     Math::Vector3D diff = center_vec - origin_vec;

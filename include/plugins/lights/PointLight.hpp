@@ -27,11 +27,7 @@ namespace Raytracer {
             float getDistanceToLight(const Math::Vector3D& hitPoint) const override;
             Math::Vector3D calculateIllumination(const Math::Vector3D& hitPoint, const Math::Vector3D& normal, const Math::Vector3D& baseColor) const override;
 
-            void setName(const std::string &name) override;
-            void setPosition(const Math::Point3D& position) override;
-
         private:
-            std::string _name;
             Math::Point3D _position;
             Raytracer::colorType _intensity;
     };

@@ -17,6 +17,8 @@
 #include "plugins/lights/PointLight.hpp"
 #include "plugins/renderer/Shadow_Ray.hpp"
 #include "parsing.hpp"
+#include "plugins/Materials/FlatMaterial.hpp"
+#include "design_pattern/MaterialFactory.hpp"
 #include <memory>
 #include <limits>
 
@@ -31,11 +33,15 @@ Raytracer::test::~test()
 // test.cpp — signature modifiée
 void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory)
 {
-    std::vector<std::shared_ptr<IPrimitive>> physical_primitives;
+    std::vector<std::shared_ptr<Raytracer::IPrimitive>> physical_primitives;
+    Raytracer::MaterialFactory material_factory;
+    std::vector<std::shared_ptr<Raytracer::ILight>> physical_lights;
 
     for (const auto& [name, shapeData] : _primitive.listOfShapes) {
         try {
             auto prim = factory.createPrimitive(shapeData.type, name, shapeData);
+            auto material = material_factory.createMaterial(shapeData.material);
+            prim->material = material;
             physical_primitives.push_back(prim);
         } catch (const ErrorException& e) {
             std::cerr << "Factory Error: " << e.what() << std::endl;
@@ -44,13 +50,28 @@ void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory)
 
     for (const auto& [name, planeData] : _primitive.listOfPlane) {
         try {
-            auto plane = factory.createPrimitive("Plane", name, planeData);
-            physical_primitives.push_back(plane);
-        } catch (const ErrorException& e) {
+            auto newPlane = factory.createPrimitive("Plane", planeData);   
+            auto material = material_factory.createMaterial(planeData.material);
+            newPlane->material = material;
+            physical_primitives.push_back(newPlane);
+        } catch (const ErrorException &e) {
             std::cerr << "Factory Error (Plane): " << e.what() << std::endl;
         }
     }
 
+    for (const auto& [id, pos] : _lights.listPoints) {
+        try {
+            Raytracer::Light data;
+            data.position = pos;
+            data.intensity = Raytracer::RED;
+            
+            auto newLight = factory.createLight("Point", data);
+            if (newLight) physical_lights.push_back(newLight);
+        } catch (const std::exception &e) {
+            std::cerr << "Factory Error (PointLight " << id << "): " << e.what() << std::endl;
+        }
+    }
+  
     bvh.build(std::move(physical_primitives));
     // Lignes de debug
     std::cerr << "BVH prims count: " << bvh.getPrimCount() << std::endl;
@@ -85,4 +106,6 @@ void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory)
 
     Raytracer::PPMExporter exporter;
     exporter.write_image(_camera.size.first, _camera.size.second, _pixels);
+    physical_lights.clear();
+    physical_primitives.clear();
 }
