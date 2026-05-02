@@ -30,7 +30,6 @@ Raytracer::test::~test()
 {
 }
 
-// test.cpp — signature modifiée
 void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory)
 {
     std::vector<std::shared_ptr<Raytracer::IPrimitive>> physical_primitives;
@@ -72,8 +71,6 @@ void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory)
         }
     }
   
-    // Copie avant le move pour les shadow rays dans getDiffuseColor
-    std::vector<std::shared_ptr<Raytracer::IPrimitive>> primitives_for_shadows = physical_primitives;
     bvh.build(std::move(physical_primitives));
     // Lignes de debug
     std::cerr << "BVH prims count: " << bvh.getPrimCount() << std::endl;
@@ -88,7 +85,7 @@ void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory)
             HitRecord rec;
             if (bvh.intersect(r, 0.001f, 1e9f, rec)) {
                 if (rec.material && !physical_lights.empty()) {
-                    Math::Vector3D lit = rec.material->getDiffuseColor(rec, physical_lights, primitives_for_shadows);
+                    Math::Vector3D lit = rec.material->getDiffuseColor(rec, physical_lights, bvh);
                     pixel_color = Math::Vector3D(
                         lit.X / 255.0,
                         lit.Y / 255.0,
