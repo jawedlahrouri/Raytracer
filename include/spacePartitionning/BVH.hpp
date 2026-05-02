@@ -37,6 +37,9 @@ namespace Raytracer {
             void build(std::vector<std::shared_ptr<IPrimitive>> primitives);
             bool intersect(const Ray& ray, double tMin, double tMax, HitRecord& rec) const;
             bool traverseNode(const BVHNode* node, const Ray& ray, double tMin, double tMax, HitRecord& rec) const;
+            int getPrimCount() const {
+                return (int)prims.size();
+            }
     };
 }
 

@@ -52,6 +52,7 @@ void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory)
     }
 
     bvh.build(std::move(physical_primitives));
+    std::cerr << "[DEBUG] BVH prims count: " << bvh.getPrimCount() << std::endl;
 
     for (int j = 0; j < _camera.size.second; j++) {
         for (int i = 0; i < _camera.size.first; i++) {
@@ -67,6 +68,14 @@ void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory)
             _pixels[j][i] = pixel_color;
         }
     }
+
+    int hitCount = 0;
+    for (int j = 0; j < _camera.size.second; j++)
+        for (int i = 0; i < _camera.size.first; i++)
+            if (_pixels[j][i].X != 0 || _pixels[j][i].Y != 0 || _pixels[j][i].Z != 0)
+                hitCount++;
+    std::cerr << "[DEBUG] Pixels hit: " << hitCount << "/" 
+            << _camera.size.first * _camera.size.second << std::endl;
 
     Raytracer::PPMExporter exporter;
     exporter.write_image(_camera.size.first, _camera.size.second, _pixels);
