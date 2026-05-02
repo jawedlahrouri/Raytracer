@@ -24,20 +24,20 @@ bool Raytracer::PlanePrimitive::intersect(const Ray& ray, HitRecord& rec) const 
         // t = [(center - ray.origin) . normal] / [ray.direction . normal]
         double denom = ray.direction.dot(normal);
         if (std::abs(denom) < 1e-6)
-            return false;
-            
+        return false;
+        
         // Calculate the intersection point
         Math::Vector3D diff = center - ray.origin;
         double t = diff.dot(normal) / denom;
         
         // Check the intersection point
         if (t < t_min || t > t_max)
-            return false;
-            
+        return false;
+        
         // Fill the hit record
         Math::Point3D temp_point = ray.origin + ray.direction * t;
         fill_hit_record(rec, t, temp_point, normal, denom, color);
-        
+        rec.material = material.get();
         return true;
     } catch (const Exception& e) {
         return false;

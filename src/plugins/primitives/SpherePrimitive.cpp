@@ -26,7 +26,7 @@ bool Raytracer::SpherePrimitive::intersect(const Ray& ray, HitRecord& rec) const
         
         // if is 0 no intersection, if is 
         if (discriminant < 0)
-            return false;
+        return false;
         double sqrtd = std::sqrt(discriminant);
         
         // find the nearest root that lies in the acceptable range
@@ -34,10 +34,11 @@ bool Raytracer::SpherePrimitive::intersect(const Ray& ray, HitRecord& rec) const
         if (root <= t_min || t_max <= root) {
             root = (-b + sqrtd) / (2.0 * a);
             if (root <= t_min || t_max <= root)
-                return false;
+            return false;
         }
         Math::Point3D temp_point = ray.origin + ray.direction * root;
         fill_hit_record(rec, root, temp_point, center, radius, color);
+        rec.material = material.get();
         return true;
     } catch (const Exception& e) {
         return false;

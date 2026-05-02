@@ -37,12 +37,14 @@ namespace Raytracer {
         Math::Point3D coords; // enum values (x, y, z)
         std::map<enum Raytracer::specsType, double> specs; // specifications for shape
         Math::Vector3D color; // RED, GREEN, BLUE
+        std::string material;
     };
 
     struct Plane {
         Math::Vector3D axis; // axis X, Y or Z
         float positions;
         Math::Vector3D color; // RED, GREEN, BLUE
+        std::string material;
     };
 
     struct Primitive {
