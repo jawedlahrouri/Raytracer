@@ -44,21 +44,6 @@ bool Raytracer::PlanePrimitive::intersect(const Ray& ray, HitRecord& rec) const 
     }
 }
 
-void Raytracer::PlanePrimitive::setName(const std::string &name)
-{
-    _name = name;
-}
-
-void Raytracer::PlanePrimitive::setPosition(const Math::Point3D& position)
-{
-    center = position;
-}
-
-void Raytracer::PlanePrimitive::setAxis(const Math::Vector3D& axis)
-{
-    normal = axis;
-}
-
 void Raytracer::PlanePrimitive::drawShape()
 {
 }
