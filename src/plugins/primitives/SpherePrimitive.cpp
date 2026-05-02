@@ -5,43 +5,52 @@
 ** sphere
 */
 
-#include "primitives/SpherePrimitive.hpp"
+#include "./primitives/SpherePrimitive.hpp"
+#include <cmath>
+#include "./spacePartitionning/AABB.hpp"
 
-static void fill_hit_record(HitRecord& rec, double t, const Math::Point3D& hitPoint, const Math::Point3D& center, double radius, const Math::Vector3D& color) {
-    rec.t = t;
-    rec.point = Math::Vector3D(hitPoint.X, hitPoint.Y, hitPoint.Z);
-    rec.normal = (hitPoint - center) / radius;
-    rec.color = color;
-}
+bool Raytracer::SpherePrimitive::intersect(const Ray& ray, float tMin, float tMax, HitRecord& rec) const
+{
+    Math::Vector3D oc = ray.origin - center;
 
-bool Raytracer::SpherePrimitive::intersect(const Ray& ray, HitRecord& rec) const {
-    try {
-        Math::Vector3D oc = ray.origin - center;
-        double a = ray.direction.dot(ray.direction);
-        double b = 2.0 * oc.dot(ray.direction);
-        double c = oc.dot(oc) - radius * radius;
-        double t_min = 0.001;
-        double t_max = 1000000.0;
-        double discriminant = b * b - 4 * a * c;
-        
-        // if is 0 no intersection, if is 
-        if (discriminant < 0)
-            return false;
-        double sqrtd = std::sqrt(discriminant);
-        
-        // find the nearest root that lies in the acceptable range
-        double root = (-b - sqrtd) / (2.0 * a);
-        if (root <= t_min || t_max <= root) {
-            root = (-b + sqrtd) / (2.0 * a);
-            if (root <= t_min || t_max <= root)
-                return false;
-        }
-        Math::Point3D temp_point = ray.origin + ray.direction * root;
-        fill_hit_record(rec, root, temp_point, center, radius, color);
-        return true;
-    } catch (const Exception& e) {
+    float a = ray.direction.dot(ray.direction);
+    float b = 2.f * oc.dot(ray.direction);
+    float c = oc.dot(oc) - (float)(radius * radius);
+    float discriminant = b * b - 4.f * a * c;
+
+    if (discriminant < 0)
+        return false;
+
+    float sqrtD = std::sqrt(discriminant);
+
+
+    float t = (-b - sqrtD) / (2.f * a);
+    if (t < tMin || t > tMax) {
+        t = (-b + sqrtD) / (2.f * a);
+        if (t < tMin || t > tMax)
         return false;
     }
+
+    rec.t        = t;
+    rec.point    = ray.at(t);
+    rec.normal   = (rec.point - center) * (1.f / (float)radius);
+    rec.color    = color;
+    rec.material = material.get();
+
+    return true;
+}
+
+Raytracer::AABB Raytracer::SpherePrimitive::bounds() const
+{
+    AABB box;
+    box.min = Math::Vector3D(center.X - radius, center.Y - radius, center.Z - radius);
+    box.max = Math::Vector3D(center.X + radius, center.Y + radius, center.Z + radius);
+    return box;
+}
+
+Math::Point3D Raytracer::SpherePrimitive::centroid() const
+{
+    return center;
 }
 
 void Raytracer::SpherePrimitive::setName(const std::string &name)
@@ -54,14 +63,10 @@ void Raytracer::SpherePrimitive::setPosition(const Math::Point3D& position)
     center = position;    
 }
 
-void Raytracer::SpherePrimitive::drawShape()
-{
-}
 
 extern "C" {
-    int getType()
-    {
-        return 0; // 0 for primitives
+    int getType() {
+        return 0;
     }
 
     Raytracer::IPrimitive* entryPoint(Raytracer::Shape& data) {

@@ -7,30 +7,18 @@
 
 #include "design_pattern/ObjectFactory.hpp"
 
-Raytracer::ObjectFactory::ObjectFactory()
-{
-    // Primitives Objects
-    // _createPrimitive["Sphere"] = []() { return std::make_shared<Raytracer::SpherePrimitive(); };
-    // _createPrimitive["Plane"] = []() { return std::make_shared<Raytracer::PlanePrimitive(); };
-
-    // Lights Objects
-    // _createLight["ambient"] = []() { return std::make_shared<Raytracer::Ambient(); };
-    // _createLight["directional"] = []() { return std::make_shared<Raytracer::Directional(); };
-}
-
-std::shared_ptr<Raytracer::IPrimitive> Raytracer::ObjectFactory::createPrimitive(const std::string &type, const std::string &name, const Raytracer::Shape &data)
+std::shared_ptr<Raytracer::IPrimitive> Raytracer::ObjectFactory::createPrimitive(const std::string &type, const Raytracer::Shape &data)
 {
     std::string path = "./plugins/lib" + type + "Primitive.so";
 
     try {
         auto loader = std::make_unique<DLLoader<Raytracer::IPrimitive>>(path);
-
         Raytracer::IPrimitive* instance = loader->getInstance("entryPoint", data);
+
         if (!instance) {
             throw ErrorException("EntryPoint returned nullptr for " + type);
         }
         std::shared_ptr<Raytracer::IPrimitive> newPrimitive(instance);
-        newPrimitive->setName(name);
         _primitiveLoader.push_back(std::move(loader));
 
         return newPrimitive;
@@ -39,18 +27,17 @@ std::shared_ptr<Raytracer::IPrimitive> Raytracer::ObjectFactory::createPrimitive
     }
 }
 
-std::shared_ptr<Raytracer::IPrimitive> Raytracer::ObjectFactory::createPrimitive(const std::string &type, const std::string &name, const Raytracer::Plane &data)
+std::shared_ptr<Raytracer::IPrimitive> Raytracer::ObjectFactory::createPrimitive(const std::string &type, const Raytracer::Plane &data)
 {
     std::string path = "./plugins/lib" + type + "Primitive.so";
     try {
         auto loader = std::make_unique<DLLoader<Raytracer::IPrimitive>>(path);
-
         Raytracer::IPrimitive* instance = loader->getInstance("entryPoint", data);
+
         if (!instance) {
             throw ErrorException("EntryPoint returned nullptr for Plane");
         }
         std::shared_ptr<Raytracer::IPrimitive> newPrimitive(instance);
-        newPrimitive->setName(name);
         _primitiveLoader.push_back(std::move(loader));
         
         return newPrimitive;
@@ -59,19 +46,18 @@ std::shared_ptr<Raytracer::IPrimitive> Raytracer::ObjectFactory::createPrimitive
     }
 }
 
-std::shared_ptr<Raytracer::ILight> Raytracer::ObjectFactory::createLight(const std::string &type, const std::string name)
+std::shared_ptr<Raytracer::ILight> Raytracer::ObjectFactory::createLight(const std::string &type, const Raytracer::Light &data)
 {
     std::string path = "./plugins/lib" + type + "Light.so";
 
     try {
         auto loader = std::make_unique<DLLoader<Raytracer::ILight>>(path);
-        Raytracer::ILight* getEntryPoint = loader->getInstance("entryPoint");
+        Raytracer::ILight* instance = loader->getInstance("entryPoint", data);
 
-        if (!getEntryPoint) {
+        if (!instance) {
             throw ErrorException("EntryPoint returned nullptr for " + type);
         }
-        std::shared_ptr<Raytracer::ILight> newLight(getEntryPoint);
-        newLight->setName(name);
+        std::shared_ptr<Raytracer::ILight> newLight(instance);
         _lightLoader.push_back(std::move(loader));
 
         return newLight;

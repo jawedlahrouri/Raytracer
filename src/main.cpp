@@ -7,7 +7,7 @@
 
 #include <filesystem>
 #include <iostream>
-#include "../include/parsing.hpp"
+#include "./parsing.hpp"
 #include "./DLLoader/load_so.hpp"
 #include "plugins/renderer/Camera.hpp"
 #include "plugins/renderer/ppm_export.hpp"
@@ -17,6 +17,7 @@
 #include "utils/HitRecord.hpp"
 #include "plugins/lights/PointLight.hpp"
 #include "plugins/renderer/Shadow_Ray.hpp"
+#include "spacePartitionning/BVH.hpp"
 
 void print_help()
 {
@@ -63,10 +64,9 @@ int main(int argc, char **argv)
         parser.parser();
 
         Raytracer::test test(parser.getInfoPrimitive(), parser.getInfoCamera(), parser.getInfoLights());
-        test.createScene();
-
-        //open_lib_so(std::filesystem::path(argv[1]));
-        // temp_draw_scene();
+        Raytracer::ObjectFactory factory;
+        Raytracer::BVH bvh;
+        test.createScene(bvh, factory);
         return 0;
     } catch (const WarningException& e) {
         std::cerr << "WarningException in main: " << e.what() << std::endl;

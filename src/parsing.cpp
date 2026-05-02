@@ -120,7 +120,6 @@ void Raytracer::Parser::parsePrimitive()
             if (_config["Primitives"][i]["coords"].isNull() || _config["Primitives"][i]["coords"].size() < 3) {
                 throw ErrorException("Primitives position est invalide ou incomplet.");
             }
-        
             shape.coords = {
                 {_config["Primitives"][i]["coords"][0].get<float>()},
                 {_config["Primitives"][i]["coords"][1].get<float>()},
@@ -148,7 +147,10 @@ void Raytracer::Parser::parsePrimitive()
                 {_config["Primitives"][i]["color"][1].get<double>()},
                 {_config["Primitives"][i]["color"][2].get<double>()},
             };
-
+            if (!_config["Primitives"][i]["materials"].isNull())
+                shape.material = _config["Primitives"][i]["materials"].get<std::string>();
+            else
+                shape.material = "FlatMaterial";
             _primitive.listOfShapes[shape.shapeName] = shape;
         }
         else {
@@ -177,7 +179,10 @@ void Raytracer::Parser::parsePrimitive()
                 {_config["Primitives"][i]["color"][1].get<double>()},
                 {_config["Primitives"][i]["color"][2].get<double>()},
             };
-
+            if (!_config["Primitives"][i]["materials"].isNull())
+                floor.material = _config["Primitives"][i]["materials"].get<std::string>();
+            else
+                floor.material = "FlatMaterial";
             _primitive.listOfPlane[name] = floor;
             id_plane++;
         }

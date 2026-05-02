@@ -11,12 +11,14 @@
 #include "design_pattern/ObjectFactory.hpp"
 #include "primitives/SpherePrimitive.hpp"
 #include "primitives/PlanePrimitive.hpp"
+#include "spacePartitionning/BVH.hpp"
 #include "RaytracerType.hpp"
 #include "utils/HitRecord.hpp"
 #include "plugins/lights/PointLight.hpp"
 #include "plugins/renderer/Shadow_Ray.hpp"
 #include "parsing.hpp"
-
+#include "plugins/Materials/FlatMaterial.hpp"
+#include "design_pattern/MaterialFactory.hpp"
 #include <memory>
 #include <limits>
 
@@ -28,28 +30,50 @@ Raytracer::test::~test()
 {
 }
 
-void Raytracer::test::createScene()
+void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory)
 {
     std::vector<std::shared_ptr<Raytracer::IPrimitive>> physical_primitives;
-    Raytracer::ObjectFactory factory; 
+    Raytracer::MaterialFactory material_factory;
+    std::vector<std::shared_ptr<Raytracer::ILight>> physical_lights;
 
     for (const auto& [name, shapeData] : _primitive.listOfShapes) {
         try {
-            auto newPrimitive = factory.createPrimitive(shapeData.type, name, shapeData);
-            physical_primitives.push_back(newPrimitive);
-        } catch (const ErrorException &e) {
-            std::cerr << "Factory Error (" << shapeData.type << "): " << e.what() << std::endl;
+            auto prim = factory.createPrimitive(shapeData.type, shapeData);
+            auto material = material_factory.createMaterial(shapeData.material);
+            prim->material = material;
+            physical_primitives.push_back(prim);
+        } catch (const ErrorException& e) {
+            std::cerr << "Factory Error: " << e.what() << std::endl;
         }
     }
 
     for (const auto& [name, planeData] : _primitive.listOfPlane) {
         try {
-            auto newPlane = factory.createPrimitive("Plane", name, planeData);
+            auto newPlane = factory.createPrimitive("Plane", planeData);   
+            auto material = material_factory.createMaterial(planeData.material);
+            newPlane->material = material;
             physical_primitives.push_back(newPlane);
         } catch (const ErrorException &e) {
             std::cerr << "Factory Error (Plane): " << e.what() << std::endl;
         }
     }
+
+    for (const auto& [id, pos] : _lights.listPoints) {
+        try {
+            Raytracer::Light data;
+            data.position = pos;
+            data.intensity = Raytracer::RED;
+            
+            auto newLight = factory.createLight("Point", data);
+            if (newLight) physical_lights.push_back(newLight);
+        } catch (const std::exception &e) {
+            std::cerr << "Factory Error (PointLight " << id << "): " << e.what() << std::endl;
+        }
+    }
+  
+    bvh.build(std::move(physical_primitives));
+    // Lignes de debug
+    std::cerr << "BVH prims count: " << bvh.getPrimCount() << std::endl;
 
     for (int j = 0; j < _camera.size.second; j++) {
         for (int i = 0; i < _camera.size.first; i++) {
@@ -59,53 +83,37 @@ void Raytracer::test::createScene()
 
             Math::Vector3D pixel_color(0, 0, 0);
             HitRecord rec;
-            bool hit = false;
-            double closest_so_far = std::numeric_limits<double>::max();
-
-            for (auto& primitive : physical_primitives) {
-                HitRecord temp_rec;
-                if (primitive->intersect(r, temp_rec) && temp_rec.t < closest_so_far) {
-                    hit = true;
-                    closest_so_far = temp_rec.t;
-                    rec = temp_rec;
+            if (bvh.intersect(r, 0.001f, 1e9f, rec)) {
+                if (rec.material && !physical_lights.empty()) {
+                    Math::Vector3D lit = rec.material->getDiffuseColor(rec, physical_lights, bvh);
+                    pixel_color = Math::Vector3D(
+                        lit.X / 255.0,
+                        lit.Y / 255.0,
+                        lit.Z / 255.0
+                    );
+                } else {
+                    pixel_color = Math::Vector3D(
+                        rec.color.X / 255.0,
+                        rec.color.Y / 255.0,
+                        rec.color.Z / 255.0
+                    );
                 }
-            }
-
-            if (hit) {
-                Math::Vector3D illumination_color(0, 0, 0);
-                
-                for (auto const& [id, light_pos] : _lights.listPoints) {
-                    Raytracer::PointLight light(light_pos, Raytracer::RED);     
-                    Math::Vector3D dir_to_light = light.getDirectionToLight(rec.point);
-                    float dist_to_light = light.getDistanceToLight(rec.point);
-
-                    Math::Point3D shadow_origin(rec.point.X + rec.normal.X * 0.01, rec.point.Y + rec.normal.Y * 0.01, rec.point.Z + rec.normal.Z * 0.01);
-                    Raytracer::Ray shadow_ray(shadow_origin, dir_to_light);
-                    bool in_shadow = false;
-
-                    for (auto& primitive_shadow : physical_primitives) {
-                        HitRecord shadow_rec;
-                        if (primitive_shadow->intersect(shadow_ray, shadow_rec) && 
-                            shadow_rec.t > 0.01 && shadow_rec.t < dist_to_light) {
-                            in_shadow = true;
-                            break;
-                        }
-                    }
-                    if (!in_shadow) {
-                        illumination_color = illumination_color + light.calculateIllumination(rec.point, rec.normal, rec.color);
-                    }
-                }
-                double ambient_factor = 0.2;
-
-                pixel_color = illumination_color + (rec.color * ambient_factor);
-                if (pixel_color.X > 255) pixel_color.X = 255;
-                if (pixel_color.Y > 255) pixel_color.Y = 255;
-                if (pixel_color.Z > 255) pixel_color.Z = 255;
             }
             _pixels[j][i] = pixel_color;
         }
     }
+
+    // lignes de debug 
+    int hitCount = 0;
+    for (int j = 0; j < _camera.size.second; j++)
+        for (int i = 0; i < _camera.size.first; i++)
+            if (_pixels[j][i].X != 0 || _pixels[j][i].Y != 0 || _pixels[j][i].Z != 0)
+                hitCount++;
+    std::cerr << "Pixels hit: " << hitCount << "/" 
+            << _camera.size.first * _camera.size.second << std::endl;
+
     Raytracer::PPMExporter exporter;
     exporter.write_image(_camera.size.first, _camera.size.second, _pixels);
+    physical_lights.clear();
     physical_primitives.clear();
 }

@@ -8,13 +8,12 @@
 #ifndef TEST_HPP_
 #define TEST_HPP_
 
-#include "../parsing.hpp"
-#include "../RaytracerType.hpp"
-#include "../plugins/renderer/Camera.hpp"
-#include "../DLLoader/load_so.hpp"
-#include "../interface/IPrimitive.hpp"
-#include <vector>
-#include <memory>
+#include "./parsing.hpp"
+#include "./RaytracerType.hpp"
+#include "./plugins/renderer/Camera.hpp"
+#include "spacePartitionning/BVH.hpp"
+#include "DLLoader/load_so.hpp"
+#include "design_pattern/ObjectFactory.hpp"
 
 namespace Raytracer {
     class test {
@@ -33,7 +32,7 @@ namespace Raytracer {
 
             void drawSphere();
             void drawPlane();
-            void createScene();
+            void createScene(BVH& bvh, Raytracer::ObjectFactory& factory);
     };
 }
 

@@ -37,23 +37,13 @@ Math::Vector3D Raytracer::PointLight::calculateIllumination(const Math::Vector3D
     );
 }
 
-void Raytracer::PointLight::setName(const std::string &name)
-{
-    _name = name;
-}
-
-void Raytracer::PointLight::setPosition(const Math::Point3D& position)
-{
-    _position = position;
-}
-
 extern "C" {
     int getType()
     {
         return 1; // 1 for lights
     }
 
-    Raytracer::ILight* entryPoint() {
-        return new Raytracer::PointLight(Math::Point3D(0, 0, 0), Raytracer::RED);
+    Raytracer::ILight* entryPoint(const Raytracer::Light& data) {
+        return new Raytracer::PointLight(data);
     }
 }
