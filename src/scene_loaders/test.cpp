@@ -38,7 +38,7 @@ void Raytracer::test::createScene()
 
     for (const auto& [name, shapeData] : _primitive.listOfShapes) {
         try {
-            auto newPrimitive = factory.createPrimitive(shapeData.type, name, shapeData);
+            auto newPrimitive = factory.createPrimitive(shapeData.type, shapeData);
             auto material = material_factory.createMaterial(shapeData.material);
             newPrimitive->material = material;
             physical_primitives.push_back(newPrimitive);
@@ -49,7 +49,7 @@ void Raytracer::test::createScene()
 
     for (const auto& [name, planeData] : _primitive.listOfPlane) {
         try {
-            auto newPlane = factory.createPrimitive("Plane", name, planeData);   
+            auto newPlane = factory.createPrimitive("Plane", planeData);   
             auto material = material_factory.createMaterial(planeData.material);
             newPlane->material = material;
             physical_primitives.push_back(newPlane);
@@ -92,41 +92,10 @@ void Raytracer::test::createScene()
             }
 
             if (hit) {
-                pixel_color = rec.material->getDiffuseColor(rec, _lights, physical_primitives);
+                pixel_color = rec.material->getDiffuseColor(rec, physical_lights, physical_primitives);
                 if (pixel_color.X > 255) pixel_color.X = 255;
                 if (pixel_color.Y > 255) pixel_color.Y = 255;
                 if (pixel_color.Z > 255) pixel_color.Z = 255;
-                Math::Vector3D illumination_color(15, 15, 15); 
-
-                for (auto& light : physical_lights) {
-                    Math::Vector3D dir_to_light = light->getDirectionToLight(rec.point);
-                    float dist_to_light = light->getDistanceToLight(rec.point);
-
-                    Math::Point3D shadow_origin(
-                        rec.point.X + rec.normal.X * 0.001,
-                        rec.point.Y + rec.normal.Y * 0.001,
-                        rec.point.Z + rec.normal.Z * 0.001
-                    );
-                    Raytracer::Ray shadow_ray(shadow_origin, dir_to_light);
-                    
-                    bool in_shadow = false;
-                    for (auto& primitive_shadow : physical_primitives) {
-                        HitRecord shadow_rec;
-                        if (primitive_shadow->intersect(shadow_ray, shadow_rec)) {
-                            if (shadow_rec.t > 0.001 && shadow_rec.t < dist_to_light) {
-                                in_shadow = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (!in_shadow) {
-                        illumination_color = illumination_color + light->calculateIllumination(rec.point, rec.normal, rec.color);
-                    }
-                }
-                pixel_color = illumination_color;
-                pixel_color.X = std::min(255.0, pixel_color.X);
-                pixel_color.Y = std::min(255.0, pixel_color.Y);
-                pixel_color.Z = std::min(255.0, pixel_color.Z);
             }
             _pixels[j][i] = pixel_color;
         }

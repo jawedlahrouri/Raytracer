@@ -37,7 +37,7 @@ CPPFLAGS    =   -Iinclude
 CXX         =   g++
 RM          =   rm -f
 
-all:    $(NAME) $(PRIMITIVE_SO)
+all:    $(NAME) $(PRIMITIVE_SO) $(LIGHT_SO) #$(MATERIAL_SO)
 
 $(NAME):    $(OBJ)
 	$(CXX) -o $(NAME) $(OBJ) $(LDFLAGS) $(LDLIBS)
@@ -48,9 +48,9 @@ $(PLUGIN_DIR)/lib%.so: src/plugins/primitives/%.cpp
 	mkdir -p $(PLUGIN_DIR)
 	$(CXX) -shared -fPIC -o $@ $< $(CXXFLAGS) $(CPPFLAGS)
 
-##$(LIGHT_SO): $(LIGHT_SRC)
-#	mkdir -p $(PLUGIN_DIR)
-#	$(CXX) -shared -fPIC -o $@ $^ $(CXXFLAGS) $(CPPFLAGS)
+$(LIGHT_SO): $(LIGHT_SRC)
+	mkdir -p $(PLUGIN_DIR)
+	$(CXX) -shared -fPIC -o $@ $^ $(CXXFLAGS) $(CPPFLAGS)
 #
 #$(MATERIAL_SO): $(MATERIAL_SRC)
 #	mkdir -p $(PLUGIN_DIR)

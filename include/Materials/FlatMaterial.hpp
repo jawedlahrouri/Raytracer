@@ -16,7 +16,7 @@ namespace Raytracer {
         public:
             FlatMaterial();
             ~FlatMaterial();
-            Math::Vector3D getDiffuseColor(const HitRecord& record, const Raytracer::Lights& lights, const std::vector<std::shared_ptr<Raytracer::IPrimitive>>& physical_primitives) const override;
+            Math::Vector3D getDiffuseColor(const HitRecord& record, const std::vector<std::shared_ptr<Raytracer::ILight>>& physical_lights, const std::vector<std::shared_ptr<Raytracer::IPrimitive>>& physical_primitives) const override;
     };
 }
 
