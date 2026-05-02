@@ -6,15 +6,16 @@
 #include <map>
 #include <functional>
 #include "interface/IMaterial.hpp"
+#include "DLLoader/load_so.hpp"
 
 namespace Raytracer {
     class MaterialFactory {
         public:
-            MaterialFactory();
+            MaterialFactory() = default;
             ~MaterialFactory() = default;
             std::shared_ptr<IMaterial> createMaterial(const std::string& type);
         private:
-            std::map<std::string, std::function<std::shared_ptr<IMaterial>()>> _materialMap;
+            std::vector<std::unique_ptr<DLLoader<IMaterial>>> _materialLoaders;
     };
 }
 

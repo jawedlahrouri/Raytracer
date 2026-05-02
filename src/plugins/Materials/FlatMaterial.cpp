@@ -6,7 +6,7 @@
 */
 
 #include <memory>
-#include "Materials/FlatMaterial.hpp"
+#include "plugins/Materials/FlatMaterial.hpp"
 #include "plugins/lights/PointLight.hpp"
 
 Raytracer::FlatMaterial::FlatMaterial()
@@ -45,4 +45,14 @@ Math::Vector3D Raytracer::FlatMaterial::getDiffuseColor(
     }
     
     return illumination_color;
+}
+
+extern "C" {
+    int getType() {
+        return 2;
+    }
+
+    IMaterial* entryPoint() {
+        return new Raytracer::FlatMaterial();
+    }
 }

@@ -16,7 +16,7 @@
 #include "plugins/lights/PointLight.hpp"
 #include "plugins/renderer/Shadow_Ray.hpp"
 #include "parsing.hpp"
-#include "Materials/FlatMaterial.hpp"
+#include "plugins/Materials/FlatMaterial.hpp"
 #include "design_pattern/MaterialFactory.hpp"
 #include <memory>
 #include <limits>
