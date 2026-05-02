@@ -43,7 +43,7 @@ extern "C" {
         return 1; // 1 for lights
     }
 
-    Raytracer::ILight* entryPoint() {
-        return new Raytracer::PointLight(Math::Point3D(0, 0, 0), Raytracer::RED);
+    Raytracer::ILight* entryPoint(const Raytracer::Light& data) {
+        return new Raytracer::PointLight(data);
     }
 }

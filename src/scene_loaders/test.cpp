@@ -32,8 +32,9 @@ Raytracer::test::~test()
 void Raytracer::test::createScene()
 {
     std::vector<std::shared_ptr<Raytracer::IPrimitive>> physical_primitives;
-    Raytracer::ObjectFactory factory;
     Raytracer::MaterialFactory material_factory;
+    std::vector<std::shared_ptr<Raytracer::ILight>> physical_lights;
+    Raytracer::ObjectFactory factory; 
 
     for (const auto& [name, shapeData] : _primitive.listOfShapes) {
         try {
@@ -54,6 +55,19 @@ void Raytracer::test::createScene()
             physical_primitives.push_back(newPlane);
         } catch (const ErrorException &e) {
             std::cerr << "Factory Error (Plane): " << e.what() << std::endl;
+        }
+    }
+
+    for (const auto& [id, pos] : _lights.listPoints) {
+        try {
+            Raytracer::Light data;
+            data.position = pos;
+            data.intensity = Raytracer::RED;
+            
+            auto newLight = factory.createLight("Point", data);
+            if (newLight) physical_lights.push_back(newLight);
+        } catch (const std::exception &e) {
+            std::cerr << "Factory Error (PointLight " << id << "): " << e.what() << std::endl;
         }
     }
 
@@ -82,11 +96,43 @@ void Raytracer::test::createScene()
                 if (pixel_color.X > 255) pixel_color.X = 255;
                 if (pixel_color.Y > 255) pixel_color.Y = 255;
                 if (pixel_color.Z > 255) pixel_color.Z = 255;
+                Math::Vector3D illumination_color(15, 15, 15); 
+
+                for (auto& light : physical_lights) {
+                    Math::Vector3D dir_to_light = light->getDirectionToLight(rec.point);
+                    float dist_to_light = light->getDistanceToLight(rec.point);
+
+                    Math::Point3D shadow_origin(
+                        rec.point.X + rec.normal.X * 0.001,
+                        rec.point.Y + rec.normal.Y * 0.001,
+                        rec.point.Z + rec.normal.Z * 0.001
+                    );
+                    Raytracer::Ray shadow_ray(shadow_origin, dir_to_light);
+                    
+                    bool in_shadow = false;
+                    for (auto& primitive_shadow : physical_primitives) {
+                        HitRecord shadow_rec;
+                        if (primitive_shadow->intersect(shadow_ray, shadow_rec)) {
+                            if (shadow_rec.t > 0.001 && shadow_rec.t < dist_to_light) {
+                                in_shadow = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!in_shadow) {
+                        illumination_color = illumination_color + light->calculateIllumination(rec.point, rec.normal, rec.color);
+                    }
+                }
+                pixel_color = illumination_color;
+                pixel_color.X = std::min(255.0, pixel_color.X);
+                pixel_color.Y = std::min(255.0, pixel_color.Y);
+                pixel_color.Z = std::min(255.0, pixel_color.Z);
             }
             _pixels[j][i] = pixel_color;
         }
     }
     Raytracer::PPMExporter exporter;
     exporter.write_image(_camera.size.first, _camera.size.second, _pixels);
+    physical_lights.clear();
     physical_primitives.clear();
 }

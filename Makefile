@@ -10,7 +10,6 @@ SRC  =   $(wildcard src/*.cpp) \
         $(wildcard src/plugins/renderer/*.cpp) \
         $(wildcard src/utils/*.cpp) \
 		$(wildcard src/scene_loaders/*.cpp) \
-        $(wildcard src/plugins/lights/*.cpp) \
         $(wildcard src/plugins/interface/*.cpp) \
         $(wildcard src/Materials/*.cpp) \
 
@@ -22,7 +21,7 @@ LIGHT_SRC   =   $(wildcard src/plugins/lights/*.cpp)
 
 PLUGIN_DIR = plugins
 PRIMITIVE_SO = $(patsubst src/plugins/primitives/%.cpp,$(PLUGIN_DIR)/lib%.so,$(PRIMITIVE_SRC))
-LIGHT_SO = $(PLUGIN_DIR)/liblight.so
+LIGHT_SO = $(patsubst src/plugins/lights/%.cpp,$(PLUGIN_DIR)/lib%.so,$(LIGHT_SRC))
 # MATERIAL_SO = $(PLUGIN_DIR)/libmaterial.so
 
 SRC_TESTS   =   $(wildcard tests/*.cpp)
@@ -57,6 +56,9 @@ $(PLUGIN_DIR)/lib%.so: src/plugins/primitives/%.cpp
 #	mkdir -p $(PLUGIN_DIR)
 #	$(CXX) -shared -fPIC -o $@ $^ $(CXXFLAGS) $(CPPFLAGS)
 
+$(PLUGIN_DIR)/lib%.so: src/plugins/lights/%.cpp
+	mkdir -p $(PLUGIN_DIR)
+	$(CXX) -shared -fPIC -o $@ $< $(CXXFLAGS) $(CPPFLAGS)
 
 clean:
 	$(RM) $(OBJ)
