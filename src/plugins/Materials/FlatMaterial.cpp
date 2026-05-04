@@ -20,7 +20,8 @@ Raytracer::FlatMaterial::~FlatMaterial()
 Math::Vector3D Raytracer::FlatMaterial::getDiffuseColor(
     const HitRecord& record, 
     const std::vector<std::shared_ptr<Raytracer::ILight>>& physical_lights, 
-    const std::vector<std::shared_ptr<Raytracer::IPrimitive>>& physical_primitives
+    const std::vector<std::shared_ptr<Raytracer::IPrimitive>>& physical_primitives,
+    const Raytracer::Ray& ray
 ) const {
     Math::Vector3D illumination_color(15, 15, 15);
 

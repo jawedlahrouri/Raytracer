@@ -81,6 +81,16 @@ namespace Math {
 
             return Vector3D(X * cos_a - Y * sin_a, X * sin_a + Y * cos_a, Z);
         }
+
+        Vector3D normalize() const {
+            double len = length();
+            if (len == 0) return Vector3D(0, 0, 0);
+            return Vector3D(X / len, Y / len, Z / len);
+        }
+
+        static Vector3D reflect(const Vector3D& v, const Vector3D& n) {
+            return v - n * 2.0 * v.dot(n);
+        }
     };
 }
 

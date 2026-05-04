@@ -92,7 +92,7 @@ void Raytracer::test::createScene()
             }
 
             if (hit) {
-                pixel_color = rec.material->getDiffuseColor(rec, physical_lights, physical_primitives);
+                pixel_color = rec.material->getDiffuseColor(rec, physical_lights, physical_primitives, r);
                 if (pixel_color.X > 255) pixel_color.X = 255;
                 if (pixel_color.Y > 255) pixel_color.Y = 255;
                 if (pixel_color.Z > 255) pixel_color.Z = 255;

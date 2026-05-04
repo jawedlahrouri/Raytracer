@@ -23,7 +23,12 @@ class IMaterial {
         IMaterial() = default;
         ~IMaterial() = default;
 
-    virtual Math::Vector3D getDiffuseColor(const HitRecord& record, const std::vector<std::shared_ptr<Raytracer::ILight>>& physical_lights, const std::vector<std::shared_ptr<Raytracer::IPrimitive>>& physical_primitives) const = 0;
+    virtual Math::Vector3D getDiffuseColor(
+        const HitRecord& record,
+        const std::vector<std::shared_ptr<Raytracer::ILight>>& physical_lights,
+        const std::vector<std::shared_ptr<Raytracer::IPrimitive>>& physical_primitives,
+        const Raytracer::Ray& ray
+    ) const = 0;
     protected:
     private:
 };
