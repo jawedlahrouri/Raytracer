@@ -16,6 +16,8 @@
 #include "design_pattern/ObjectFactory.hpp"
 
 namespace Raytracer {
+    class SfmlDisplay;
+
     class test {
         private:
             Raytracer::Primitive _primitive;
@@ -32,7 +34,8 @@ namespace Raytracer {
 
             void drawSphere();
             void drawPlane();
-            void createScene(BVH& bvh, Raytracer::ObjectFactory& factory);
+            void createScene(BVH& bvh, Raytracer::ObjectFactory& factory, SfmlDisplay* display = nullptr);
+            const std::vector<std::vector<Math::Vector3D>>& getPixels() const { return _pixels; }
     };
 }
 

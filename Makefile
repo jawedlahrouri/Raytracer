@@ -10,7 +10,10 @@ SRC  =  $(wildcard src/*.cpp) \
         $(wildcard src/plugins/renderer/*.cpp) \
         $(wildcard src/utils/*.cpp) \
 		    $(wildcard src/scene_loaders/*.cpp) \
-        $(wildcard src/plugins/interface/*.cpp)
+        $(wildcard src/plugins/interface/*.cpp) \
+        $(wildcard src/display/*.cpp)
+
+LDLIBS      =   -lsfml-graphics -lsfml-window -lsfml-system
 
 PRIMITIVE_SRC   =   $(wildcard src/plugins/primitives/*.cpp)
 LIGHT_SRC   =   $(wildcard src/plugins/lights/*.cpp)

@@ -19,6 +19,7 @@
 #include "parsing.hpp"
 #include "plugins/Materials/FlatMaterial.hpp"
 #include "design_pattern/MaterialFactory.hpp"
+#include "display/sfml_display.hpp"
 #include <memory>
 #include <limits>
 
@@ -30,7 +31,7 @@ Raytracer::test::~test()
 {
 }
 
-void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory)
+void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory, SfmlDisplay* display)
 {
     std::vector<std::shared_ptr<Raytracer::IPrimitive>> physical_primitives;
     Raytracer::MaterialFactory material_factory;
@@ -99,7 +100,21 @@ void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory)
                     );
                 }
             }
+            // Clamp colors to [0, 1] to avoid crash in PPMExporter
+            pixel_color.X = std::max(0.0, std::min(1.0, pixel_color.X));
+            pixel_color.Y = std::max(0.0, std::min(1.0, pixel_color.Y));
+            pixel_color.Z = std::max(0.0, std::min(1.0, pixel_color.Z));
+            
             _pixels[j][i] = pixel_color;
+            
+            if (display) {
+                display->updatePixel(i, j, pixel_color);
+            }
+        }
+        if (display) {
+            display->refresh();
+            if (!display->isOpen()) // Stop rendering if window is closed
+                return;
         }
     }
 
