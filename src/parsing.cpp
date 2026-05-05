@@ -69,9 +69,9 @@ void Raytracer::Parser::parseCamera()
     }
 
     cam.posCoords = {
-        {_config["Camera"]["position"][0].get<double>()},
-        {_config["Camera"]["position"][1].get<double>()},
-        {_config["Camera"]["position"][2].get<double>()},
+        _config["Camera"]["position"][0].get<double>(),
+        _config["Camera"]["position"][1].get<double>(),
+        _config["Camera"]["position"][2].get<double>(),
     };
 
     // rotation parsing
@@ -121,9 +121,9 @@ void Raytracer::Parser::parsePrimitive()
                 throw ErrorException("Primitives position est invalide ou incomplet.");
             }
             shape.coords = {
-                {_config["Primitives"][i]["coords"][0].get<float>()},
-                {_config["Primitives"][i]["coords"][1].get<float>()},
-                {_config["Primitives"][i]["coords"][2].get<float>()},
+                _config["Primitives"][i]["coords"][0].get<float>(),
+                _config["Primitives"][i]["coords"][1].get<float>(),
+                _config["Primitives"][i]["coords"][2].get<float>(),
             };
 
             // specifications of the shape
@@ -143,9 +143,9 @@ void Raytracer::Parser::parsePrimitive()
             }
             
             shape.color = {
-                {_config["Primitives"][i]["color"][0].get<double>()},
-                {_config["Primitives"][i]["color"][1].get<double>()},
-                {_config["Primitives"][i]["color"][2].get<double>()},
+                _config["Primitives"][i]["color"][0].get<double>(),
+                _config["Primitives"][i]["color"][1].get<double>(),
+                _config["Primitives"][i]["color"][2].get<double>(),
             };
             if (!_config["Primitives"][i]["materials"].isNull())
                 shape.material = _config["Primitives"][i]["materials"].get<std::string>();
@@ -161,9 +161,9 @@ void Raytracer::Parser::parsePrimitive()
 
             // get the axis
             floor.axis = {
-                {_config["Primitives"][i]["axis"][0].get<double>()},
-                {_config["Primitives"][i]["axis"][1].get<double>()},
-                {_config["Primitives"][i]["axis"][2].get<double>()}
+                _config["Primitives"][i]["axis"][0].get<double>(),
+                _config["Primitives"][i]["axis"][1].get<double>(),
+                _config["Primitives"][i]["axis"][2].get<double>()
             };
             // get the position
             double pos = _config["Primitives"][i]["position"].get<double>();
@@ -175,9 +175,9 @@ void Raytracer::Parser::parsePrimitive()
             }
         
             floor.color = {
-                {_config["Primitives"][i]["color"][0].get<double>()},
-                {_config["Primitives"][i]["color"][1].get<double>()},
-                {_config["Primitives"][i]["color"][2].get<double>()},
+                _config["Primitives"][i]["color"][0].get<double>(),
+                _config["Primitives"][i]["color"][1].get<double>(),
+                _config["Primitives"][i]["color"][2].get<double>(),
             };
             if (!_config["Primitives"][i]["materials"].isNull())
                 floor.material = _config["Primitives"][i]["materials"].get<std::string>();
