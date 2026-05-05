@@ -18,6 +18,7 @@
 #include "plugins/lights/PointLight.hpp"
 #include "plugins/renderer/Shadow_Ray.hpp"
 #include "spacePartitionning/BVH.hpp"
+#include "display/sfml_display.hpp"
 
 void print_help()
 {
@@ -37,36 +38,61 @@ void open_lib_so(std::filesystem::path libPath)
     }
 }
 
-bool isJson(char *configFile)
+bool isJson(const std::string& configFile)
 {
-    std::string str(configFile);
-
-    if (str.length() < 5 || str.substr(str.length() - 5) != ".json") {
+    if (configFile.length() < 5)
         return false;
-    }
+    if (configFile.substr(configFile.length() - 5) == ".json")
+        return true;
+    return false;
+}
 
-    return true;
+int runRaytracer(const std::string& configFile, bool useDisplay)
+{
+    Raytracer::Parser parser(configFile);
+    if (parser.parser() != 0)
+        return 84;
+
+    Raytracer::test test(parser.getInfoPrimitive(), parser.getInfoCamera(), parser.getInfoLights());
+    Raytracer::ObjectFactory factory;
+    Raytracer::BVH bvh;
+
+    if (useDisplay) {
+        Raytracer::SfmlDisplay display(
+            static_cast<int>(parser.getInfoCamera().size.first), 
+            static_cast<int>(parser.getInfoCamera().size.second), 
+            "Raytracer"
+        );
+        test.createScene(bvh, factory, &display);
+        if (display.shouldExport())
+            return 0;
+        while (display.isOpen()) {
+            display.refresh();
+        }
+    } else {
+        test.createScene(bvh, factory);
+    }
+    return 0;
 }
 
 int main(int argc, char **argv)
 {
     try {
-        if (argc != 2) {
+        if (argc < 2) {
             print_help();
             return 84;
         }
-
-        if (isJson(argv[1]) == false) {
+        std::string firstArg = argv[1];
+        if (firstArg == "--help") {
+            print_help();
+            return 0;
+        }
+        if (!isJson(firstArg)) {
             throw ErrorException("Le fichier n'est pas un .json");
         }
 
-        Raytracer::Parser parser(argv[1]);
-        parser.parser();
-
-        Raytracer::SceneLoader loader(parser.getInfoPrimitive(), parser.getInfoCamera(), parser.getInfoLights());
-        loader.run();
-
-        return 0;
+        bool useDisplay = (argc == 3 && std::string(argv[2]) == "--display");
+        return runRaytracer(firstArg, useDisplay);
     } catch (const WarningException& e) {
         std::cerr << "WarningException in main: " << e.what() << std::endl;
         return 84;

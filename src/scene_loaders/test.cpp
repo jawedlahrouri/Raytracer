@@ -19,6 +19,7 @@
 #include "parsing.hpp"
 #include "plugins/Materials/FlatMaterial.hpp"
 #include "design_pattern/MaterialFactory.hpp"
+#include "display/sfml_display.hpp"
 #include <memory>
 #include <limits>
 #include <thread>
@@ -32,67 +33,7 @@ Raytracer::test::~test()
 {
 }
 
-void Raytracer::test::ThreadScene(BVH& bvh, const std::vector<std::shared_ptr<Raytracer::ILight>>& physical_lights)
-{
-    int next_line = 0;
-    std::mutex mtx;
-    int total_lines = _camera.size.second;
-
-    unsigned int num_threads = std::thread::hardware_concurrency();
-    if (num_threads == 0)
-        num_threads = 1;
-    std::vector<std::thread> threads;
-
-    auto worker = [&]() {
-        try {
-            while (true) {
-                int j; // nécessaire pour le threading
-                {
-                    std::lock_guard<std::mutex> lock(mtx);
-                    if (next_line >= total_lines)
-                        return;
-                    j = next_line++;
-                }
-                for (int i = 0; i < _camera.size.first; i++) {
-                    double u = static_cast<double>(i) / (_camera.size.first - 1);
-                    double v = static_cast<double>(j) / (_camera.size.second - 1);
-                    Raytracer::Ray r = _cam.ray(u, v);
-                    Math::Vector3D pixel_color(0, 0, 0);
-                    HitRecord rec;
-                    if (bvh.intersect(r, 0.001f, 1e9f, rec)) {
-                        if (rec.material && !physical_lights.empty()) {
-                            Math::Vector3D lit = rec.material->getDiffuseColor(rec, physical_lights, bvh);
-                            pixel_color = Math::Vector3D(
-                                lit.X / 255.0,
-                                lit.Y / 255.0,
-                                lit.Z / 255.0
-                            );
-                        } else {
-                            pixel_color = Math::Vector3D(
-                                rec.color.X / 255.0,
-                                rec.color.Y / 255.0,
-                                rec.color.Z / 255.0
-                            );
-                        }
-                    }
-                    _pixels[j][i] = pixel_color;
-                }
-            }
-        } catch (const std::exception& e) {
-            std::lock_guard<std::mutex> lock(mtx);
-            std::cerr << "Thread error: " << e.what() << std::endl;
-        }
-    };
-    for (unsigned int i = 0; i < num_threads; ++i) {
-        threads.emplace_back(worker);
-    }
-    for (auto& t : threads) {
-        t.join();
-    }
-}
-
-//TODO: SUPPRIMER CE FICHIER SOON!!!!!
-void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory)
+void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory, SfmlDisplay* display)
 {
     std::vector<std::shared_ptr<Raytracer::IPrimitive>> physical_primitives;
     Raytracer::MaterialFactory material_factory;
@@ -135,6 +76,50 @@ void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory)
     bvh.build(std::move(physical_primitives));
     // Lignes de debug
     std::cerr << "BVH prims count: " << bvh.getPrimCount() << std::endl;
+
+    for (int j = 0; j < _camera.size.second; j++) {
+        for (int i = 0; i < _camera.size.first; i++) {
+            double u = static_cast<double>(i) / (_camera.size.first - 1);
+            double v = static_cast<double>(j) / (_camera.size.second - 1);
+            Raytracer::Ray r = _cam.ray(u, v);
+
+            Math::Vector3D pixel_color(0, 0, 0);
+            HitRecord rec;
+            if (bvh.intersect(r, 0.001f, 1e9f, rec)) {
+                if (rec.material && !physical_lights.empty()) {
+                    Math::Vector3D lit = rec.material->getDiffuseColor(rec, physical_lights, bvh);
+                    pixel_color = Math::Vector3D(
+                        lit.X / 255.0,
+                        lit.Y / 255.0,
+                        lit.Z / 255.0
+                    );
+                } else {
+                    pixel_color = Math::Vector3D(
+                        rec.color.X / 255.0,
+                        rec.color.Y / 255.0,
+                        rec.color.Z / 255.0
+                    );
+                }
+            }
+            // Clamp colors to [0, 1] to avoid crash in PPMExporter
+            pixel_color.X = std::max(0.0, std::min(1.0, pixel_color.X));
+            pixel_color.Y = std::max(0.0, std::min(1.0, pixel_color.Y));
+            pixel_color.Z = std::max(0.0, std::min(1.0, pixel_color.Z));
+            
+            _pixels[j][i] = pixel_color;
+            
+            if (display) {
+                display->updatePixel(i, j, pixel_color);
+            }
+        }
+        if (display) {
+            display->refresh();
+            if (!display->isOpen())
+                return;
+            if (display->shouldExport())
+                break;
+        }
+    }
     ThreadScene(bvh, physical_lights);
 
     // lignes de debug 
