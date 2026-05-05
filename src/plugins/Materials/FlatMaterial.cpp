@@ -62,7 +62,7 @@ extern "C" {
         return 2;
     }
 
-    IMaterial* entryPoint() {
+    Raytracer::IMaterial* entryPoint() {
         return new Raytracer::FlatMaterial();
     }
 }
