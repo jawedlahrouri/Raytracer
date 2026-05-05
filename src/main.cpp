@@ -26,7 +26,6 @@ void print_help()
     std::cout << "SCENE_FILE: scene configuration" << std::endl;
 }
 
-//TODO: - implement the function to parse the JSON scene file and set up the raytracer accordingly
 void open_lib_so(std::filesystem::path libPath)
 {
     try {
@@ -47,34 +46,6 @@ bool isJson(const std::string& configFile)
     return false;
 }
 
-int runRaytracer(const std::string& configFile, bool useDisplay)
-{
-    Raytracer::Parser parser(configFile);
-    if (parser.parser() != 0)
-        return 84;
-
-    Raytracer::test test(parser.getInfoPrimitive(), parser.getInfoCamera(), parser.getInfoLights());
-    Raytracer::ObjectFactory factory;
-    Raytracer::BVH bvh;
-
-    if (useDisplay) {
-        Raytracer::SfmlDisplay display(
-            static_cast<int>(parser.getInfoCamera().size.first), 
-            static_cast<int>(parser.getInfoCamera().size.second), 
-            "Raytracer"
-        );
-        test.createScene(bvh, factory, &display);
-        if (display.shouldExport())
-            return 0;
-        while (display.isOpen()) {
-            display.refresh();
-        }
-    } else {
-        test.createScene(bvh, factory);
-    }
-    return 0;
-}
-
 int main(int argc, char **argv)
 {
     try {
@@ -91,8 +62,24 @@ int main(int argc, char **argv)
             throw ErrorException("Le fichier n'est pas un .json");
         }
 
-        bool useDisplay = (argc == 3 && std::string(argv[2]) == "--display");
-        return runRaytracer(firstArg, useDisplay);
+        Raytracer::Parser parser(argv[1]);
+        parser.parser();
+
+        bool useDisplay = (argc >= 3 && std::string(argv[2]) == "--display");
+        Raytracer::SceneLoader loader(parser.getInfoPrimitive(), parser.getInfoCamera(), parser.getInfoLights());
+        
+        if (useDisplay) {
+            Raytracer::SfmlDisplay display(
+                static_cast<int>(parser.getInfoCamera().size.first), 
+                static_cast<int>(parser.getInfoCamera().size.second), 
+                "Raytracer"
+            );
+            loader.run(&display);
+        } else {
+            loader.run();
+        }
+
+        return 0;
     } catch (const WarningException& e) {
         std::cerr << "WarningException in main: " << e.what() << std::endl;
         return 84;

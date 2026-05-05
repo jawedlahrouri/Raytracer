@@ -19,13 +19,14 @@
 #include "interface/ILight.hpp"
 #include "design_pattern/ObjectFactory.hpp"
 #include "design_pattern/MaterialFactory.hpp"
+#include "display/sfml_display.hpp"
 
 namespace Raytracer {
     class SceneLoader {
         public:
             SceneLoader(const Raytracer::Primitive& primitive, const Raytracer::Camera& camera, const Raytracer::Lights& lights);
             ~SceneLoader() = default;
-            void run();
+            void run(Raytracer::SfmlDisplay* display = nullptr);
 
         private:
             void buildScene();
@@ -33,8 +34,8 @@ namespace Raytracer {
             void buildPlanes(std::vector<std::shared_ptr<IPrimitive>>& physical_primitives);
             void buildLights();
 
-            void renderParallel();
-            void renderLine(int j);
+            void renderParallel(Raytracer::SfmlDisplay* display);
+            void renderLine(int j, Raytracer::SfmlDisplay* display);
             void exportImage();
 
             Raytracer::Primitive _rawPrimitives;

@@ -21,11 +21,37 @@ Raytracer::SceneLoader::SceneLoader(const Raytracer::Primitive& primitive, const
 {
 }
 
-void Raytracer::SceneLoader::run()
+void Raytracer::SceneLoader::run(Raytracer::SfmlDisplay* display)
 {
     try {
         buildScene();
-        renderParallel();
+        if (display) {
+            std::thread renderThread([this, display]() {
+                renderParallel(display);
+            });
+            while (display->isOpen() && !display->shouldExport()) {
+                display->refresh();
+                std::this_thread::sleep_for(std::chrono::milliseconds(16));
+                bool done = false;
+                {
+                    std::lock_guard<std::mutex> lock(_renderMutex);
+                    if (_nextLine >= (int)_rawCameraInfo.size.second)
+                        done = true;
+                }
+                if (done) break;
+            }
+            if (!display->isOpen() || display->shouldExport()) {
+                std::lock_guard<std::mutex> lock(_renderMutex);
+                _nextLine = (int)_rawCameraInfo.size.second;
+            }
+            renderThread.join();
+            while (display->isOpen() && !display->shouldExport()) {
+                display->refresh();
+                std::this_thread::sleep_for(std::chrono::milliseconds(16));
+            }
+        } else {
+            renderParallel(nullptr);
+        }
         exportImage();
     } catch (const Exception& e) {
         std::cerr << "Critical Error: " << e.what() << std::endl;
@@ -102,7 +128,7 @@ void Raytracer::SceneLoader::buildLights()
     }
 }
 
-void Raytracer::SceneLoader::renderParallel()
+void Raytracer::SceneLoader::renderParallel(Raytracer::SfmlDisplay* display)
 {
     try {
         _nextLine = 0;
@@ -121,7 +147,7 @@ void Raytracer::SceneLoader::renderParallel()
                             return;
                         j = _nextLine++;
                     }
-                    renderLine(j);
+                    renderLine(j, display);
                 }
             } catch (const std::exception& e) {
                 std::lock_guard<std::mutex> lock(_renderMutex);
@@ -140,7 +166,7 @@ void Raytracer::SceneLoader::renderParallel()
     }
 }
 
-void Raytracer::SceneLoader::renderLine(int j)
+void Raytracer::SceneLoader::renderLine(int j, Raytracer::SfmlDisplay* display)
 {
     try {
         int width = (int)_rawCameraInfo.size.first;
@@ -163,6 +189,9 @@ void Raytracer::SceneLoader::renderLine(int j)
                 }
             }
             _pixels[j][i] = pixel_color;
+            if (display) {
+                display->updatePixel(i, j, pixel_color);
+            }
         }
     } catch (const std::exception& e) {
         throw ErrorException(std::string("Failed to render line ") + std::to_string(j) + ": " + e.what());
