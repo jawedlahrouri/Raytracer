@@ -13,7 +13,7 @@ bool Raytracer::CylinderPrimitive::intersect(const Ray& ray, float tMin, float t
     double oc_Z = ray.origin.Z - center.Z;
     double a = (ray.direction.X * ray.direction.X) + (ray.direction.Z * ray.direction.Z);
     double b = 2.0 * ((oc_X * ray.direction.X) + (oc_Z * ray.direction.Z));
-    double c = (oc_X * oc_X) + (oc_Z * oc_Z) - (r * r);
+    double c = (oc_X * oc_X) + (oc_Z * oc_Z) - (radius * radius);
     double delta = (b * b) - (4 * (a * c));
 
     if (delta >= 0) {
