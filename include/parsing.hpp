@@ -39,6 +39,7 @@ namespace Raytracer {
         std::map<enum Raytracer::specsType, double> specs; // specifications for shape
         Math::Vector3D color; // RED, GREEN, BLUE
         std::string material;
+        std::map<std::string, double> materialParams;
     };
 
     struct Plane {
@@ -46,6 +47,7 @@ namespace Raytracer {
         float positions;
         Math::Vector3D color; // RED, GREEN, BLUE
         std::string material;
+        std::map<std::string, double> materialParams;
     };
 
     struct Primitive {

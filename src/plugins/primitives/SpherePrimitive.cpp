@@ -32,6 +32,7 @@ bool Raytracer::SpherePrimitive::intersect(const Ray& ray, float tMin, float tMa
     }
 
     rec.t        = t;
+    rec.ray      = ray;
     rec.point    = ray.at(t);
     rec.normal   = (rec.point - center) * (1.f / (float)radius);
     rec.color    = color;

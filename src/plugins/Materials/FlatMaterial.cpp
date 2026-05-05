@@ -9,18 +9,14 @@
 #include <algorithm>
 #include "plugins/Materials/FlatMaterial.hpp"
 #include "plugins/lights/PointLight.hpp"
+#include "spacePartitionning/BVH.hpp"
 
-Raytracer::FlatMaterial::FlatMaterial()
-{
-}
-
-Raytracer::FlatMaterial::~FlatMaterial()
-{
-}
+Raytracer::FlatMaterial::FlatMaterial() {}
+Raytracer::FlatMaterial::~FlatMaterial() {}
 
 Math::Vector3D Raytracer::FlatMaterial::getDiffuseColor(
-    const HitRecord& record,
-    const std::vector<std::shared_ptr<Raytracer::ILight>>& physical_lights,
+    const HitRecord& record, 
+    const std::vector<std::shared_ptr<Raytracer::ILight>>& physical_lights, 
     const Raytracer::BVH& bvh
 ) const {
 

@@ -5,4 +5,4 @@ output.ppm
 *.json
 vgcore.*
 *.ppm
-*.cache/*
+*cache/

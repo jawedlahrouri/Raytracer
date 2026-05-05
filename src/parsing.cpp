@@ -151,6 +151,13 @@ void Raytracer::Parser::parsePrimitive()
                 shape.material = _config["Primitives"][i]["materials"].get<std::string>();
             else
                 shape.material = "FlatMaterial";
+            if (!_config["Primitives"][i]["materialParams"].isNull()) {
+                auto& params = _config["Primitives"][i]["materialParams"];
+                if (!params["opacity"].isNull()) {
+                    shape.materialParams["opacity"] = params["opacity"].get<double>();
+                }
+            }
+            
             _primitive.listOfShapes[shape.shapeName] = shape;
         }
         else {
@@ -183,6 +190,13 @@ void Raytracer::Parser::parsePrimitive()
                 floor.material = _config["Primitives"][i]["materials"].get<std::string>();
             else
                 floor.material = "FlatMaterial";
+            if (!_config["Primitives"][i]["materialParams"].isNull()) {
+                auto& params = _config["Primitives"][i]["materialParams"];
+                if (!params["opacity"].isNull()) {
+                    floor.materialParams["opacity"] = params["opacity"].get<double>();
+                }
+            }
+            
             _primitive.listOfPlane[name] = floor;
             id_plane++;
         }

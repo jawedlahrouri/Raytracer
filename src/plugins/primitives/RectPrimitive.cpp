@@ -33,11 +33,13 @@ bool Raytracer::RectPrimitive::intersect(const Ray& ray, float tMin, float tMax,
 
     if (dx <= width / 2.0 && dy <= height / 2.0) {
         rec.t = t;
+        rec.ray = ray;
         rec.point = hitPoint;
         rec.normal = (denominator > 0)
             ? Math::Vector3D(-normal.X, -normal.Y, -normal.Z)
             : normal;
         rec.color = color;
+        rec.material = material.get();
         return true;
     }
     return false;
