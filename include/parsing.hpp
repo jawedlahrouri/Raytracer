@@ -28,6 +28,7 @@ namespace Raytracer {
 
     struct Light {
         Math::Point3D position;
+        Math::Vector3D direction;
         Raytracer::colorType intensity;
     };
 
