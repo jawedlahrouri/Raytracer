@@ -32,6 +32,7 @@ namespace Raytracer {
 
             void drawSphere();
             void drawPlane();
+            void ThreadScene(BVH& bvh, const std::vector<std::shared_ptr<Raytracer::ILight>>& physical_lights);
             void createScene(BVH& bvh, Raytracer::ObjectFactory& factory);
     };
 }
