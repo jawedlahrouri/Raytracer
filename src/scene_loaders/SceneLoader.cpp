@@ -72,7 +72,8 @@ void Raytracer::SceneLoader::buildScene()
 
         buildShapes(physical_primitives);
         buildPlanes(physical_primitives);
-        buildLights();
+        buildPointLight();
+        buildDirectionalLight();
 
         if (physical_primitives.empty())
             throw WarningException("Scene building: No objects found.");
@@ -89,10 +90,10 @@ void Raytracer::SceneLoader::buildShapes(std::vector<std::shared_ptr<IPrimitive>
 {
     try {
         for (const auto& [name, shapeData] : _rawPrimitives.listOfShapes) {
-            auto prim = _objectFactory.createPrimitive(shapeData.type, shapeData);
-            if (prim) {
-                prim->material = _materialFactory.createMaterialWithParams(shapeData.material, shapeData.materialParams);
-                physical_primitives.push_back(prim);
+            auto newPrimitive = _objectFactory.createPrimitive(shapeData.type, shapeData);
+            if (newPrimitive) {
+                newPrimitive->material = _materialFactory.createMaterial(shapeData.material);
+                physical_primitives.push_back(newPrimitive);
             }
         }
     } catch (const std::exception& e) {
@@ -115,7 +116,7 @@ void Raytracer::SceneLoader::buildPlanes(std::vector<std::shared_ptr<IPrimitive>
     }
 }
 
-void Raytracer::SceneLoader::buildLights()
+void Raytracer::SceneLoader::buildPointLight()
 {
     try {
         for (const auto& [id, pos] : _rawLights.listPoints) {
@@ -124,10 +125,28 @@ void Raytracer::SceneLoader::buildLights()
             data.intensity = Raytracer::RED;
             
             auto newLight = _objectFactory.createLight("Point", data);
-            if (newLight) _lights.push_back(newLight);
+            if (newLight)
+                _lights.push_back(newLight);
         }
     } catch (const std::exception& e) {
-        throw ErrorException(std::string("Lights instantiation failed: ") + e.what());
+        throw ErrorException(std::string("Point light(s) instantiation failed: ") + e.what());
+    }
+}
+
+void Raytracer::SceneLoader::buildDirectionalLight()
+{
+    try {
+        for (const auto&[id, direction] : _rawLights.listDirectional) {
+            Raytracer::Light data;
+            data.direction = direction;
+            data.intensity = Raytracer::RED;
+
+            auto newLight = _objectFactory.createLight("Directional", data);
+            if (newLight)
+                _lights.push_back(newLight);
+        }
+    } catch (const std::exception& e) {
+        throw ErrorException(std::string("Directional light(s) instantiation failed: ") + e.what());
     }
 }
 
