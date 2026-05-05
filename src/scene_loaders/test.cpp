@@ -91,6 +91,7 @@ void Raytracer::test::ThreadScene(BVH& bvh, const std::vector<std::shared_ptr<Ra
     }
 }
 
+//TODO: SUPPRIMER CE FICHIER SOON!!!!!
 void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory)
 {
     std::vector<std::shared_ptr<Raytracer::IPrimitive>> physical_primitives;
