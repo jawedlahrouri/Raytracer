@@ -6,11 +6,15 @@
 ##
 
 SRC  =  $(wildcard src/*.cpp) \
-		    $(wildcard src/plugins/spacePartitionning/*.cpp) \
+		$(wildcard src/plugins/spacePartitionning/*.cpp) \
         $(wildcard src/plugins/renderer/*.cpp) \
         $(wildcard src/utils/*.cpp) \
-		    $(wildcard src/scene_loaders/*.cpp) \
-        $(wildcard src/plugins/interface/*.cpp)
+        $(wildcard src/optical_effects/*.cpp) \
+		$(wildcard src/scene_loaders/*.cpp) \
+        $(wildcard src/plugins/interface/*.cpp) \
+        $(wildcard src/display/*.cpp)
+
+LDLIBS      =   -lsfml-graphics -lsfml-window -lsfml-system
 
 PRIMITIVE_SRC   =   $(wildcard src/plugins/primitives/*.cpp)
 LIGHT_SRC   =   $(wildcard src/plugins/lights/*.cpp)
@@ -31,7 +35,7 @@ CXXFLAGS    =   -Wall -Wextra -Iinclude -g -std=c++20
 CPPFLAGS    =   -Iinclude
 LDFLAGS     =   -rdynamic
 
-CXX         =   g++
+CXX         =   clang++
 RM          =   rm -f
 
 all:    $(NAME) $(PRIMITIVE_SO) $(LIGHT_SO) $(MATERIAL_SO)

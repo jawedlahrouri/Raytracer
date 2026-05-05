@@ -13,11 +13,13 @@
 #include "plugins/renderer/ppm_export.hpp"
 #include "math/Point3D.hpp"
 #include "utils/Ray.hpp"
-#include "config/test.hpp"
+#include "config/SceneLoader.hpp"
 #include "utils/HitRecord.hpp"
 #include "plugins/lights/PointLight.hpp"
 #include "plugins/renderer/Shadow_Ray.hpp"
 #include "spacePartitionning/BVH.hpp"
+#include "design_pattern/MaterialFactory.hpp"
+#include "display/sfml_display.hpp"
 
 void print_help()
 {
@@ -25,7 +27,6 @@ void print_help()
     std::cout << "SCENE_FILE: scene configuration" << std::endl;
 }
 
-//TODO: - implement the function to parse the JSON scene file and set up the raytracer accordingly
 void open_lib_so(std::filesystem::path libPath)
 {
     try {
@@ -37,36 +38,67 @@ void open_lib_so(std::filesystem::path libPath)
     }
 }
 
-bool isJson(char *configFile)
+bool isJson(const std::string& configFile)
 {
-    std::string str(configFile);
-
-    if (str.length() < 5 || str.substr(str.length() - 5) != ".json") {
+    if (configFile.length() < 5)
         return false;
-    }
-
-    return true;
+    if (configFile.substr(configFile.length() - 5) == ".json")
+        return true;
+    return false;
 }
 
 int main(int argc, char **argv)
 {
     try {
-        if (argc != 2) {
+        if (argc < 2) {
             print_help();
             return 84;
         }
-
-        if (isJson(argv[1]) == false) {
+        std::string firstArg = argv[1];
+        if (firstArg == "--help") {
+            print_help();
+            return 0;
+        }
+        if (!isJson(firstArg)) {
             throw ErrorException("Le fichier n'est pas un .json");
         }
 
         Raytracer::Parser parser(argv[1]);
         parser.parser();
 
-        Raytracer::test test(parser.getInfoPrimitive(), parser.getInfoCamera(), parser.getInfoLights());
-        Raytracer::ObjectFactory factory;
-        Raytracer::BVH bvh;
-        test.createScene(bvh, factory);
+        bool useDisplay = false;
+        int aa_level = 0;
+
+        for (int i = 2; i < argc; ++i) {
+            std::string arg = argv[i];
+            if (arg == "--display") {
+                useDisplay = true;
+            } else if (arg == "--aa" && i + 1 < argc) {
+                try {
+                    aa_level = std::stoi(argv[i + 1]);
+                    if (aa_level < 2) aa_level = 2;
+                    if (aa_level > 16) aa_level = 16;
+                } catch (...) {
+                    aa_level = 2;
+                }
+                i++;
+            }
+        }
+
+        Raytracer::SceneLoader loader(parser.getInfoPrimitive(), parser.getInfoCamera(), parser.getInfoLights());
+        loader.setAALevel(aa_level);
+        
+        if (useDisplay) {
+            Raytracer::SfmlDisplay display(
+                static_cast<int>(parser.getInfoCamera().size.first), 
+                static_cast<int>(parser.getInfoCamera().size.second), 
+                "Raytracer"
+            );
+            loader.run(&display);
+        } else {
+            loader.run();
+        }
+
         return 0;
     } catch (const WarningException& e) {
         std::cerr << "WarningException in main: " << e.what() << std::endl;

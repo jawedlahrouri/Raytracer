@@ -15,13 +15,13 @@
 #include <string>
 #include <memory>
 
-class IMaterial;
+namespace Raytracer { class IMaterial; }
 
 namespace Raytracer {
     class IPrimitive  {
         public:
             virtual ~IPrimitive() = default;
-            std::shared_ptr<IMaterial> material;
+            std::shared_ptr<Raytracer::IMaterial> material;
 
             // Check if the ray intersects with the primitive and fill the hit record if it does
             virtual bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& rec) const = 0;
