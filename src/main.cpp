@@ -18,6 +18,8 @@
 #include "plugins/lights/PointLight.hpp"
 #include "plugins/renderer/Shadow_Ray.hpp"
 #include "spacePartitionning/BVH.hpp"
+#include "design_pattern/MaterialFactory.hpp"
+
 
 void print_help()
 {
@@ -50,6 +52,24 @@ bool isJson(char *configFile)
 
 int main(int argc, char **argv)
 {
+    // try {
+    //     if (argc != 2) {
+    //         print_help();
+    //         return 84;
+    //     }
+
+    //     if (isJson(argv[1]) == false) {
+    //         throw ErrorException("Le fichier n'est pas un .json");
+    //     }
+
+    //     Raytracer::Parser parser(argv[1]);
+    //     parser.parser();
+
+    //     Raytracer::test test(parser.getInfoPrimitive(), parser.getInfoCamera(), parser.getInfoLights());
+    //     Raytracer::ObjectFactory factory;
+    //     Raytracer::BVH bvh;
+    //     test.createScene(bvh, factory);
+    //     return 0;
     try {
         if (argc != 2) {
             print_help();
@@ -60,12 +80,19 @@ int main(int argc, char **argv)
             throw ErrorException("Le fichier n'est pas un .json");
         }
 
+        // 1. On crée la Factory en TOUT PREMIER (elle sera détruite en DERNIER)
+        Raytracer::ObjectFactory factory;
+        Raytracer::MaterialFactory matFactory;
+
+        // 2. Ensuite on parse
         Raytracer::Parser parser(argv[1]);
         parser.parser();
 
+        // 3. Ensuite on crée la scène et le BVH
+        // (Ils seront détruits avant la factory, donc le code des plugins sera encore là !)
         Raytracer::test test(parser.getInfoPrimitive(), parser.getInfoCamera(), parser.getInfoLights());
-        Raytracer::ObjectFactory factory;
         Raytracer::BVH bvh;
+        
         test.createScene(bvh, factory);
         return 0;
     } catch (const WarningException& e) {

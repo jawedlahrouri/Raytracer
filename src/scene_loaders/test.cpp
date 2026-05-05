@@ -33,13 +33,12 @@ Raytracer::test::~test()
 void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory)
 {
     std::vector<std::shared_ptr<Raytracer::IPrimitive>> physical_primitives;
-    Raytracer::MaterialFactory material_factory;
     std::vector<std::shared_ptr<Raytracer::ILight>> physical_lights;
 
     for (const auto& [name, shapeData] : _primitive.listOfShapes) {
         try {
             auto prim = factory.createPrimitive(shapeData.type, shapeData);
-            auto material = material_factory.createMaterial(shapeData.material);
+            auto material = _materialFactory.createMaterial(shapeData.material);
             prim->material = material;
             physical_primitives.push_back(prim);
         } catch (const ErrorException& e) {
@@ -50,7 +49,7 @@ void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory)
     for (const auto& [name, planeData] : _primitive.listOfPlane) {
         try {
             auto newPlane = factory.createPrimitive("Plane", planeData);   
-            auto material = material_factory.createMaterial(planeData.material);
+            auto material = _materialFactory.createMaterial(planeData.material);
             newPlane->material = material;
             physical_primitives.push_back(newPlane);
         } catch (const ErrorException &e) {

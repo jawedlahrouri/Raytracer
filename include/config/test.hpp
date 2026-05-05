@@ -14,6 +14,7 @@
 #include "spacePartitionning/BVH.hpp"
 #include "DLLoader/load_so.hpp"
 #include "design_pattern/ObjectFactory.hpp"
+#include "design_pattern/MaterialFactory.hpp"
 
 namespace Raytracer {
     class test {
@@ -25,6 +26,7 @@ namespace Raytracer {
             Raytracer::CameraClass _cam;
             std::vector<std::vector<Math::Vector3D>> _pixels;
             std::vector<std::unique_ptr<DLLoader<Raytracer::IPrimitive>>> _loaders;
+            Raytracer::MaterialFactory _materialFactory;
 
         public:
             test(const Raytracer::Primitive& primitive, const Raytracer::Camera& camera, const Raytracer::Lights& lights);
