@@ -5,7 +5,7 @@
 ** SceneLoader implementation - Modular version
 */
 
-#include "SceneLoader.hpp"
+#include "config/SceneLoader.hpp"
 #include "design_pattern/MaterialFactory.hpp"
 #include "plugins/renderer/ppm_export.hpp"
 #include "utils/HitRecord.hpp"
