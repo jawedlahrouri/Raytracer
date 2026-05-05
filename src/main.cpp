@@ -64,6 +64,8 @@ int runRaytracer(const std::string& configFile, bool useDisplay)
             "Raytracer"
         );
         test.createScene(bvh, factory, &display);
+        if (display.shouldExport())
+            return 0;
         while (display.isOpen()) {
             display.refresh();
         }
