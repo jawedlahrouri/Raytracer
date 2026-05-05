@@ -11,7 +11,7 @@ namespace Raytracer {
 
     Raytracer::SfmlDisplay::SfmlDisplay(int width, int height, std::string name)
         : _width(width), _height(height), _name(name),
-          _window(sf::VideoMode(static_cast<unsigned int>(width), static_cast<unsigned int>(height)), name)
+        _window(sf::VideoMode(static_cast<unsigned int>(width), static_cast<unsigned int>(height)), name)
     {
         _image.create(static_cast<unsigned int>(_width), static_cast<unsigned int>(_height), sf::Color::Black);
         _texture.loadFromImage(_image);
@@ -37,6 +37,8 @@ namespace Raytracer {
         while (_window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 _window.close();
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::D && event.key.control)
+                _shouldExport = true;
         }
         if (_window.isOpen()) {
             _texture.loadFromImage(_image);
@@ -48,6 +50,10 @@ namespace Raytracer {
 
     bool Raytracer::SfmlDisplay::isOpen() const {
         return _window.isOpen();
+    }
+
+    bool Raytracer::SfmlDisplay::shouldExport() const {
+        return _shouldExport;
     }
 
     void Raytracer::SfmlDisplay::display(const std::vector<std::vector<Math::Vector3D>>& pixels) {

@@ -113,8 +113,10 @@ void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory, S
         }
         if (display) {
             display->refresh();
-            if (!display->isOpen()) // Stop rendering if window is closed
+            if (!display->isOpen())
                 return;
+            if (display->shouldExport())
+                break;
         }
     }
 

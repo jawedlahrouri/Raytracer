@@ -19,6 +19,7 @@ namespace Raytracer {
             void updatePixel(int x, int y, const Math::Vector3D& color);
             void refresh();
             bool isOpen() const;
+            bool shouldExport() const;
             void display(const std::vector<std::vector<Math::Vector3D>>& pixels);
     private:
         int _width;
@@ -28,6 +29,7 @@ namespace Raytracer {
         sf::Image _image;
         sf::Texture _texture;
         sf::Sprite _sprite;
+        bool _shouldExport = false;
     };
 }
 
