@@ -22,6 +22,8 @@
 #include "display/sfml_display.hpp"
 #include <memory>
 #include <limits>
+#include <thread>
+#include <mutex>
 
 Raytracer::test::test(const Raytracer::Primitive& primitive, const Raytracer::Camera& camera, const Raytracer::Lights& lights) : _primitive(primitive), _camera(camera), _lights(lights), _cam(camera.size.first, camera.size.second, camera.fieldOfView, camera.posCoords, camera.rotaCoords), _pixels(camera.size.second, std::vector<Math::Vector3D>(camera.size.first))
 {
@@ -71,7 +73,6 @@ void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory, S
             std::cerr << "Factory Error (PointLight " << id << "): " << e.what() << std::endl;
         }
     }
-  
     bvh.build(std::move(physical_primitives));
     // Lignes de debug
     std::cerr << "BVH prims count: " << bvh.getPrimCount() << std::endl;
@@ -119,6 +120,7 @@ void Raytracer::test::createScene(BVH& bvh, Raytracer::ObjectFactory& factory, S
                 break;
         }
     }
+    ThreadScene(bvh, physical_lights);
 
     // lignes de debug 
     int hitCount = 0;

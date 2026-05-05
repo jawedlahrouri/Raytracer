@@ -36,6 +36,8 @@ namespace Raytracer {
             void drawPlane();
             void createScene(BVH& bvh, Raytracer::ObjectFactory& factory, SfmlDisplay* display = nullptr);
             const std::vector<std::vector<Math::Vector3D>>& getPixels() const { return _pixels; }
+            void ThreadScene(BVH& bvh, const std::vector<std::shared_ptr<Raytracer::ILight>>& physical_lights);
+            void createScene(BVH& bvh, Raytracer::ObjectFactory& factory);
     };
 }
 

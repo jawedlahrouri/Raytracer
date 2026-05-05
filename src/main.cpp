@@ -13,7 +13,7 @@
 #include "plugins/renderer/ppm_export.hpp"
 #include "math/Point3D.hpp"
 #include "utils/Ray.hpp"
-#include "config/test.hpp"
+#include "config/SceneLoader.hpp"
 #include "utils/HitRecord.hpp"
 #include "plugins/lights/PointLight.hpp"
 #include "plugins/renderer/Shadow_Ray.hpp"
