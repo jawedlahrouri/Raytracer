@@ -36,13 +36,29 @@ void Raytracer::PPMExporter::write_pixel(int r, int g, int b)
     std::cout << r << " " << g << " " << b << "\n";
 }
 
-void Raytracer::PPMExporter::write_image(int width, int height, const std::vector<std::vector<Math::Vector3D>>& pixels)
+// void Raytracer::PPMExporter::write_image(int width, int height, const std::vector<std::vector<Math::Vector3D>>& pixels)
+// {
+//     write_header(width, height);
+//     for (int j = 0; j < height; ++j) {
+//         for (int i = 0; i < width; ++i) {
+//             const Math::Vector3D& color = pixels[j][i];
+//             write_pixel(static_cast<int>(color.X), static_cast<int>(color.Y), static_cast<int>(color.Z));
+//         }
+//     }
+// }
+
+void Raytracer::PPMExporter::write_image(int width, int height,
+    const std::vector<std::vector<Math::Vector3D>>& pixels)
 {
     write_header(width, height);
     for (int j = 0; j < height; ++j) {
         for (int i = 0; i < width; ++i) {
             const Math::Vector3D& color = pixels[j][i];
-            write_pixel(static_cast<int>(color.X), static_cast<int>(color.Y), static_cast<int>(color.Z));
+            write_pixel(
+                static_cast<int>(color.X * 255.99),
+                static_cast<int>(color.Y * 255.99),
+                static_cast<int>(color.Z * 255.99)
+            );
         }
     }
 }

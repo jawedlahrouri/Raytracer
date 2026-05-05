@@ -20,6 +20,11 @@ namespace Raytracer {
             Math::Point3D origin;
             Math::Vector3D direction;
 
+            Math::Point3D at(float t) const
+            {
+                return origin + direction * t;
+            }
+
         protected:
         private:
     };

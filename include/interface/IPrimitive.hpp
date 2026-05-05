@@ -9,7 +9,9 @@
 #define IPRIMITIVE_HPP_
 #include "./utils/Ray.hpp"
 #include "./utils/HitRecord.hpp"
-#include "RaytracerType.hpp"
+#include "./RaytracerType.hpp"
+#include "./spacePartitionning/AABB.hpp"
+
 #include <string>
 #include <memory>
 
@@ -22,9 +24,14 @@ namespace Raytracer {
             std::shared_ptr<IMaterial> material;
 
             // Check if the ray intersects with the primitive and fill the hit record if it does
-            virtual bool intersect(const Raytracer::Ray& ray, HitRecord& record) const = 0;
+            virtual bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& rec) const = 0;
+            virtual AABB bounds() const = 0;
+            virtual Math::Point3D centroid() const = 0;
 
-            virtual void drawShape() = 0;
+            // Setters aren't initialized to prevent objects from having to use all of them if they're unnecessary for their proper functioning
+            virtual void setName(const std::string & /*name*/) {};
+            virtual void setPosition(const Math::Point3D& /*position*/) {};
+            virtual void setAxis(const Math::Vector3D& /*axis*/) {};
             
         protected:
         private:

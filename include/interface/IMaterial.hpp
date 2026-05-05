@@ -16,7 +16,7 @@
 #include "math/Vector3D.hpp"
 #include "RaytracerType.hpp"
 #include "parsing.hpp"
-
+#include "spacePartitionning/BVH.hpp"
 
 class IMaterial {
     public:
