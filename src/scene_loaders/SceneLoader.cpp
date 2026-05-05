@@ -9,9 +9,12 @@
 #include "design_pattern/MaterialFactory.hpp"
 #include "plugins/renderer/ppm_export.hpp"
 #include "utils/HitRecord.hpp"
+#include "optical_effects/Antialazing.hpp"
 #include "exception.hpp"
 #include <iostream>
 #include <limits>
+#include <chrono>
+#include <iomanip>
 
 Raytracer::SceneLoader::SceneLoader(const Raytracer::Primitive& primitive, const Raytracer::Camera& camera, const Raytracer::Lights& lights)
     : _rawPrimitives(primitive), _rawCameraInfo(camera), _rawLights(lights),
@@ -136,6 +139,10 @@ void Raytracer::SceneLoader::renderParallel(Raytracer::SfmlDisplay* display)
         if (num_threads == 0) num_threads = 1;
         
         std::vector<std::thread> threads;
+        auto startTime = std::chrono::steady_clock::now();
+        bool finished = false;
+
+        std::thread monitor(&Raytracer::Progress::monitor, startTime, std::ref(_nextLine), (int)_rawCameraInfo.size.second, std::ref(finished), std::ref(_renderMutex));
 
         auto worker = [&]() {
             try {
@@ -160,10 +167,30 @@ void Raytracer::SceneLoader::renderParallel(Raytracer::SfmlDisplay* display)
 
         for (auto& t : threads)
             t.join();
-
+        {
+            std::lock_guard<std::mutex> lock(_renderMutex);
+            finished = true;
+        }
+        monitor.join();
     } catch (const std::exception& e) {
         throw CrashException(std::string("Parallel rendering crashed: ") + e.what());
     }
+}
+
+Math::Vector3D Raytracer::SceneLoader::computeRayColor(double u, double v)
+{
+    Raytracer::Ray r = _camera.ray(u, v);
+    HitRecord rec;
+    
+    if (_bvh.intersect(r, 0.001f, 1e9f, rec)) {
+        if (rec.material && !_lights.empty()) {
+            Math::Vector3D color = rec.material->getDiffuseColor(rec, _lights, _bvh);
+            return Math::Vector3D(color.X / 255.0, color.Y / 255.0, color.Z / 255.0);
+        } else {
+            return Math::Vector3D(rec.color.X / 255.0, rec.color.Y / 255.0, rec.color.Z / 255.0);
+        }
+    }
+    return Math::Vector3D(0, 0, 0);
 }
 
 void Raytracer::SceneLoader::renderLine(int j, Raytracer::SfmlDisplay* display)
@@ -173,21 +200,13 @@ void Raytracer::SceneLoader::renderLine(int j, Raytracer::SfmlDisplay* display)
         int height = (int)_rawCameraInfo.size.second;
 
         for (int i = 0; i < width; i++) {
-            double u = static_cast<double>(i) / (width - 1);
-            double v = static_cast<double>(j) / (height - 1);
-            Raytracer::Ray r = _camera.ray(u, v);
-
-            Math::Vector3D pixel_color(0, 0, 0);
-            HitRecord rec;
-            
-            if (_bvh.intersect(r, 0.001f, 1e9f, rec)) {
-                if (rec.material && !_lights.empty()) {
-                    pixel_color = rec.material->getDiffuseColor(rec, _lights, _bvh);
-                    pixel_color = Math::Vector3D(pixel_color.X / 255.0, pixel_color.Y / 255.0, pixel_color.Z / 255.0);
-                } else {
-                    pixel_color = Math::Vector3D(rec.color.X / 255.0, rec.color.Y / 255.0, rec.color.Z / 255.0);
+            Math::Vector3D pixel_color = Antialazing::resolvePixel(
+                i, j, width, height, _aaLevel, _aaThreshold,
+                [this](double u, double v) { 
+                    return computeRayColor(u, v); 
                 }
-            }
+            );
+
             _pixels[j][i] = pixel_color;
             if (display) {
                 display->updatePixel(i, j, pixel_color);

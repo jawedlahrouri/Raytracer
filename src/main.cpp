@@ -66,8 +66,27 @@ int main(int argc, char **argv)
         Raytracer::Parser parser(argv[1]);
         parser.parser();
 
-        bool useDisplay = (argc >= 3 && std::string(argv[2]) == "--display");
+        bool useDisplay = false;
+        int aa_level = 0;
+
+        for (int i = 2; i < argc; ++i) {
+            std::string arg = argv[i];
+            if (arg == "--display") {
+                useDisplay = true;
+            } else if (arg == "--aa" && i + 1 < argc) {
+                try {
+                    aa_level = std::stoi(argv[i + 1]);
+                    if (aa_level < 2) aa_level = 2;
+                    if (aa_level > 16) aa_level = 16;
+                } catch (...) {
+                    aa_level = 2;
+                }
+                i++;
+            }
+        }
+
         Raytracer::SceneLoader loader(parser.getInfoPrimitive(), parser.getInfoCamera(), parser.getInfoLights());
+        loader.setAALevel(aa_level);
         
         if (useDisplay) {
             Raytracer::SfmlDisplay display(
