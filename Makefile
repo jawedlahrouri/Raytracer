@@ -9,6 +9,7 @@ SRC  =  $(wildcard src/*.cpp) \
 		    $(wildcard src/plugins/spacePartitionning/*.cpp) \
         $(wildcard src/plugins/renderer/*.cpp) \
         $(wildcard src/utils/*.cpp) \
+        $(wildcard src/optical_effects/*.cpp) \
 		    $(wildcard src/scene_loaders/*.cpp) \
         $(wildcard src/plugins/interface/*.cpp) \
         $(wildcard src/display/*.cpp)

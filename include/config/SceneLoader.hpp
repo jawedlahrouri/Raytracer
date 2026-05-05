@@ -20,6 +20,7 @@
 #include "design_pattern/ObjectFactory.hpp"
 #include "design_pattern/MaterialFactory.hpp"
 #include "display/sfml_display.hpp"
+#include "utils/Progress.hpp"
 
 namespace Raytracer {
     class SceneLoader {
@@ -27,6 +28,7 @@ namespace Raytracer {
             SceneLoader(const Raytracer::Primitive& primitive, const Raytracer::Camera& camera, const Raytracer::Lights& lights);
             ~SceneLoader() = default;
             void run(Raytracer::SfmlDisplay* display = nullptr);
+            void setAALevel(int level) { _aaLevel = level; }
 
         private:
             void buildScene();
@@ -52,6 +54,10 @@ namespace Raytracer {
 
             std::mutex _renderMutex;
             int _nextLine;
+            
+            Math::Vector3D computeRayColor(double u, double v);
+            int _aaLevel = 0;
+            double _aaThreshold = 0.1;
     };
 }
 
