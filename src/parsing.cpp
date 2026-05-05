@@ -197,27 +197,26 @@ void Raytracer::Parser::parseLight()
         {Raytracer::lightsType::diffuse, _config["Lights"]["diffuse"].get<float>()},
     };
 
-    if (_config["Lights"]["point"].isNull() || _config["Lights"]["point"].size() < 1)
-        throw ErrorException("Light point est invalide ou incomplet.");
-
-    unsigned int id_point = 0;
-    for (std::size_t i = 0; i < _config["Lights"]["point"].size(); i++) {
-        if (_config["Lights"]["point"][i].isNull() || _config["Lights"]["point"][i].size() < 3)
-            throw ErrorException("Light point est invalide ou incomplet.");
-        Math::Point3D point = {_config["Lights"]["point"][i][0].get<double>(), _config["Lights"]["point"][i][1].get<double>(), _config["Lights"]["point"][i][2].get<double>()};
-        light.listPoints[id_point] = point;
-        id_point++;
+    if (!_config["Lights"]["point"].isNull()) {
+        unsigned int id_point = 0;
+        for (std::size_t i = 0; i < _config["Lights"]["point"].size(); i++) {
+            if (_config["Lights"]["point"][i].isNull() || _config["Lights"]["point"][i].size() < 3)
+                throw ErrorException("Light point est invalide ou incomplet.");
+            Math::Point3D point = {_config["Lights"]["point"][i][0].get<double>(), _config["Lights"]["point"][i][1].get<double>(), _config["Lights"]["point"][i][2].get<double>()};
+            light.listPoints[id_point] = point;
+            id_point++;
+        }
     }
 
-    if (_config["Lights"]["directional"].isNull() || _config["Lights"]["directional"].size() < 1)
-        throw ErrorException("Light directional est invalide ou incomplet.");
-    unsigned int id_vector = 0;
-    for (std::size_t j = 0; j < _config["Lights"]["directional"].size(); j++) {
-        if (_config["Lights"]["directional"][j].isNull() || _config["Lights"]["directional"][j].size() < 3)
-            throw ErrorException("Light directional est invalide ou incomplet.");
-        Math::Vector3D vector = {_config["Lights"]["directional"][j][0].get<double>(), _config["Lights"]["directional"][j][1].get<double>(), _config["Lights"]["directional"][j][2].get<double>()};
-        light.listDirectional[id_vector] = vector;
-        id_vector++;
+    if (!_config["Lights"]["directional"].isNull()) {
+        unsigned int id_vector = 0;
+        for (std::size_t j = 0; j < _config["Lights"]["directional"].size(); j++) {
+            if (_config["Lights"]["directional"][j].isNull() || _config["Lights"]["directional"][j].size() < 3)
+                throw ErrorException("Light directional est invalide ou incomplet.");
+            Math::Vector3D vector = {_config["Lights"]["directional"][j][0].get<double>(), _config["Lights"]["directional"][j][1].get<double>(), _config["Lights"]["directional"][j][2].get<double>()};
+            light.listDirectional[id_vector] = vector;
+            id_vector++;
+        }
     }
     _lights = light;
 }
