@@ -34,18 +34,18 @@ std::shared_ptr<Raytracer::IMaterial> Raytracer::MaterialFactory::createMaterial
     std::string path = "./plugins/lib" + type + ".so";
 
     try {
-        auto loader = std::make_unique<DLLoader<Raytracer::IMaterial>>(path);
-        
         if (type == "TransparentMaterial") {
+            auto loader = std::make_unique<DLLoader<Raytracer::IMaterial>>(path);
             double opacity = 0.5;
             if (params.find("opacity") != params.end()) {
                 opacity = params.at("opacity");
                 if (opacity < 0.0) opacity = 0.0;
                 if (opacity > 1.0) opacity = 1.0;
             }
-            Raytracer::IMaterial* instance = loader->getInstance("entryPointWithOpacity", opacity);
-            if (!instance) {
-                std::cerr << "EntryPointWithOpacity returned nullptr for TransparentMaterial" << std::endl;
+            Raytracer::IMaterial* instance = nullptr;
+            try {
+                instance = loader->getInstance("entryPointWithOpacity", opacity);
+            } catch (...) {
                 instance = loader->getInstance("entryPoint");
             }
             if (instance) {
@@ -55,6 +55,7 @@ std::shared_ptr<Raytracer::IMaterial> Raytracer::MaterialFactory::createMaterial
             }
             return nullptr;
         } else {
+            auto loader = std::make_unique<DLLoader<Raytracer::IMaterial>>(path);
             Raytracer::IMaterial* instance = loader->getInstance("entryPoint");
             if (!instance) {
                 std::cerr << "EntryPoint returned nullptr for material " << type << std::endl;

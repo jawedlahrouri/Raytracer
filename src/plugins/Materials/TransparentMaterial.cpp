@@ -65,4 +65,5 @@ Math::Vector3D Raytracer::TransparentMaterial::getDiffuseColor(
 extern "C" {
     int getType() { return 2; }
     Raytracer::IMaterial* entryPoint() { return new Raytracer::TransparentMaterial(0.5); }
+    Raytracer::IMaterial* entryPointWithOpacity(double opacity) { return new Raytracer::TransparentMaterial(opacity); }
 }

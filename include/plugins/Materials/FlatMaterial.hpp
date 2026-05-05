@@ -1,3 +1,10 @@
+/*
+** EPITECH PROJECT, 2026
+** Raytracer-1
+** File description:
+** FLATMaterial
+*/
+
 #ifndef FLAT_MATERIAL_HPP_
 #define FLAT_MATERIAL_HPP_
 

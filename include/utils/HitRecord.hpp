@@ -1,3 +1,10 @@
+/*
+** EPITECH PROJECT, 2026
+** Raytracer-1
+** File description:
+** HitRecord
+*/
+
 #ifndef HITRECORD_HPP_
 #define HITRECORD_HPP_
 

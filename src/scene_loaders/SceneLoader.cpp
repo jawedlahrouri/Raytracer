@@ -106,7 +106,7 @@ void Raytracer::SceneLoader::buildPlanes(std::vector<std::shared_ptr<IPrimitive>
         for (const auto& [name, planeData] : _rawPrimitives.listOfPlane) {
             auto newPlane = _objectFactory.createPrimitive("Plane", planeData);   
             if (newPlane) {
-                newPlane->material = _materialFactory.createMaterial(planeData.material);
+                newPlane->material = _materialFactory.createMaterialWithParams(planeData.material, planeData.materialParams);
                 physical_primitives.push_back(newPlane);
             }
         }
