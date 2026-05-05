@@ -8,8 +8,9 @@
 #include "primitives/PlanePrimitive.hpp"
 
 /// Fills the hit record with the intersection data
-static void fill_hit_record(HitRecord& rec, double t, const Math::Point3D& hitPoint, const Math::Vector3D& normal, double denom, const Math::Vector3D& color) {
+static void fill_hit_record(HitRecord& rec, double t, const Math::Point3D& hitPoint, const Math::Vector3D& normal, double denom, const Math::Vector3D& color, const Raytracer::Ray& ray) {
     rec.t = t;
+    rec.ray = ray;
     rec.point = hitPoint;
     rec.normal = normal;
     if (denom > 0)
@@ -36,7 +37,7 @@ bool Raytracer::PlanePrimitive::intersect(const Ray& ray, float tMin, float tMax
         ray.origin.Y + ray.direction.Y * t,
         ray.origin.Z + ray.direction.Z * t
     );
-    fill_hit_record(rec, t, hitPoint, normal, denom, color);
+    fill_hit_record(rec, t, hitPoint, normal, denom, color, ray);
     rec.material = material.get();
     return true;
 }
@@ -83,7 +84,7 @@ void Raytracer::PlanePrimitive::setAxis(const Math::Vector3D& axis)
 extern "C" {
     int getType()
     {
-        return 0; // 0 for primitives
+        return 0;
     }
 
     Raytracer::IPrimitive* entryPoint(const Raytracer::Plane& data) {
