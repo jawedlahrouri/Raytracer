@@ -91,7 +91,7 @@ void Raytracer::SceneLoader::buildShapes(std::vector<std::shared_ptr<IPrimitive>
         for (const auto& [name, shapeData] : _rawPrimitives.listOfShapes) {
             auto prim = _objectFactory.createPrimitive(shapeData.type, shapeData);
             if (prim) {
-                prim->material = _materialFactory.createMaterial(shapeData.material);
+                prim->material = _materialFactory.createMaterialWithParams(shapeData.material, shapeData.materialParams);
                 physical_primitives.push_back(prim);
             }
         }
@@ -183,6 +183,7 @@ Math::Vector3D Raytracer::SceneLoader::computeRayColor(double u, double v)
     HitRecord rec;
     
     if (_bvh.intersect(r, 0.001f, 1e9f, rec)) {
+        rec.ray = r;
         if (rec.material && !_lights.empty()) {
             Math::Vector3D color = rec.material->getDiffuseColor(rec, _lights, _bvh);
             return Math::Vector3D(color.X / 255.0, color.Y / 255.0, color.Z / 255.0);
