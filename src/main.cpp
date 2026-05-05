@@ -13,7 +13,7 @@
 #include "plugins/renderer/ppm_export.hpp"
 #include "math/Point3D.hpp"
 #include "utils/Ray.hpp"
-#include "config/test.hpp"
+#include "config/SceneLoader.hpp"
 #include "utils/HitRecord.hpp"
 #include "plugins/lights/PointLight.hpp"
 #include "plugins/renderer/Shadow_Ray.hpp"
@@ -63,10 +63,9 @@ int main(int argc, char **argv)
         Raytracer::Parser parser(argv[1]);
         parser.parser();
 
-        Raytracer::test test(parser.getInfoPrimitive(), parser.getInfoCamera(), parser.getInfoLights());
-        Raytracer::ObjectFactory factory;
-        Raytracer::BVH bvh;
-        test.createScene(bvh, factory);
+        Raytracer::SceneLoader loader(parser.getInfoPrimitive(), parser.getInfoCamera(), parser.getInfoLights());
+        loader.run();
+
         return 0;
     } catch (const WarningException& e) {
         std::cerr << "WarningException in main: " << e.what() << std::endl;
