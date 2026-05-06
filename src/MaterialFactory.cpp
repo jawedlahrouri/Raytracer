@@ -54,6 +54,26 @@ std::shared_ptr<Raytracer::IMaterial> Raytracer::MaterialFactory::createMaterial
                 return newMaterial;
             }
             return nullptr;
+        } else if (type == "ReflectionMaterial") {
+            auto loader = std::make_unique<DLLoader<Raytracer::IMaterial>>(path);
+            double reflectivity = 0.5;
+            if (params.find("reflectivity") != params.end()) {
+                reflectivity = params.at("reflectivity");
+                if (reflectivity < 0.0) reflectivity = 0.0;
+                if (reflectivity > 1.0) reflectivity = 1.0;
+            }
+            Raytracer::IMaterial* instance = nullptr;
+            try {
+                instance = loader->getInstance("entryPointWithReflectivity", reflectivity);
+            } catch (...) {
+                instance = loader->getInstance("entryPoint");
+            }
+            if (instance) {
+                std::shared_ptr<Raytracer::IMaterial> newMaterial(instance);
+                _materialLoaders.push_back(std::move(loader));
+                return newMaterial;
+            }
+            return nullptr;
         } else {
             auto loader = std::make_unique<DLLoader<Raytracer::IMaterial>>(path);
             Raytracer::IMaterial* instance = loader->getInstance("entryPoint");

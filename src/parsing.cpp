@@ -156,6 +156,9 @@ void Raytracer::Parser::parsePrimitive()
                 if (!params["opacity"].isNull()) {
                     shape.materialParams["opacity"] = params["opacity"].get<double>();
                 }
+                if (!params["reflectivity"].isNull()) {
+                    shape.materialParams["reflectivity"] = params["reflectivity"].get<double>();
+                }
             }
             
             _primitive.listOfShapes[shape.shapeName] = shape;
@@ -194,6 +197,9 @@ void Raytracer::Parser::parsePrimitive()
                 auto& params = _config["Primitives"][i]["materialParams"];
                 if (!params["opacity"].isNull()) {
                     floor.materialParams["opacity"] = params["opacity"].get<double>();
+                }
+                if (!params["reflectivity"].isNull()) {
+                    floor.materialParams["reflectivity"] = params["reflectivity"].get<double>();
                 }
             }
             
