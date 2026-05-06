@@ -158,7 +158,7 @@ void Raytracer::SceneLoader::buildAmbientLight()
     try {
         if (ambientParam != _rawLights.lightParams.end()) {
             Raytracer::Light data;
-            data.ambientIntensity = static_cast<float>(ambientParam->second);
+            data.ambientIntensity = ambientParam->second;
 
             auto newLight = _objectFactory.createLight("Ambient", data);
             if (newLight)
