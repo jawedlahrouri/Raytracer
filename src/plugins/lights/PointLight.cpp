@@ -27,6 +27,11 @@ float Raytracer::PointLight::getDistanceToLight(const Math::Vector3D& hitPoint) 
     return static_cast<float>(diff.length());
 }
 
+bool Raytracer::PointLight::canLightBeBlocked() const
+{
+    return true;
+}
+
 Math::Vector3D Raytracer::PointLight::calculateIllumination(const Math::Vector3D& hitPoint, const Math::Vector3D& normal, const Math::Vector3D& baseColor) const {
     Math::Vector3D toLight = getDirectionToLight(hitPoint);
     double diffuseIntensity = std::max(0.0, normal.dot(toLight));
