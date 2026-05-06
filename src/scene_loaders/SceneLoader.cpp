@@ -74,6 +74,7 @@ void Raytracer::SceneLoader::buildScene()
         buildPlanes(physical_primitives);
         buildPointLight();
         buildDirectionalLight();
+        buildAmbientLight();
 
         if (physical_primitives.empty())
             throw WarningException("Scene building: No objects found.");
@@ -147,6 +148,24 @@ void Raytracer::SceneLoader::buildDirectionalLight()
         }
     } catch (const std::exception& e) {
         throw ErrorException(std::string("Directional light(s) instantiation failed: ") + e.what());
+    }
+}
+
+void Raytracer::SceneLoader::buildAmbientLight()
+{
+    auto ambientParam = _rawLights.lightParams.find(Raytracer::lightsType::ambient);
+
+    try {
+        if (ambientParam != _rawLights.lightParams.end()) {
+            Raytracer::Light data;
+            data.ambientIntensity = static_cast<float>(ambientParam->second);
+
+            auto newLight = _objectFactory.createLight("Ambient", data);
+            if (newLight)
+                _lights.push_back(newLight);
+        }
+    } catch (std::exception& e) {
+        throw ErrorException(std::string("Ambient light instantiation failed: ") + e.what());
     }
 }
 
