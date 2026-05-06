@@ -30,6 +30,7 @@ namespace Raytracer {
         Math::Point3D position;
         Math::Vector3D direction;
         Raytracer::colorType intensity;
+        float ambientIntensity;
     };
 
     struct Shape {
@@ -56,7 +57,7 @@ namespace Raytracer {
     };
 
     struct Lights {
-        std::map<enum Raytracer::lightsType, std::size_t> lightParams; // ambient and diffuse
+        std::map<enum Raytracer::lightsType, float> lightParams; // ambient and diffuse
         std::map<unsigned int, Math::Point3D> listPoints; // list of differents lights points
         std::map<unsigned int, Math::Vector3D> listDirectional;
     };
