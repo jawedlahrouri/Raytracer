@@ -20,17 +20,17 @@ Math::Vector3D Raytracer::FlatMaterial::getDiffuseColor(
     const Raytracer::BVH& bvh
 ) const {
 
-    Math::Vector3D illumination_color(
-        record.color.X * 0.1,
-        record.color.Y * 0.1,
-        record.color.Z * 0.1
-    );
+    Math::Vector3D illumination_color(0, 0, 0);
 
     for (auto& light : physical_lights) {
         Math::Vector3D hit_point_vec(record.point.X, record.point.Y, record.point.Z);
         Math::Vector3D dir_to_light = light->getDirectionToLight(hit_point_vec);
         double dist_to_light = light->getDistanceToLight(hit_point_vec);
 
+        if (!light->canLightBeBlocked()) {
+            illumination_color = illumination_color + light->calculateIllumination(hit_point_vec, record.normal, record.color);
+            continue;
+        }
         Math::Point3D shadow_origin(
             record.point.X + record.normal.X * 0.001,
             record.point.Y + record.normal.Y * 0.001,

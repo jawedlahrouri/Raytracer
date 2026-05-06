@@ -24,6 +24,10 @@ Math::Vector3D Raytracer::MetalMaterial::getDiffuseColor(
         Math::Vector3D dir_to_light = light->getDirectionToLight(hit_point_vec);
         float dist_to_light = light->getDistanceToLight(hit_point_vec);        
         
+        if (!light->canLightBeBlocked()) {
+            illumination_color = illumination_color + light->calculateIllumination(hit_point_vec, record.normal, record.color) * 0.2;
+            continue;
+        }
         Math::Point3D shadow_origin(
             record.point.X + record.normal.X * 0.001, 
             record.point.Y + record.normal.Y * 0.001, 
@@ -39,7 +43,6 @@ Math::Vector3D Raytracer::MetalMaterial::getDiffuseColor(
             Math::Vector3D halfway_dir = (dir_to_light + view_dir).normalize();
             double spec = std::pow(std::max(0.0, record.normal.dot(halfway_dir)), shininess);
             Math::Vector3D specular = Math::Vector3D(255, 255, 255) * spec * specular_strength;
-            
             illumination_color = illumination_color + diffuse + specular;
         }
     }
