@@ -30,6 +30,8 @@ namespace Raytracer {
             // Calculate illumination color
             virtual Math::Vector3D calculateIllumination(const Math::Vector3D& hitPoint, const Math::Vector3D& normal, const Math::Vector3D& baseColor) const = 0;
             
+            // Check if the light can be blocked or not and so if you need to cast the shadow or not
+            virtual bool canLightBeBlocked() const = 0;
         protected:
         private:
     };

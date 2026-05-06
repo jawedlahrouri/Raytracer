@@ -32,6 +32,7 @@ namespace Raytracer {
             Math::Vector3D getDirectionToLight(const Math::Vector3D& hitPoint) const override;
             Raytracer::colorType getIntensity() const override;
             float getDistanceToLight(const Math::Vector3D& hitPoint) const override;
+            bool canLightBeBlocked() const override;
             Math::Vector3D calculateIllumination(const Math::Vector3D& hitPoint, const Math::Vector3D& normal, const Math::Vector3D& baseColor) const override;
     };
 }

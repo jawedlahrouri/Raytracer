@@ -25,6 +25,11 @@ float Raytracer::DirectionalLight::getDistanceToLight([[maybe_unused]] const Mat
     return std::numeric_limits<float>::max();
 }
 
+bool Raytracer::DirectionalLight::canLightBeBlocked() const
+{
+    return true;
+}
+
 Math::Vector3D Raytracer::DirectionalLight::calculateIllumination([[maybe_unused]] const Math::Vector3D& hitPoint,
     const Math::Vector3D& normal, const Math::Vector3D& baseColor) const
 {
