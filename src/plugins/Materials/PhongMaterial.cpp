@@ -12,21 +12,19 @@
 #include "plugins/lights/PointLight.hpp"
 #include "spacePartitionning/BVH.hpp"
 
-Raytracer::PhongMaterial::PhongMaterial(double shininess, double specular)
-    : _shininess(shininess), _specular(specular) {}
+Raytracer::PhongMaterial::PhongMaterial(double shininess, double specular) : _shininess(shininess), _specular(specular)
+{
+}
 
-Math::Vector3D Raytracer::PhongMaterial::getDiffuseColor(
-    const HitRecord& record, 
-    const std::vector<std::shared_ptr<Raytracer::ILight>>& physical_lights, 
-    const Raytracer::BVH& bvh
-) const {
-
+Math::Vector3D Raytracer::PhongMaterial::getDiffuseColor(const HitRecord& record, const std::vector<std::shared_ptr<Raytracer::ILight>>& physical_lights, const Raytracer::BVH& bvh) const
+{
     Math::Vector3D final_color(0, 0, 0);
     Math::Vector3D hit_point_vec(record.point.X, record.point.Y, record.point.Z);
     Math::Vector3D V = record.ray.direction * -1.0;
     double v_len = V.length();
-    if (v_len > 0) V = V / v_len;
 
+    if (v_len > 0)
+        V = V / v_len;
     for (auto& light : physical_lights) {
         Math::Vector3D dir_to_light = light->getDirectionToLight(hit_point_vec);
         double dist_to_light = light->getDistanceToLight(hit_point_vec);
@@ -45,14 +43,12 @@ Math::Vector3D Raytracer::PhongMaterial::getDiffuseColor(
         }
 
         if (!in_shadow) {
-            // Diffuse and Ambient contributions
             Math::Vector3D light_contrib = light->calculateIllumination(hit_point_vec, record.normal, record.color);
             final_color = final_color + light_contrib;
-
-            // Specular contribution
             double l_len = dir_to_light.length();
-            if (l_len > 0) { // Not an ambient light
-                Math::Vector3D L = dir_to_light; // Already normalized by light
+        
+            if (l_len > 0) {
+                Math::Vector3D L = dir_to_light;
                 Math::Vector3D N = record.normal;
                 
                 double n_dot_l = N.dot(L);
