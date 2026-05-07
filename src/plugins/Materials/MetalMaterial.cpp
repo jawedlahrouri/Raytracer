@@ -54,6 +54,11 @@ Math::Vector3D Raytracer::MetalMaterial::getDiffuseColor(
 }
 
 extern "C" {
-    int getType() { return 2; }
-    Raytracer::IMaterial* entryPoint() { return new Raytracer::MetalMaterial(); }
+    int getType() {
+        return 2;
+    }
+    // Raytracer::IMaterial* entryPoint() { return new Raytracer::MetalMaterial(); }
+    Raytracer::IMaterial* entryPoint( [[maybe_unused]] const std::map<std::string, double>& params) {
+        return new Raytracer::MetalMaterial();
+    }
 }
