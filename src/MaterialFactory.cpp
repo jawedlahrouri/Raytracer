@@ -54,6 +54,28 @@ std::shared_ptr<Raytracer::IMaterial> Raytracer::MaterialFactory::createMaterial
                 return newMaterial;
             }
             return nullptr;
+        } else if (type == "PhongMaterial") {
+            auto loader = std::make_unique<DLLoader<Raytracer::IMaterial>>(path);
+            double shininess = 32.0;
+            double specular = 0.5;
+            if (params.find("shininess") != params.end()) {
+                shininess = params.at("shininess");
+            }
+            if (params.find("specular") != params.end()) {
+                specular = params.at("specular");
+            }
+            Raytracer::IMaterial* instance = nullptr;
+            try {
+                instance = loader->getInstance("entryPointWithPhong", shininess, specular);
+            } catch (...) {
+                instance = loader->getInstance("entryPoint");
+            }
+            if (instance) {
+                std::shared_ptr<Raytracer::IMaterial> newMaterial(instance);
+                _materialLoaders.push_back(std::move(loader));
+                return newMaterial;
+            }
+            return nullptr;
         } else {
             auto loader = std::make_unique<DLLoader<Raytracer::IMaterial>>(path);
             Raytracer::IMaterial* instance = loader->getInstance("entryPoint");
