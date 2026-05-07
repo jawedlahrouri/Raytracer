@@ -37,6 +37,7 @@ namespace Raytracer {
         std::string shapeName;
         Math::Point3D coords; // enum values (x, y, z)
         std::map<enum Raytracer::specsType, double> specs; // specifications for shape
+        double scale;
         Math::Vector3D color; // RED, GREEN, BLUE
         std::string material;
         std::map<std::string, double> materialParams;

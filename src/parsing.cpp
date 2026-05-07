@@ -157,6 +157,8 @@ void Raytracer::Parser::parsePrimitive()
                     shape.materialParams["opacity"] = params["opacity"].get<double>();
                 }
             }
+
+            shape.scale = _config["Primitives"][i]["scale"].get<double>();
             
             _primitive.listOfShapes[shape.shapeName] = shape;
         }
