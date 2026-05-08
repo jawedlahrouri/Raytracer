@@ -37,6 +37,7 @@ namespace Raytracer {
             void buildPointLight();
             void buildDirectionalLight();
             void buildAmbientLight();
+            void buildColoredLight();
 
             void renderParallel(Raytracer::SfmlDisplay* display);
             void renderLine(int j, Raytracer::SfmlDisplay* display);

@@ -57,7 +57,7 @@ extern "C" {
         return 2;
     }
 
-    Raytracer::IMaterial* entryPoint() {
+    Raytracer::IMaterial* entryPoint( [[maybe_unused]] const std::map<std::string, double>& params) {
         return new Raytracer::FlatMaterial();
     }
 }

@@ -48,9 +48,13 @@ Math::Vector3D Raytracer::TransparentMaterial::getDiffuseColor(
     bool hit_bg = bvh.intersect(transparent_ray, 0.001f, 1e9f, bg_rec);
     Math::Vector3D background_color(0, 0, 0);
 
-    if (hit_bg && bg_rec.material != nullptr) {
+    if (hit_bg) {
         bg_rec.ray = transparent_ray;
-        background_color = bg_rec.material->getDiffuseColor(bg_rec, physical_lights, bvh);
+        if (bg_rec.material != nullptr) {
+            background_color = bg_rec.material->getDiffuseColor(bg_rec, physical_lights, bvh);
+        } else {
+            background_color = bg_rec.color;
+        }
     }
     
     Math::Vector3D final_color(
@@ -67,7 +71,18 @@ Math::Vector3D Raytracer::TransparentMaterial::getDiffuseColor(
 }
 
 extern "C" {
-    int getType() { return 2; }
-    Raytracer::IMaterial* entryPoint() { return new Raytracer::TransparentMaterial(0.5); }
-    Raytracer::IMaterial* entryPointWithOpacity(double opacity) { return new Raytracer::TransparentMaterial(opacity); }
+    int getType() {
+        return 2;
+    }
+    // Raytracer::IMaterial* entryPoint() { return new Raytracer::TransparentMaterial(0.5); }
+    // Raytracer::IMaterial* entryPointWithOpacity(double opacity) { return new Raytracer::TransparentMaterial(opacity); }
+    Raytracer::IMaterial* entryPoint(const std::map<std::string, double>& params) {
+        double opacity = 0.5;
+
+        if (params.find("opacity") != params.end()) {
+            opacity = params.at("opacity");
+        }
+
+        return new Raytracer::TransparentMaterial(opacity);
+    }
 }

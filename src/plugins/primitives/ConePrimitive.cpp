@@ -88,6 +88,7 @@ bool Raytracer::ConePrimitive::intersect(const Ray& ray, float tMin, float tMax,
 
         rec.normal = outward_normal;
         rec.color = color;
+        rec.material = material.get();
         
         return true;
     }

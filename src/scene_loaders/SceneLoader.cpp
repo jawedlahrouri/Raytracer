@@ -75,6 +75,7 @@ void Raytracer::SceneLoader::buildScene()
         buildPointLight();
         buildDirectionalLight();
         buildAmbientLight();
+        buildColoredLight();
 
         if (physical_primitives.empty())
             throw WarningException("Scene building: No objects found.");
@@ -100,7 +101,7 @@ void Raytracer::SceneLoader::buildShapes(std::vector<std::shared_ptr<IPrimitive>
             auto newPrimitive = _objectFactory.createPrimitive(shapeData.type, shapeData);
             
             if (newPrimitive) {
-                newPrimitive->material = _materialFactory.createMaterial(shapeData.material);
+                newPrimitive->material = _materialFactory.createMaterialWithParams(shapeData.material, shapeData.materialParams);
                 physical_primitives.push_back(newPrimitive);
             }
         }
@@ -155,6 +156,23 @@ void Raytracer::SceneLoader::buildDirectionalLight()
         }
     } catch (const std::exception& e) {
         throw ErrorException(std::string("Directional light(s) instantiation failed: ") + e.what());
+    }
+}
+
+void Raytracer::SceneLoader::buildColoredLight()
+{
+    try {
+        for (const auto&[id, posAndColor] : _rawLights.listColored) {
+            Raytracer::Light data;
+            data.position = posAndColor.first;
+            data.lightColor = posAndColor.second;
+
+            auto newLight = _objectFactory.createLight("Colored", data);
+            if (newLight)
+                _lights.push_back(newLight);
+        }
+    } catch (const std::exception& e) {
+        throw ErrorException(std::string("Colored light(s) instantiation failed: ") + e.what());
     }
 }
 
@@ -249,7 +267,7 @@ void Raytracer::SceneLoader::renderLine(int j, Raytracer::SfmlDisplay* display)
             Math::Vector3D pixel_color = Antialazing::resolvePixel(
                 i, j, width, height, _aaLevel, _aaThreshold,
                 [this](double u, double v) { 
-                    return computeRayColor(u, v); 
+                    return computeRayColor(u, 1.0 - v); 
                 }
             );
 
