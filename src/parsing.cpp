@@ -156,6 +156,12 @@ void Raytracer::Parser::parsePrimitive()
                 if (!params["opacity"].isNull()) {
                     shape.materialParams["opacity"] = params["opacity"].get<double>();
                 }
+                if (!params["shininess"].isNull()) {
+                    shape.materialParams["shininess"] = params["shininess"].get<double>();
+                }
+                if (!params["specular"].isNull()) {
+                    shape.materialParams["specular"] = params["specular"].get<double>();
+                }
             }
 
             if (!_config["Primitives"][i]["scale"].isNull())
@@ -199,6 +205,12 @@ void Raytracer::Parser::parsePrimitive()
                 auto& params = _config["Primitives"][i]["materialParams"];
                 if (!params["opacity"].isNull()) {
                     floor.materialParams["opacity"] = params["opacity"].get<double>();
+                }
+                if (!params["shininess"].isNull()) {
+                    floor.materialParams["shininess"] = params["shininess"].get<double>();
+                }
+                if (!params["specular"].isNull()) {
+                    floor.materialParams["specular"] = params["specular"].get<double>();
                 }
             }
             

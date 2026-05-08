@@ -101,7 +101,7 @@ void Raytracer::SceneLoader::buildShapes(std::vector<std::shared_ptr<IPrimitive>
             auto newPrimitive = _objectFactory.createPrimitive(shapeData.type, shapeData);
             
             if (newPrimitive) {
-                newPrimitive->material = _materialFactory.createMaterial(shapeData.material);
+                newPrimitive->material = _materialFactory.createMaterialWithParams(shapeData.material, shapeData.materialParams);
                 physical_primitives.push_back(newPrimitive);
             }
         }
