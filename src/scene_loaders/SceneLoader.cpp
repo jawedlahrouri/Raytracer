@@ -249,7 +249,7 @@ void Raytracer::SceneLoader::renderLine(int j, Raytracer::SfmlDisplay* display)
             Math::Vector3D pixel_color = Antialazing::resolvePixel(
                 i, j, width, height, _aaLevel, _aaThreshold,
                 [this](double u, double v) { 
-                    return computeRayColor(u, v); 
+                    return computeRayColor(u, 1.0 - v); 
                 }
             );
 
