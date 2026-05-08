@@ -164,7 +164,10 @@ void Raytracer::Parser::parsePrimitive()
                 }
             }
 
-            shape.scale = _config["Primitives"][i]["scale"].get<double>();
+            if (!_config["Primitives"][i]["scale"].isNull())
+                shape.scale = _config["Primitives"][i]["scale"].get<double>();
+            else
+                shape.scale = 1.0;
             
             _primitive.listOfShapes[shape.shapeName] = shape;
         }
@@ -244,6 +247,17 @@ void Raytracer::Parser::parseLight()
             Math::Vector3D vector = {_config["Lights"]["directional"][j][0].get<double>(), _config["Lights"]["directional"][j][1].get<double>(), _config["Lights"]["directional"][j][2].get<double>()};
             light.listDirectional[id_vector] = vector;
             id_vector++;
+        }
+    }
+
+    if (!_config["Lights"]["colored"].isNull()) {
+        unsigned int id = 0;
+        for (std::size_t i = 0; i < _config["Lights"]["colored"].size(); i++) {
+            const myjson::JsonValue entry = _config["Lights"]["colored"][i];
+            Math::Point3D pos = {entry["position"][0].get<double>(), entry["position"][1].get<double>(),entry["position"][2].get<double>()};
+            Math::Vector3D color = {entry["color"][0].get<double>(), entry["color"][1].get<double>(), entry["color"][2].get<double>()};
+            light.listColored[id] = {pos, color};
+            id++;
         }
     }
     _lights = light;

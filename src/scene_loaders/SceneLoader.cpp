@@ -75,6 +75,7 @@ void Raytracer::SceneLoader::buildScene()
         buildPointLight();
         buildDirectionalLight();
         buildAmbientLight();
+        buildColoredLight();
 
         if (physical_primitives.empty())
             throw WarningException("Scene building: No objects found.");
@@ -155,6 +156,23 @@ void Raytracer::SceneLoader::buildDirectionalLight()
         }
     } catch (const std::exception& e) {
         throw ErrorException(std::string("Directional light(s) instantiation failed: ") + e.what());
+    }
+}
+
+void Raytracer::SceneLoader::buildColoredLight()
+{
+    try {
+        for (const auto&[id, posAndColor] : _rawLights.listColored) {
+            Raytracer::Light data;
+            data.position = posAndColor.first;
+            data.lightColor = posAndColor.second;
+
+            auto newLight = _objectFactory.createLight("Colored", data);
+            if (newLight)
+                _lights.push_back(newLight);
+        }
+    } catch (const std::exception& e) {
+        throw ErrorException(std::string("Colored light(s) instantiation failed: ") + e.what());
     }
 }
 

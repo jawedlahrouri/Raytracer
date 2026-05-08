@@ -34,6 +34,7 @@ Math::Vector3D Raytracer::DirectionalLight::calculateIllumination([[maybe_unused
     const Math::Vector3D& normal, const Math::Vector3D& baseColor) const
 {
     double diffuseIntensity = std::max(0.0, normal.dot(_direction));
+
     return Math::Vector3D(
         baseColor.X * diffuseIntensity,
         baseColor.Y * diffuseIntensity,
