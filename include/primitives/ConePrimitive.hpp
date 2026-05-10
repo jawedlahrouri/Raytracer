@@ -20,14 +20,16 @@ namespace Raytracer {
         double height;
         double radius;
         Math::Vector3D color;
+        Math::Vector3D _rotation;
 
         ConePrimitive(const Raytracer::Shape& data) : 
             center(data.coords), 
             height(data.specs.at(Raytracer::specsType::height)),
             radius(data.specs.at(Raytracer::specsType::r)),
-            color(data.color) {}
+            color(data.color),
+            _rotation(data.rotation) {}
         ~ConePrimitive() = default;
-    
+
         bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& rec) const override;
         AABB bounds() const override;
         Math::Point3D centroid() const override;
