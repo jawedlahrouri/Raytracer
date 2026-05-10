@@ -5,8 +5,8 @@
 ** Parsing class for parse the config file
 */
 
-#ifndef PARCING_HPP_
-#define PARCING_HPP_
+#ifndef PARSING_HPP_
+#define PARSING_HPP_
 
 #include <string>
 #include <iostream>
@@ -28,7 +28,10 @@ namespace Raytracer {
 
     struct Light {
         Math::Point3D position;
+        Math::Vector3D direction;
+        Math::Vector3D lightColor;
         Raytracer::colorType intensity;
+        float ambientIntensity;
     };
 
     struct Shape {
@@ -36,6 +39,7 @@ namespace Raytracer {
         std::string shapeName;
         Math::Point3D coords; // enum values (x, y, z)
         std::map<enum Raytracer::specsType, double> specs; // specifications for shape
+        double scale;
         Math::Vector3D color; // RED, GREEN, BLUE
         std::string material;
         std::map<std::string, double> materialParams;
@@ -55,9 +59,10 @@ namespace Raytracer {
     };
 
     struct Lights {
-        std::map<enum Raytracer::lightsType, std::size_t> lightParams; // ambient and diffuse
+        std::map<enum Raytracer::lightsType, float> lightParams; // ambient and diffuse
         std::map<unsigned int, Math::Point3D> listPoints; // list of differents lights points
         std::map<unsigned int, Math::Vector3D> listDirectional;
+        std::map<unsigned int, std::pair<Math::Point3D, Math::Vector3D>> listColored;
     };
 }
 

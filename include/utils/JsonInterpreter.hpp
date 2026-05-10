@@ -35,7 +35,7 @@ namespace myjson {
         JsonValue() : m_value(nullptr) {}
         JsonValue(bool b) : m_value(b) {}
         JsonValue(double d) : m_value(d) {}
-        JsonValue(int i) : m_value(static_cast<double>(i)) {} // Pour gérer les int comme des double
+        JsonValue(int i) : m_value(static_cast<double>(i)) {}
         JsonValue(const std::string& s) : m_value(s) {}
         JsonValue(const char* s) : m_value(std::string(s)) {}
         JsonValue(const JsonArray& a) : m_value(a) {}
@@ -61,18 +61,34 @@ namespace myjson {
                 return static_cast<const T&>(std::get<T>(m_value));
             }
         }
-        // Accès pour les Objets
+
+        // Accès pour les Objets (non-const)
         JsonValue& operator[](const std::string& key) {
             if (!isObject()) throw std::runtime_error("Erreur: Le noeud n'est pas un objet JSON.");
             return std::get<JsonObject>(m_value)[key];
         }
 
-        // Accès pour les Tableaux
+        // Accès pour les Tableaux (non-const)
         JsonValue& operator[](size_t index) {
             if (!isArray()) throw std::runtime_error("Erreur: Le noeud n'est pas un tableau JSON.");
             return std::get<JsonArray>(m_value)[index];
         }
-        
+
+        // Accès pour les Objets (const)
+        const JsonValue& operator[](const std::string& key) const {
+            if (!isObject()) throw std::runtime_error("Erreur: Le noeud n'est pas un objet JSON.");
+            const auto& obj = std::get<JsonObject>(m_value);
+            auto it = obj.find(key);
+            if (it == obj.end()) throw std::runtime_error("Clé introuvable: " + key);
+            return it->second;
+        }
+
+        // Accès pour les Tableaux (const)
+        const JsonValue& operator[](size_t index) const {
+            if (!isArray()) throw std::runtime_error("Erreur: Le noeud n'est pas un tableau JSON.");
+            return std::get<JsonArray>(m_value)[index];
+        }
+
         // Tailles (pour arrays et objects)
         size_t size() const {
             if (isArray()) return std::get<JsonArray>(m_value).size();
@@ -163,7 +179,7 @@ namespace myjson {
                 
                 obj[key] = parseValue();
                 skipWhitespace();
-                
+
                 if (m_json[m_pos] == '}') {
                     m_pos++;
                     break;
@@ -185,7 +201,7 @@ namespace myjson {
             if (m_pos >= m_json.size()) throw std::runtime_error("Fin de fichier inattendue");
 
             char c = m_json[m_pos];
-            
+
             if (c == '{') return parseObject();
             if (c == '[') return parseArray();
             if (c == '"') return parseString();
@@ -207,7 +223,7 @@ namespace myjson {
     inline JsonValue parseFile(const std::string& filepath) {
         std::ifstream file(filepath);
         if (!file.is_open()) throw std::runtime_error("Impossible d'ouvrir le fichier JSON");
-        
+
         std::stringstream buffer;
         buffer << file.rdbuf();
         return parse(buffer.str());

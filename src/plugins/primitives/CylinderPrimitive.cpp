@@ -51,6 +51,7 @@ bool Raytracer::CylinderPrimitive::intersect(const Ray& ray, float tMin, float t
 
         rec.normal = outward_normal;
         rec.color = color;
+        rec.material = material.get();
         
         return true;
     }
