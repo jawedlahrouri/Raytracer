@@ -158,6 +158,7 @@ void Raytracer::Parser::parsePrimitive()
                 }
                 if (!params["reflectivity"].isNull()) {
                     shape.materialParams["reflectivity"] = params["reflectivity"].get<double>();
+                }
                 if (!params["shininess"].isNull()) {
                     shape.materialParams["shininess"] = params["shininess"].get<double>();
                 }
@@ -210,6 +211,7 @@ void Raytracer::Parser::parsePrimitive()
                 }
                 if (!params["reflectivity"].isNull()) {
                     floor.materialParams["reflectivity"] = params["reflectivity"].get<double>();
+                }
                 if (!params["shininess"].isNull()) {
                     floor.materialParams["shininess"] = params["shininess"].get<double>();
                 }
