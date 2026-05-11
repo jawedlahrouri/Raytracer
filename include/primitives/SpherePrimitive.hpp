@@ -15,22 +15,6 @@
 #include "utils/Ray.hpp"
 #include "spacePartitionning/AABB.hpp"
 
-// namespace Raytracer {
-//     class SpherePrimitive : public IPrimitive {
-//         public:
-//             Math::Point3D center;
-//             double radius;
-//             Math::Vector3D color;
-
-//             SpherePrimitive(const Raytracer::Shape& data) : center(data.coords), radius(data.specs.at(Raytracer::specsType::r)), color() {}
-//             ~SpherePrimitive() = default;
-
-//             void sphere_logic();
-//             bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& rec) const override {
-//             void drawShape();
-//     };
-// }
-
 namespace Raytracer {
 
 class SpherePrimitive : public IPrimitive {
