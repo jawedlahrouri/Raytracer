@@ -16,21 +16,11 @@ Math::Vector3D Raytracer::ColoredLight::getDirectionToLight(const Math::Vector3D
     return dir / len;
 }
 
-Raytracer::colorType Raytracer::ColoredLight::getIntensity() const
-{
-    return Raytracer::RED;
-}
-
 float Raytracer::ColoredLight::getDistanceToLight(const Math::Vector3D& hitPoint) const
 {
     Math::Vector3D diff = Math::Vector3D(_position.X, _position.Y, _position.Z) - hitPoint;
 
     return static_cast<float>(diff.length());
-}
-
-bool Raytracer::ColoredLight::canLightBeBlocked() const
-{
-    return true;
 }
 
 Math::Vector3D Raytracer::ColoredLight::calculateIllumination(const Math::Vector3D& hitPoint,
