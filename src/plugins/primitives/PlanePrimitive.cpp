@@ -7,9 +7,9 @@
 
 #include "primitives/PlanePrimitive.hpp"
 
-/// Fills the hit record with the intersection data
-static void fill_hit_record(HitRecord& rec, double t, const Math::Point3D& hitPoint, const Math::Vector3D& normal, double denom, const Math::Vector3D& color) {
+static void fill_hit_record(HitRecord& rec, double t, const Math::Point3D& hitPoint, const Math::Vector3D& normal, double denom, const Math::Vector3D& color, const Raytracer::Ray& ray) {
     rec.t = t;
+    rec.ray = ray;
     rec.point = hitPoint;
     rec.normal = normal;
     if (denom > 0)
@@ -18,34 +18,34 @@ static void fill_hit_record(HitRecord& rec, double t, const Math::Point3D& hitPo
 }
 
 bool Raytracer::PlanePrimitive::intersect(const Ray& ray, float tMin, float tMax, HitRecord& rec) const {
-    // t = [(center - ray.origin) . normal] / [ray.direction . normal]
-    double denom = ray.direction.dot(normal);
+    Math::Vector3D rot_normal = normal.rotateX(_rotation.X).rotateY(_rotation.Y).rotateZ(_rotation.Z);
+    double denom = ray.direction.dot(rot_normal);
+    
     if (std::abs(denom) < 1e-6)
         return false;
 
-    // Calculate the intersection point
     Math::Vector3D diff(center.X - ray.origin.X, center.Y - ray.origin.Y, center.Z - ray.origin.Z);
-    double t = diff.dot(normal) / denom;
+    double t = diff.dot(rot_normal) / denom;
 
     if (t < tMin || t > tMax)
         return false;
 
-    // Fill the hit record
     Math::Point3D hitPoint(
         ray.origin.X + ray.direction.X * t,
         ray.origin.Y + ray.direction.Y * t,
         ray.origin.Z + ray.direction.Z * t
     );
-    fill_hit_record(rec, t, hitPoint, normal, denom, color);
+
+    fill_hit_record(rec, t, hitPoint, rot_normal, denom, color, ray);
     rec.material = material.get();
     return true;
 }
 
 Raytracer::AABB Raytracer::PlanePrimitive::bounds() const {
-    // Planes are infinite — return a large AABB padded around the center
     const float BIG = 1e6f;
     const float THIN = 1e-3f;
-    Math::Vector3D absN(std::abs(normal.X), std::abs(normal.Y), std::abs(normal.Z));
+    Math::Vector3D rot_normal = normal.rotateX(_rotation.X).rotateY(_rotation.Y).rotateZ(_rotation.Z);
+    Math::Vector3D absN(std::abs(rot_normal.X), std::abs(rot_normal.Y), std::abs(rot_normal.Z));
 
     AABB box;
     box.min = Math::Vector3D(
@@ -66,24 +66,24 @@ Math::Point3D Raytracer::PlanePrimitive::centroid() const {
 }
 
 void Raytracer::PlanePrimitive::setName(const std::string& name)
-{
-    _name = name;
-}
+    {
+        _name = name;
+    }
 
 void Raytracer::PlanePrimitive::setPosition(const Math::Point3D& position)
-{
-    center = position;
-}
+    {
+        center = position;
+    }
 
 void Raytracer::PlanePrimitive::setAxis(const Math::Vector3D& axis)
-{
-    normal = axis;
-}
+    {
+        normal = axis;
+    }
 
 extern "C" {
     int getType()
     {
-        return 0; // 0 for primitives
+        return 0;
     }
 
     Raytracer::IPrimitive* entryPoint(const Raytracer::Plane& data) {

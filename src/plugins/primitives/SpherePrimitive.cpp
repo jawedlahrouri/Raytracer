@@ -12,7 +12,6 @@
 bool Raytracer::SpherePrimitive::intersect(const Ray& ray, float tMin, float tMax, HitRecord& rec) const
 {
     Math::Vector3D oc = ray.origin - center;
-
     float a = ray.direction.dot(ray.direction);
     float b = 2.f * oc.dot(ray.direction);
     float c = oc.dot(oc) - (float)(radius * radius);
@@ -22,21 +21,19 @@ bool Raytracer::SpherePrimitive::intersect(const Ray& ray, float tMin, float tMa
         return false;
 
     float sqrtD = std::sqrt(discriminant);
-
-
     float t = (-b - sqrtD) / (2.f * a);
     if (t < tMin || t > tMax) {
         t = (-b + sqrtD) / (2.f * a);
         if (t < tMin || t > tMax)
-        return false;
+            return false;
     }
 
     rec.t        = t;
+    rec.ray      = ray;
     rec.point    = ray.at(t);
     rec.normal   = (rec.point - center) * (1.f / (float)radius);
     rec.color    = color;
     rec.material = material.get();
-
     return true;
 }
 
@@ -60,9 +57,8 @@ void Raytracer::SpherePrimitive::setName(const std::string &name)
 
 void Raytracer::SpherePrimitive::setPosition(const Math::Point3D& position)
 {
-    center = position;    
+    center = position;
 }
-
 
 extern "C" {
     int getType() {

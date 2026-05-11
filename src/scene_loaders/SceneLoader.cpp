@@ -72,7 +72,10 @@ void Raytracer::SceneLoader::buildScene()
 
         buildShapes(physical_primitives);
         buildPlanes(physical_primitives);
-        buildLights();
+        buildPointLight();
+        buildDirectionalLight();
+        buildAmbientLight();
+        buildColoredLight();
 
         if (physical_primitives.empty())
             throw WarningException("Scene building: No objects found.");
@@ -88,11 +91,18 @@ void Raytracer::SceneLoader::buildScene()
 void Raytracer::SceneLoader::buildShapes(std::vector<std::shared_ptr<IPrimitive>>& physical_primitives)
 {
     try {
-        for (const auto& [name, shapeData] : _rawPrimitives.listOfShapes) {
-            auto prim = _objectFactory.createPrimitive(shapeData.type, shapeData);
-            if (prim) {
-                prim->material = _materialFactory.createMaterial(shapeData.material);
-                physical_primitives.push_back(prim);
+        for (const auto& [name, constShapeData] : _rawPrimitives.listOfShapes) {
+            auto shapeData = constShapeData; 
+            
+            for (auto& [type, value] : shapeData.specs) {
+                value = value * shapeData.scale;
+            }
+
+            auto newPrimitive = _objectFactory.createPrimitive(shapeData.type, shapeData);
+            
+            if (newPrimitive) {
+                newPrimitive->material = _materialFactory.createMaterialWithParams(shapeData.material, shapeData.materialParams);
+                physical_primitives.push_back(newPrimitive);
             }
         }
     } catch (const std::exception& e) {
@@ -106,7 +116,7 @@ void Raytracer::SceneLoader::buildPlanes(std::vector<std::shared_ptr<IPrimitive>
         for (const auto& [name, planeData] : _rawPrimitives.listOfPlane) {
             auto newPlane = _objectFactory.createPrimitive("Plane", planeData);   
             if (newPlane) {
-                newPlane->material = _materialFactory.createMaterial(planeData.material);
+                newPlane->material = _materialFactory.createMaterialWithParams(planeData.material, planeData.materialParams);
                 physical_primitives.push_back(newPlane);
             }
         }
@@ -115,7 +125,7 @@ void Raytracer::SceneLoader::buildPlanes(std::vector<std::shared_ptr<IPrimitive>
     }
 }
 
-void Raytracer::SceneLoader::buildLights()
+void Raytracer::SceneLoader::buildPointLight()
 {
     try {
         for (const auto& [id, pos] : _rawLights.listPoints) {
@@ -124,10 +134,63 @@ void Raytracer::SceneLoader::buildLights()
             data.intensity = Raytracer::RED;
             
             auto newLight = _objectFactory.createLight("Point", data);
-            if (newLight) _lights.push_back(newLight);
+            if (newLight)
+                _lights.push_back(newLight);
         }
     } catch (const std::exception& e) {
-        throw ErrorException(std::string("Lights instantiation failed: ") + e.what());
+        throw ErrorException(std::string("Point light(s) instantiation failed: ") + e.what());
+    }
+}
+
+void Raytracer::SceneLoader::buildDirectionalLight()
+{
+    try {
+        for (const auto&[id, direction] : _rawLights.listDirectional) {
+            Raytracer::Light data;
+            data.direction = direction;
+            data.intensity = Raytracer::RED;
+
+            auto newLight = _objectFactory.createLight("Directional", data);
+            if (newLight)
+                _lights.push_back(newLight);
+        }
+    } catch (const std::exception& e) {
+        throw ErrorException(std::string("Directional light(s) instantiation failed: ") + e.what());
+    }
+}
+
+void Raytracer::SceneLoader::buildColoredLight()
+{
+    try {
+        for (const auto&[id, posAndColor] : _rawLights.listColored) {
+            Raytracer::Light data;
+            data.position = posAndColor.first;
+            data.lightColor = posAndColor.second;
+
+            auto newLight = _objectFactory.createLight("Colored", data);
+            if (newLight)
+                _lights.push_back(newLight);
+        }
+    } catch (const std::exception& e) {
+        throw ErrorException(std::string("Colored light(s) instantiation failed: ") + e.what());
+    }
+}
+
+void Raytracer::SceneLoader::buildAmbientLight()
+{
+    auto ambientParam = _rawLights.lightParams.find(Raytracer::lightsType::ambient);
+
+    try {
+        if (ambientParam != _rawLights.lightParams.end()) {
+            Raytracer::Light data;
+            data.ambientIntensity = ambientParam->second;
+
+            auto newLight = _objectFactory.createLight("Ambient", data);
+            if (newLight)
+                _lights.push_back(newLight);
+        }
+    } catch (std::exception& e) {
+        throw ErrorException(std::string("Ambient light instantiation failed: ") + e.what());
     }
 }
 
@@ -183,6 +246,7 @@ Math::Vector3D Raytracer::SceneLoader::computeRayColor(double u, double v)
     HitRecord rec;
     
     if (_bvh.intersect(r, 0.001f, 1e9f, rec)) {
+        rec.ray = r;
         if (rec.material && !_lights.empty()) {
             Math::Vector3D color = rec.material->getDiffuseColor(rec, _lights, _bvh);
             return Math::Vector3D(color.X / 255.0, color.Y / 255.0, color.Z / 255.0);
@@ -203,7 +267,7 @@ void Raytracer::SceneLoader::renderLine(int j, Raytracer::SfmlDisplay* display)
             Math::Vector3D pixel_color = Antialazing::resolvePixel(
                 i, j, width, height, _aaLevel, _aaThreshold,
                 [this](double u, double v) { 
-                    return computeRayColor(u, v); 
+                    return computeRayColor(u, 1.0 - v); 
                 }
             );
 

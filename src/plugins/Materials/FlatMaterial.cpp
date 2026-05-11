@@ -9,32 +9,28 @@
 #include <algorithm>
 #include "plugins/Materials/FlatMaterial.hpp"
 #include "plugins/lights/PointLight.hpp"
+#include "spacePartitionning/BVH.hpp"
 
-Raytracer::FlatMaterial::FlatMaterial()
-{
-}
-
-Raytracer::FlatMaterial::~FlatMaterial()
-{
-}
+Raytracer::FlatMaterial::FlatMaterial() {}
+Raytracer::FlatMaterial::~FlatMaterial() {}
 
 Math::Vector3D Raytracer::FlatMaterial::getDiffuseColor(
-    const HitRecord& record,
-    const std::vector<std::shared_ptr<Raytracer::ILight>>& physical_lights,
+    const HitRecord& record, 
+    const std::vector<std::shared_ptr<Raytracer::ILight>>& physical_lights, 
     const Raytracer::BVH& bvh
 ) const {
 
-    Math::Vector3D illumination_color(
-        record.color.X * 0.1,
-        record.color.Y * 0.1,
-        record.color.Z * 0.1
-    );
+    Math::Vector3D illumination_color(0, 0, 0);
 
     for (auto& light : physical_lights) {
         Math::Vector3D hit_point_vec(record.point.X, record.point.Y, record.point.Z);
         Math::Vector3D dir_to_light = light->getDirectionToLight(hit_point_vec);
         double dist_to_light = light->getDistanceToLight(hit_point_vec);
 
+        if (!light->canLightBeBlocked()) {
+            illumination_color = illumination_color + light->calculateIllumination(hit_point_vec, record.normal, record.color);
+            continue;
+        }
         Math::Point3D shadow_origin(
             record.point.X + record.normal.X * 0.001,
             record.point.Y + record.normal.Y * 0.001,
@@ -61,7 +57,7 @@ extern "C" {
         return 2;
     }
 
-    Raytracer::IMaterial* entryPoint() {
+    Raytracer::IMaterial* entryPoint( [[maybe_unused]] const std::map<std::string, double>& params) {
         return new Raytracer::FlatMaterial();
     }
 }

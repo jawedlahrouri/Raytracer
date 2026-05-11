@@ -6,17 +6,23 @@
 */
 
 #ifndef FLAT_MATERIAL_HPP_
-    #define FLAT_MATERIAL_HPP_
-    #include <memory>
-    #include "math/Vector3D.hpp"
-    #include "interface/IMaterial.hpp"
+#define FLAT_MATERIAL_HPP_
+
+#include <memory>
+#include "math/Vector3D.hpp"
+#include "interface/IMaterial.hpp"
+#include "spacePartitionning/BVH.hpp"
 
 namespace Raytracer {
     class FlatMaterial : public IMaterial {
         public:
             FlatMaterial();
             ~FlatMaterial();
-            Math::Vector3D getDiffuseColor(const HitRecord& record, const std::vector<std::shared_ptr<Raytracer::ILight>>& physical_lights, const Raytracer::BVH& bvh) const override;
+            Math::Vector3D getDiffuseColor(
+                const HitRecord& record,
+                const std::vector<std::shared_ptr<Raytracer::ILight>>& physical_lights,
+                const Raytracer::BVH& bvh
+            ) const override;
     };
 }
 

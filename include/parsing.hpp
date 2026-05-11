@@ -5,8 +5,8 @@
 ** Parsing class for parse the config file
 */
 
-#ifndef PARCING_HPP_
-#define PARCING_HPP_
+#ifndef PARSING_HPP_
+#define PARSING_HPP_
 
 #include <string>
 #include <iostream>
@@ -14,6 +14,7 @@
 #include <vector>
 #include <fstream>
 #include "math/Point3D.hpp"
+#include "math/Vector3D.hpp"
 #include "exception.hpp"
 #include "RaytracerType.hpp"
 #include "utils/JsonInterpreter.hpp"
@@ -21,65 +22,72 @@
 namespace Raytracer {
     struct Camera {
         std::pair<double, double> size;
-        Math::Point3D posCoords; // enum values (x, y, z)
-        std::map<enum Raytracer::coordType, double> rotaCoords; //  enum values (x, y, z) (on peut changer zehma c chaud)
-        size_t fieldOfView; // in degree
+        Math::Point3D posCoords;
+        std::map<enum Raytracer::coordType, double> rotaCoords;
+        size_t fieldOfView;
     };
 
     struct Light {
         Math::Point3D position;
+        Math::Vector3D direction;
+        Math::Vector3D lightColor;
         Raytracer::colorType intensity;
+        float ambientIntensity;
     };
 
     struct Shape {
         std::string type;
         std::string shapeName;
-        Math::Point3D coords; // enum values (x, y, z)
-        std::map<enum Raytracer::specsType, double> specs; // specifications for shape
-        Math::Vector3D color; // RED, GREEN, BLUE
+        Math::Point3D coords;
+        Math::Vector3D rotation;
+        double scale;
+        std::map<enum Raytracer::specsType, double> specs;
+        Math::Vector3D color;
         std::string material;
+        std::map<std::string, double> materialParams;
     };
 
     struct Plane {
-        Math::Vector3D axis; // axis X, Y or Z
+        Math::Vector3D axis;
         float positions;
-        Math::Vector3D color; // RED, GREEN, BLUE
+        Math::Vector3D rotation;
+        Math::Vector3D color;
         std::string material;
+        std::map<std::string, double> materialParams;
     };
 
     struct Primitive {
-        std::map<std::string, Shape> listOfShapes; // sphere, cube, ect
-        std::map<std::string, Plane> listOfPlane; // axis, position
+        std::map<std::string, Shape> listOfShapes;
+        std::map<std::string, Plane> listOfPlane;
     };
 
     struct Lights {
-        std::map<enum Raytracer::lightsType, std::size_t> lightParams; // ambient and diffuse
-        std::map<unsigned int, Math::Point3D> listPoints; // list of differents lights points
+        std::map<enum Raytracer::lightsType, float> lightParams;
+        std::map<unsigned int, Math::Point3D> listPoints;
         std::map<unsigned int, Math::Vector3D> listDirectional;
+        std::map<unsigned int, std::pair<Math::Point3D, Math::Vector3D>> listColored;
     };
-}
 
-namespace Raytracer {
     class Parser {
         private:
             std::string _filename;
             myjson::JsonValue _config;
-            Raytracer::Camera _camera;
-            Raytracer::Primitive _primitive;
-            Raytracer::Lights _lights;
+            Camera _camera;
+            Primitive _primitive;
+            Lights _lights;
             std::map<std::string, int> typeCounter;
 
         public:
             Parser(std::string filename);
             ~Parser();
 
-            Raytracer::Camera getInfoCamera();
-            Raytracer::Primitive getInfoPrimitive();
-            Raytracer::Lights getInfoLights();
+            Camera getInfoCamera();
+            Primitive getInfoPrimitive();
+            Lights getInfoLights();
 
-            void setInfoCamera(Raytracer::Camera camera);
-            void setInfoPrimitive(Raytracer::Primitive primitive);
-            void setInfoLights(Raytracer::Lights lights);
+            void setInfoCamera(Camera camera);
+            void setInfoPrimitive(Primitive primitive);
+            void setInfoLights(Lights lights);
             std::string setName(std::string name);
 
             int parser();
@@ -89,4 +97,4 @@ namespace Raytracer {
     };
 }
 
-#endif
+#endif /* !PARSING_HPP_ */

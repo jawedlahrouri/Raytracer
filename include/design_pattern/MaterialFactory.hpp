@@ -14,6 +14,7 @@ namespace Raytracer {
             MaterialFactory() = default;
             ~MaterialFactory() = default;
             std::shared_ptr<IMaterial> createMaterial(const std::string& type);
+            std::shared_ptr<IMaterial> createMaterialWithParams(const std::string& type, const std::map<std::string, double>& params);
         private:
             std::vector<std::unique_ptr<DLLoader<IMaterial>>> _materialLoaders;
     };

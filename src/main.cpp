@@ -16,7 +16,6 @@
 #include "config/SceneLoader.hpp"
 #include "utils/HitRecord.hpp"
 #include "plugins/lights/PointLight.hpp"
-#include "plugins/renderer/Shadow_Ray.hpp"
 #include "spacePartitionning/BVH.hpp"
 #include "design_pattern/MaterialFactory.hpp"
 #include "display/sfml_display.hpp"

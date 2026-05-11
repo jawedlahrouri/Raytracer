@@ -151,6 +151,34 @@ void Raytracer::Parser::parsePrimitive()
                 shape.material = _config["Primitives"][i]["materials"].get<std::string>();
             else
                 shape.material = "FlatMaterial";
+            if (!_config["Primitives"][i]["materialParams"].isNull()) {
+                auto& params = _config["Primitives"][i]["materialParams"];
+                if (!params["opacity"].isNull()) {
+                    shape.materialParams["opacity"] = params["opacity"].get<double>();
+                }
+                if (!params["reflectivity"].isNull()) {
+                    shape.materialParams["reflectivity"] = params["reflectivity"].get<double>();
+                }
+                if (!params["shininess"].isNull()) {
+                    shape.materialParams["shininess"] = params["shininess"].get<double>();
+                }
+                if (!params["specular"].isNull()) {
+                    shape.materialParams["specular"] = params["specular"].get<double>();
+                }
+            }
+
+            if (!_config["Primitives"][i]["scale"].isNull())
+                shape.scale = _config["Primitives"][i]["scale"].get<double>();
+            else
+                shape.scale = 1.0;
+            if (!_config["Primitives"][i]["rotation"].isNull() && _config["Primitives"][i]["rotation"].size() == 3) {
+                shape.rotation = Math::Vector3D(
+                    _config["Primitives"][i]["rotation"][0].get<double>(),
+                    _config["Primitives"][i]["rotation"][1].get<double>(),
+                    _config["Primitives"][i]["rotation"][2].get<double>()
+                );
+            } else
+                shape.rotation = Math::Vector3D(0.0, 0.0, 0.0);            
             _primitive.listOfShapes[shape.shapeName] = shape;
         }
         else {
@@ -183,6 +211,30 @@ void Raytracer::Parser::parsePrimitive()
                 floor.material = _config["Primitives"][i]["materials"].get<std::string>();
             else
                 floor.material = "FlatMaterial";
+            if (!_config["Primitives"][i]["materialParams"].isNull()) {
+                auto& params = _config["Primitives"][i]["materialParams"];
+                if (!params["opacity"].isNull()) {
+                    floor.materialParams["opacity"] = params["opacity"].get<double>();
+                }
+                if (!params["reflectivity"].isNull()) {
+                    floor.materialParams["reflectivity"] = params["reflectivity"].get<double>();
+                }
+                if (!params["shininess"].isNull()) {
+                    floor.materialParams["shininess"] = params["shininess"].get<double>();
+                }
+                if (!params["specular"].isNull()) {
+                    floor.materialParams["specular"] = params["specular"].get<double>();
+                }
+            }
+            if (!_config["Primitives"][i]["rotation"].isNull() && _config["Primitives"][i]["rotation"].size() == 3) {
+                floor.rotation = Math::Vector3D(
+                    _config["Primitives"][i]["rotation"][0].get<double>(),
+                    _config["Primitives"][i]["rotation"][1].get<double>(),
+                    _config["Primitives"][i]["rotation"][2].get<double>()
+                );
+            } else
+                floor.rotation = Math::Vector3D(0.0, 0.0, 0.0);
+            
             _primitive.listOfPlane[name] = floor;
             id_plane++;
         }
@@ -197,27 +249,37 @@ void Raytracer::Parser::parseLight()
         {Raytracer::lightsType::diffuse, _config["Lights"]["diffuse"].get<float>()},
     };
 
-    if (_config["Lights"]["point"].isNull() || _config["Lights"]["point"].size() < 1)
-        throw ErrorException("Light point est invalide ou incomplet.");
-
-    unsigned int id_point = 0;
-    for (std::size_t i = 0; i < _config["Lights"]["point"].size(); i++) {
-        if (_config["Lights"]["point"][i].isNull() || _config["Lights"]["point"][i].size() < 3)
-            throw ErrorException("Light point est invalide ou incomplet.");
-        Math::Point3D point = {_config["Lights"]["point"][i][0].get<double>(), _config["Lights"]["point"][i][1].get<double>(), _config["Lights"]["point"][i][2].get<double>()};
-        light.listPoints[id_point] = point;
-        id_point++;
+    if (!_config["Lights"]["point"].isNull()) {
+        unsigned int id_point = 0;
+        for (std::size_t i = 0; i < _config["Lights"]["point"].size(); i++) {
+            if (_config["Lights"]["point"][i].isNull() || _config["Lights"]["point"][i].size() < 3)
+                throw ErrorException("Light point est invalide ou incomplet.");
+            Math::Point3D point = {_config["Lights"]["point"][i][0].get<double>(), _config["Lights"]["point"][i][1].get<double>(), _config["Lights"]["point"][i][2].get<double>()};
+            light.listPoints[id_point] = point;
+            id_point++;
+        }
     }
 
-    if (_config["Lights"]["directional"].isNull() || _config["Lights"]["directional"].size() < 1)
-        throw ErrorException("Light directional est invalide ou incomplet.");
-    unsigned int id_vector = 0;
-    for (std::size_t j = 0; j < _config["Lights"]["directional"].size(); j++) {
-        if (_config["Lights"]["directional"][j].isNull() || _config["Lights"]["directional"][j].size() < 3)
-            throw ErrorException("Light directional est invalide ou incomplet.");
-        Math::Vector3D vector = {_config["Lights"]["directional"][j][0].get<double>(), _config["Lights"]["directional"][j][1].get<double>(), _config["Lights"]["directional"][j][2].get<double>()};
-        light.listDirectional[id_vector] = vector;
-        id_vector++;
+    if (!_config["Lights"]["directional"].isNull()) {
+        unsigned int id_vector = 0;
+        for (std::size_t j = 0; j < _config["Lights"]["directional"].size(); j++) {
+            if (_config["Lights"]["directional"][j].isNull() || _config["Lights"]["directional"][j].size() < 3)
+                throw ErrorException("Light directional est invalide ou incomplet.");
+            Math::Vector3D vector = {_config["Lights"]["directional"][j][0].get<double>(), _config["Lights"]["directional"][j][1].get<double>(), _config["Lights"]["directional"][j][2].get<double>()};
+            light.listDirectional[id_vector] = vector;
+            id_vector++;
+        }
+    }
+
+    if (!_config["Lights"]["colored"].isNull()) {
+        unsigned int id = 0;
+        for (std::size_t i = 0; i < _config["Lights"]["colored"].size(); i++) {
+            const myjson::JsonValue entry = _config["Lights"]["colored"][i];
+            Math::Point3D pos = {entry["position"][0].get<double>(), entry["position"][1].get<double>(),entry["position"][2].get<double>()};
+            Math::Vector3D color = {entry["color"][0].get<double>(), entry["color"][1].get<double>(), entry["color"][2].get<double>()};
+            light.listColored[id] = {pos, color};
+            id++;
+        }
     }
     _lights = light;
 }

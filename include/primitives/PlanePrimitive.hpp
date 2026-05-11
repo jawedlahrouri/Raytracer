@@ -22,8 +22,9 @@ namespace Raytracer {
             Math::Point3D center;
             Math::Vector3D normal;
             Math::Vector3D color;
+            Math::Vector3D _rotation;
 
-            PlanePrimitive(const Raytracer::Plane& data) : center(Math::Point3D(data.axis.X * data.positions, data.axis.Y * data.positions, data.axis.Z * data.positions)), normal(data.axis), color(data.color) {}
+            PlanePrimitive(const Raytracer::Plane& data) : center(Math::Point3D(data.axis.X * data.positions, data.axis.Y * data.positions, data.axis.Z * data.positions)), normal(data.axis), color(data.color), _rotation(data.rotation) {}
             ~PlanePrimitive() = default;
 
             bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& rec) const override;

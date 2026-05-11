@@ -8,13 +8,13 @@
 #ifndef POINTLIGHT_HPP_
 #define POINTLIGHT_HPP_
 
-#include "interface/ILight.hpp"
+#include "ALight.hpp"
 #include "math/Point3D.hpp"
 #include "RaytracerType.hpp"
 #include "parsing.hpp"
 
 namespace Raytracer {
-    class PointLight : public ILight {
+    class PointLight : public ALight {
         public:
             PointLight(const Raytracer::Light& data)
                 : _position(data.position), _intensity(data.intensity) {}

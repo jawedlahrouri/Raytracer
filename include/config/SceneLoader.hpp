@@ -34,7 +34,10 @@ namespace Raytracer {
             void buildScene();
             void buildShapes(std::vector<std::shared_ptr<IPrimitive>>& physical_primitives);
             void buildPlanes(std::vector<std::shared_ptr<IPrimitive>>& physical_primitives);
-            void buildLights();
+            void buildPointLight();
+            void buildDirectionalLight();
+            void buildAmbientLight();
+            void buildColoredLight();
 
             void renderParallel(Raytracer::SfmlDisplay* display);
             void renderLine(int j, Raytracer::SfmlDisplay* display);
