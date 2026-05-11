@@ -16,25 +16,25 @@
 #include "spacePartitionning/AABB.hpp"
 
 namespace Raytracer {
+    class SpherePrimitive : public IPrimitive {
+        private:
+            std::string _name;
+        public:
+            Math::Point3D center;
+            double radius;
+            Math::Vector3D color;
+            Math::Vector3D _rotation;
 
-class SpherePrimitive : public IPrimitive {
-    private:
-        std::string _name;
-    public:
-        Math::Point3D center;
-        double radius;
-        Math::Vector3D color;
+            SpherePrimitive(const Raytracer::Shape& data) : center(data.coords), radius(data.specs.at(Raytracer::specsType::r)), color(data.color), _rotation(data.rotation) {}
 
-        SpherePrimitive(const Raytracer::Shape& data) : center(data.coords), radius(data.specs.at(Raytracer::specsType::r)), color(data.color) {}
+            ~SpherePrimitive() = default;
 
-        ~SpherePrimitive() = default;
+            bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& rec) const override;
+            AABB bounds() const override;
+            Math::Point3D centroid() const override;
 
-        bool intersect(const Ray& ray, float tMin, float tMax, HitRecord& rec) const override;
-        AABB bounds() const override;
-        Math::Point3D centroid() const override;
-
-        void setName(const std::string& name) override;
-        void setPosition(const Math::Point3D& position) override;
+            void setName(const std::string& name) override;
+            void setPosition(const Math::Point3D& position) override;
     };
 }
 

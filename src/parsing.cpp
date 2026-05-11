@@ -156,6 +156,9 @@ void Raytracer::Parser::parsePrimitive()
                 if (!params["opacity"].isNull()) {
                     shape.materialParams["opacity"] = params["opacity"].get<double>();
                 }
+                if (!params["reflectivity"].isNull()) {
+                    shape.materialParams["reflectivity"] = params["reflectivity"].get<double>();
+                }
                 if (!params["shininess"].isNull()) {
                     shape.materialParams["shininess"] = params["shininess"].get<double>();
                 }
@@ -168,7 +171,14 @@ void Raytracer::Parser::parsePrimitive()
                 shape.scale = _config["Primitives"][i]["scale"].get<double>();
             else
                 shape.scale = 1.0;
-            
+            if (!_config["Primitives"][i]["rotation"].isNull() && _config["Primitives"][i]["rotation"].size() == 3) {
+                shape.rotation = Math::Vector3D(
+                    _config["Primitives"][i]["rotation"][0].get<double>(),
+                    _config["Primitives"][i]["rotation"][1].get<double>(),
+                    _config["Primitives"][i]["rotation"][2].get<double>()
+                );
+            } else
+                shape.rotation = Math::Vector3D(0.0, 0.0, 0.0);            
             _primitive.listOfShapes[shape.shapeName] = shape;
         }
         else {
@@ -206,6 +216,9 @@ void Raytracer::Parser::parsePrimitive()
                 if (!params["opacity"].isNull()) {
                     floor.materialParams["opacity"] = params["opacity"].get<double>();
                 }
+                if (!params["reflectivity"].isNull()) {
+                    floor.materialParams["reflectivity"] = params["reflectivity"].get<double>();
+                }
                 if (!params["shininess"].isNull()) {
                     floor.materialParams["shininess"] = params["shininess"].get<double>();
                 }
@@ -213,6 +226,14 @@ void Raytracer::Parser::parsePrimitive()
                     floor.materialParams["specular"] = params["specular"].get<double>();
                 }
             }
+            if (!_config["Primitives"][i]["rotation"].isNull() && _config["Primitives"][i]["rotation"].size() == 3) {
+                floor.rotation = Math::Vector3D(
+                    _config["Primitives"][i]["rotation"][0].get<double>(),
+                    _config["Primitives"][i]["rotation"][1].get<double>(),
+                    _config["Primitives"][i]["rotation"][2].get<double>()
+                );
+            } else
+                floor.rotation = Math::Vector3D(0.0, 0.0, 0.0);
             
             _primitive.listOfPlane[name] = floor;
             id_plane++;
