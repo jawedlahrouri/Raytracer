@@ -9,21 +9,6 @@
 
 #include "plugins/lights/AmbientLight.hpp"
 
-Math::Vector3D Raytracer::AmbientLight::getDirectionToLight([[maybe_unused]] const Math::Vector3D& hitPoint) const
-{
-    return Math::Vector3D(0, 0, 0);
-}
-
-Raytracer::colorType Raytracer::AmbientLight::getIntensity() const
-{
-    return Raytracer::RED;
-}
-
-float Raytracer::AmbientLight::getDistanceToLight([[maybe_unused]] const Math::Vector3D& hitPoint) const
-{
-    return std::numeric_limits<float>::max();
-}
-
 bool Raytracer::AmbientLight::canLightBeBlocked() const
 {
     return false;
