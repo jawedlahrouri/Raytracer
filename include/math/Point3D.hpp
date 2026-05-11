@@ -37,37 +37,6 @@ public:
         return Point3D(X - vec.X, Y - vec.Y, Z - vec.Z);
     }
 };
-
-    //         int getX() {
-    //             return X;
-    //         }
-
-    //         Point3D rotateX(double angle_deg) const {
-    //             double angle_rad = angle_deg * M_PI / 180.0;
-    //             double cos_a = std::cos(angle_rad);
-    //             double sin_a = std::sin(angle_rad);
-
-    //             return Point3D(X, Y * cos_a - Z * sin_a, Y * sin_a + Z * cos_a);
-    //         }
-
-    //         Point3D rotateY(double angle_deg) const {
-    //             double angle_rad = angle_deg * M_PI / 180.0;
-    //             double cos_a = std::cos(angle_rad);
-    //             double sin_a = std::sin(angle_rad);
-
-    //             return Point3D(X * cos_a + Z * sin_a, Y, -X * sin_a + Z * cos_a);
-    //         }
-
-    //         Point3D rotateZ(double angle_deg) const {
-    //             double angle_rad = angle_deg * M_PI / 180.0;
-    //             double cos_a = std::cos(angle_rad);
-    //             double sin_a = std::sin(angle_rad);
-
-    //             return Point3D(X * cos_a - Y * sin_a, X * sin_a + Y * cos_a, Z);
-    //         }
-    //     protected:
-    //     private:
-    // };
 } // namespace Math
 
 #endif /* !POINT3D_HPP_ */
