@@ -74,15 +74,11 @@ extern "C" {
     int getType() {
         return 2;
     }
-    // Raytracer::IMaterial* entryPoint() { return new Raytracer::TransparentMaterial(0.5); }
-    // Raytracer::IMaterial* entryPointWithOpacity(double opacity) { return new Raytracer::TransparentMaterial(opacity); }
+
     Raytracer::IMaterial* entryPoint(const std::map<std::string, double>& params) {
         double opacity = 0.5;
-
-        if (params.find("opacity") != params.end()) {
+        if (params.find("opacity") != params.end())
             opacity = params.at("opacity");
-        }
-
         return new Raytracer::TransparentMaterial(opacity);
     }
 }

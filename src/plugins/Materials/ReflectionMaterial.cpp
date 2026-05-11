@@ -70,7 +70,14 @@ Math::Vector3D Raytracer::ReflectionMaterial::getDiffuseColor(
 }
 
 extern "C" {
-    int getType() { return 2; }
-    Raytracer::IMaterial* entryPoint() { return new Raytracer::ReflectionMaterial(0.5); }
-    Raytracer::IMaterial* entryPointWithReflectivity(double reflectivity) { return new Raytracer::ReflectionMaterial(reflectivity); }
+    int getType() {
+        return 2;
+    }
+
+    Raytracer::IMaterial* entryPoint(const std::map<std::string, double>& params) {
+        double reflectivity = 0.5;
+        if (params.find("reflectivity") != params.end())
+            reflectivity = params.at("reflectivity");
+        return new Raytracer::ReflectionMaterial(reflectivity);
+    }
 }

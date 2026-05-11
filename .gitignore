@@ -6,3 +6,4 @@ output.ppm
 vgcore.*
 *.ppm
 *cache/
+json_file/*
