@@ -1,3 +1,5 @@
+[![Academic Year](https://img.shields.io/badge/Epitech-Tek2-green?style=for-the-badge&logo=epitech&logoColor=white)](https://www.epitech.eu/)
+
 # Raytracer — 3D rendering engine in C++
 
 A rendering engine that generates images by **simulating the inverse path of light**,
